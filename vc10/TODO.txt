@@ -1,0 +1,19 @@
+
+Fluid modeler - modeling and working with plastic forms
+
+
+-	Interface should allow you to decide how the 
+	molecules link together, eg Soda Constructor
+-	Forms should be contained in a pen, thus allowing very
+	liquid configurations.
+-	User should be able to place forces of various types and 
+	strengths around the "pen"
+
+Tasks:
+-	Existing Cinder window system is not adequate, both in terms 
+	of bugs, and systems of interaction. Creating a window system will
+	be necessary to complete the project.
+-	Formalize a simple set of rules about how to create fluid objects.
+	This will require testing 
+-	Gain mastery over Bullet soft body creation, both in terms of 
+	meshes and optimization. The pen should be able to support
