@@ -23,6 +23,7 @@
 #include <cinder/app/MouseEvent.h>
 #include <cinder/Matrix.h>
 #include <cinder/TriMesh.h>
+#include <cinder/Rand.h>
 
 #include <inc/Solid.h>
 #include <inc/GraphicItem.h>
@@ -287,72 +288,32 @@ namespace inc {
             SolidFactory::instance().dynamics_world()));
 
         return solid;
-
     }
 
-    SolidPtr SolidFactory::create_soft_body(ci::TriMesh& mesh, ci::Vec3f position,
-        ci::Vec3f scale) {
-        btBvhTriangleMeshShape* tri_mesh = 
-            ci::bullet::createStaticConcaveMeshShape(mesh, scale);
-
-        float* vertices = new float[mesh.getNumVertices() * 3];
-
-        int i = 0;
-        for (std::vector<ci::Vec3f>::const_iterator it = mesh.getVertices().begin();
-            it != mesh.getVertices().end(); ++it) { 
-            vertices[i] = it->x; ++i;
-            vertices[i] = it->y; ++i;
-            vertices[i] = it->z; ++i;
-        }
-
-        int* triangles = new int[mesh.getNumIndices()];
-
-        i = 0;
-        for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
-            it != mesh.getIndices().end(); ++it) {
-            triangles[i] = *it;
-            ++i;
-        }
-        
-        /*
-        btSoftBody* soft_body = 
-            btSoftBodyHelpers::CreateFromTriMesh(
-            SolidFactory::instance().soft_body_world_info(),
-            gVerticesBunny, &gIndicesBunny[0][0], BUNNY_NUM_TRIANGLES);
-            
-        */
-
-        /*
-        btSoftBody* soft_body = 
-            btSoftBodyHelpers::CreateFromTriMesh(
-            SolidFactory::instance().soft_body_world_info(),
-            vertices, triangles, mesh.getNumTriangles());
-        */
-
+    SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
         btAlignedObjectArray<btVector3> pts;
-        btVector3 p = btVector3(0.0, 20.0, 0.0);
-        btVector3 s = btVector3(8.0, 8.0, 8.0);
-        int num_points = 1000;
+        btVector3 p = ci::bullet::toBulletVector3(position);
+        btVector3 s = ci::bullet::toBulletVector3(scale);
+        int num_points = 500;
         float increment = 15.0f / (float) num_points;
         for(int i = 0; i< num_points; ++i) {
-	        float x = (float)(rand() % 10000) / 10000.0f;
-            float y = (float)(rand() % 10000) / 10000.0f;
-            float z = (float)(rand() % 10000) / 10000.0f;
+	        float x = ci::Rand::randFloat();
+            float y = ci::Rand::randFloat();
+            float z = ci::Rand::randFloat();
 	        pts.push_back(btVector3(x, y, z) * s + p);
-            p += btVector3(increment, 0.0, 0.0);
+            //p += btVector3(increment, 0.0, 0.0);
         }
        
         btSoftBody* soft_body = 
             btSoftBodyHelpers::CreateFromConvexHull(SolidFactory::instance().soft_body_world_info(),
             &pts[0], pts.size());
-        //soft_body->generateBendingConstraints(20);
+        soft_body->generateBendingConstraints(2);
 
-        //btSoftBodyHelpers::ExportAsSMeshFile(soft_body, "C:\dev\mesh.smesh");
-
+        /*
         btSoftBody::Material* mat = soft_body->appendMaterial();
         mat->m_kLST = 0.5;
         mat->m_flags -= btSoftBody::fMaterial::DebugDraw;
-        soft_body->generateBendingConstraints(20, mat);
+        soft_body->generateBendingConstraints(2, mat);
         soft_body->m_cfg.piterations = 2;
         soft_body->m_cfg.kDF = 0.5;
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
@@ -367,13 +328,12 @@ namespace inc {
             ci::bullet::toBulletVector3(position)));
         soft_body->scale(ci::bullet::toBulletVector3(scale));
         soft_body->setTotalMass(100, true);
+        */
+
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
         SolidPtr solid(new SoftSolid(NULL, soft_body, 
             SolidFactory::instance().dynamics_world()));
-
-        delete [] triangles;
-        delete [] vertices;
 
         return solid;
     }

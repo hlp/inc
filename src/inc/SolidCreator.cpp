@@ -25,10 +25,10 @@ namespace inc {
 
     void SolidCreator::update() {
         if (create_callback_ != last_create_) {
-            create_object();
+            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(5.0f, 5.0f, 5.0f));
             last_create_ = create_callback_;
         } else if (create_obj_callback_ != last_create_obj_) {
-            create_obj();
+            load_obj_as_rigid(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(25.0f, 25.0f, 25.0f));
             last_create_obj_ = create_obj_callback_;
         }
     }
@@ -37,13 +37,18 @@ namespace inc {
         // Nothing here
     }
 
-    void SolidCreator::create_object() {
+    void SolidCreator::create_soft_sphere(ci::Vec3f pos, ci::Vec3f size) {
         Manager::instance().solids().push_back(
-            SolidFactory::create_solid_box(ci::Vec3f(25.0f, 25.0f, 25.0f),
-            ci::Vec3f(0.0f, 100.0f, 0.0f)));
+            SolidFactory::create_soft_sphere(pos, size));
     }
 
-    void SolidCreator::create_obj() {
+    void SolidCreator::create_solid_box(ci::Vec3f pos, ci::Vec3f size) {
+        Manager::instance().solids().push_back(
+            SolidFactory::create_solid_box(size,
+            pos));
+    }
+
+    void SolidCreator::load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale) {
         std::string path = ci::app::getOpenFilePath();
         if (path.empty())
             return;
@@ -52,10 +57,7 @@ namespace inc {
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
-        for (int i = 0; i < 1; ++i) {
         Manager::instance().solids().push_back(
-            SolidFactory::create_soft_body(mesh, ci::Vec3f(0.0, 30.0f*(i+1), 0.0f), 
-            ci::Vec3f(10.0f, 10.0f, 10.0f)));
-        }
+            SolidFactory::create_rigid_mesh(mesh, pos, scale, 1.0f)); 
     }
 }

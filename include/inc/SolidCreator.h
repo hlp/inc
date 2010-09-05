@@ -17,8 +17,9 @@ namespace inc {
         void draw();
 
     private:
-        void create_object();
-        void create_obj();
+        void create_soft_sphere(ci::Vec3f pos, ci::Vec3f size);
+        void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
+        void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
         ci::params::InterfaceGl interface_;
 

@@ -75,8 +75,7 @@ namespace inc {
         static SolidPtr create_solid_box(ci::Vec3f dimensions, ci::Vec3f position);
         static SolidPtr create_rigid_mesh(ci::TriMesh&, ci::Vec3f position, 
             ci::Vec3f scale, float mass);
-        static SolidPtr create_soft_body(ci::TriMesh&, ci::Vec3f position,
-            ci::Vec3f scale);
+        static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f scale);
         static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);
         static SolidPtr create_static_solid_box(ci::Vec3f dimensions, 
             ci::Vec3f position);
