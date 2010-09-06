@@ -294,8 +294,8 @@ namespace inc {
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
         btSoftBody*	soft_body = btSoftBodyHelpers::CreateEllipsoid(SolidFactory::instance().soft_body_world_info(),
             btVector3(35,25,0), btVector3(1,1,1)*3, 20);
-        soft_body->m_materials[0]->m_kLST	=	0.45;
-        soft_body->m_cfg.kVC				=	20;
+        soft_body->m_materials[0]->m_kLST = 0.45;
+        soft_body->m_cfg.kVC = 20;
         soft_body->setTotalMass(50,true);
         soft_body->setPose(true,false);
 
