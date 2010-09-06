@@ -290,45 +290,19 @@ namespace inc {
         return solid;
     }
 
+    // creates a soft sphere that tries to maintain a constant volume
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
-        btAlignedObjectArray<btVector3> pts;
-        btVector3 p = ci::bullet::toBulletVector3(position);
-        btVector3 s = ci::bullet::toBulletVector3(scale);
-        int num_points = 500;
-        float increment = 15.0f / (float) num_points;
-        for(int i = 0; i< num_points; ++i) {
-	        float x = ci::Rand::randFloat();
-            float y = ci::Rand::randFloat();
-            float z = ci::Rand::randFloat();
-	        pts.push_back(btVector3(x, y, z) * s + p);
-            //p += btVector3(increment, 0.0, 0.0);
-        }
-       
-        btSoftBody* soft_body = 
-            btSoftBodyHelpers::CreateFromConvexHull(SolidFactory::instance().soft_body_world_info(),
-            &pts[0], pts.size());
-        soft_body->generateBendingConstraints(2);
+        btSoftBody*	soft_body = btSoftBodyHelpers::CreateEllipsoid(SolidFactory::instance().soft_body_world_info(),
+            btVector3(35,25,0), btVector3(1,1,1)*3, 20);
+        soft_body->m_materials[0]->m_kLST	=	0.45;
+        soft_body->m_cfg.kVC				=	20;
+        soft_body->setTotalMass(50,true);
+        soft_body->setPose(true,false);
 
-        /*
-        btSoftBody::Material* mat = soft_body->appendMaterial();
-        mat->m_kLST = 0.5;
-        mat->m_flags -= btSoftBody::fMaterial::DebugDraw;
-        soft_body->generateBendingConstraints(2, mat);
-        soft_body->m_cfg.piterations = 2;
-        soft_body->m_cfg.kDF = 0.5;
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
-        //soft_body->m_cfg.collisions |= btSoftBody::fCollision::RVSmask;
         //soft_body->m_cfg.collisions |= btSoftBody::fCollision::SDF_RS;
-        soft_body->randomizeConstraints();
-        btMatrix3x3	m;
-        // This sets the axis, I think
-        m.setEulerZYX(0.0, 0.0, 0.0);
-        // This sets the origin / starting position
-        soft_body->transform(btTransform(m, 
-            ci::bullet::toBulletVector3(position)));
-        soft_body->scale(ci::bullet::toBulletVector3(scale));
-        soft_body->setTotalMass(100, true);
-        */
+        //soft_body->m_cfg.collisions |= btSoftBody::fCollision::RVSmask;
+        //soft_body->randomizeConstraints();
 
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 

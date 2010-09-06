@@ -25,7 +25,7 @@ namespace inc {
 
     void SolidCreator::update() {
         if (create_callback_ != last_create_) {
-            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(5.0f, 5.0f, 5.0f));
+            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(15.0f, 15.0f, 15.0f));
             last_create_ = create_callback_;
         } else if (create_obj_callback_ != last_create_obj_) {
             load_obj_as_rigid(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(25.0f, 25.0f, 25.0f));
