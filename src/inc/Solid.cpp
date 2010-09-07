@@ -136,17 +136,16 @@ namespace inc {
 
     void SolidFactory::init_physics() {
         collision_configuration_ = new btSoftBodyRigidBodyCollisionConfiguration();
-        dispatcher_ = new btCollisionDispatcher(collision_configuration_);
-        soft_body_world_info_.m_dispatcher = dispatcher_;
-
         int max_proxies = 32766;
-        btVector3 world_aabb_min(-1000,-1000,-1000);
-	    btVector3 world_aabb_max(1000,1000,1000);
+        btVector3 world_aabb_min(-300,-300,-300);
+	    btVector3 world_aabb_max(300,300,300);
         broadphase_ = new btAxisSweep3(world_aabb_min, world_aabb_max, max_proxies);
         soft_body_world_info_.m_broadphase = broadphase_;
 
-        btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
-        solver_ = sol;
+        dispatcher_ = new btCollisionDispatcher(collision_configuration_);
+        soft_body_world_info_.m_dispatcher = dispatcher_;
+
+        solver_ = new btSequentialImpulseConstraintSolver();
 
         dynamics_world_ = new btSoftRigidDynamicsWorld(dispatcher_, broadphase_, 
             solver_, collision_configuration_);
