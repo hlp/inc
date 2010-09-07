@@ -298,6 +298,7 @@ namespace inc {
         soft_body->setTotalMass(50,true);
         soft_body->setPose(true,false);
 
+        // change these for different collision types (with other soft, with ridgid, with static...)
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         //soft_body->m_cfg.collisions |= btSoftBody::fCollision::SDF_RS;
         //soft_body->m_cfg.collisions |= btSoftBody::fCollision::RVSmask;
