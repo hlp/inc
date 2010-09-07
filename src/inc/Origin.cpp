@@ -19,9 +19,13 @@ namespace inc {
         interface_.addParam("Grid Plane Intervals",
             origin_graphic_item_->grid_plane_intervals_ptr(), "");
 
+        
         solid_plane_ = SolidFactory::create_static_solid_box(
             ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
             ci::Vec3f().zero());
+        
+
+        sock_ = SolidFactory::create_sphere_container();
     }
 
     void Origin::update() {
@@ -30,6 +34,7 @@ namespace inc {
 
     void Origin::draw() {
         solid_plane_->draw();
+        sock_->draw();
         origin_graphic_item_->draw();
     }
 

@@ -79,6 +79,7 @@ namespace inc {
         static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);
         static SolidPtr create_static_solid_box(ci::Vec3f dimensions, 
             ci::Vec3f position);
+        static SolidPtr create_sphere_container();
 
         static SolidFactory& instance();
 

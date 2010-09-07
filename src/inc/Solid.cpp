@@ -24,6 +24,7 @@
 #include <cinder/Matrix.h>
 #include <cinder/TriMesh.h>
 #include <cinder/Rand.h>
+#include <cinder/ObjLoader.h>
 
 #include <inc/Solid.h>
 #include <inc/GraphicItem.h>
@@ -270,20 +271,17 @@ namespace inc {
             ci::bullet::toBulletVector3(position)));
 		
 		btVector3 inertia(0,0,0);
-		float mass = 0.0f;
+		float mass = 0.0f; // objects of mass 0 do not move
 		box->calculateLocalInertia(mass, inertia);
 		btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motionState, 
             box, inertia);
 		
-		btRigidBody *rigidBody = new btRigidBody(rigidBodyCI);
-		SolidFactory::instance().dynamics_world()->addRigidBody(rigidBody);
-
-        btRigidBody* body = ci::bullet::createBox(SolidFactory::instance().dynamics_world(), 
-            dimensions, ci::Quatf(), position);
+		btRigidBody *rigid_body = new btRigidBody(rigidBodyCI);
+		SolidFactory::instance().dynamics_world()->addRigidBody(rigid_body);
 
         GraphicItem* item = new BoxGraphicItem(dimensions);
 
-        SolidPtr solid(new RigidSolid(item, body, 
+        SolidPtr solid(new RigidSolid(item, rigid_body, 
             SolidFactory::instance().dynamics_world()));
 
         return solid;
@@ -291,8 +289,9 @@ namespace inc {
 
     // creates a soft sphere that tries to maintain a constant volume
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
-        btSoftBody*	soft_body = btSoftBodyHelpers::CreateEllipsoid(SolidFactory::instance().soft_body_world_info(),
-            btVector3(35,25,0), btVector3(1,1,1)*3, 20);
+        btSoftBody*	soft_body = btSoftBodyHelpers::CreateEllipsoid(
+            SolidFactory::instance().soft_body_world_info(),
+            btVector3(0, 25, 0), btVector3(1, 1, 1)*3, 20);
         soft_body->m_materials[0]->m_kLST = 0.45;
         soft_body->m_cfg.kVC = 20;
         soft_body->setTotalMass(50,true);
@@ -308,6 +307,60 @@ namespace inc {
 
         SolidPtr solid(new SoftSolid(NULL, soft_body, 
             SolidFactory::instance().dynamics_world()));
+
+        return solid;
+    }
+
+    SolidPtr SolidFactory::create_sphere_container() {
+        ci::app::console() << "creating sphere container" << std::endl;
+
+        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock.obj"));
+        ci::TriMesh mesh;
+        loader.load(&mesh, true);
+
+        btBvhTriangleMeshShape* tri_mesh = 
+            ci::bullet::createStaticConcaveMeshShape(mesh, ci::Vec3f::one());
+
+        btScalar* vertices = new float[mesh.getNumVertices() * 3];
+
+        int i = 0;
+        for (std::vector<ci::Vec3f>::const_iterator it = mesh.getVertices().begin();
+            it != mesh.getVertices().end(); ++it) { 
+            vertices[i] = it->x; ++i;
+            vertices[i] = it->y; ++i;
+            vertices[i] = it->z; ++i;
+        }
+
+        int* triangles = new int[mesh.getNumIndices()];
+
+        i = 0;
+        for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
+            it != mesh.getIndices().end(); ++it) {
+            triangles[i] = *it;
+            ++i;
+        }
+
+        btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
+            SolidFactory::instance().soft_body_world_info(),
+            vertices, triangles, mesh.getNumTriangles(), false);
+
+        btMatrix3x3 m;
+        // This sets the axis, I think
+        m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
+        // This sets the origin / starting position
+        soft_body->transform(btTransform(m, 
+            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 200.0f, 0.0f))));
+        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*3.0f));
+        
+        SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
+
+        // TODO: anchor the top points in place
+
+        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+            SolidFactory::instance().dynamics_world()));
+
+        delete [] triangles;
+        delete [] vertices;
 
         return solid;
     }
