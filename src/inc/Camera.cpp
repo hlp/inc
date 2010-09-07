@@ -11,7 +11,7 @@ namespace inc {
         
         zoom_speed_ = 30.0f;
         far_clip_ = 10000.0f;
-        draw_interface_ = true;
+        //draw_interface_ = true;
     }
 
     Camera::~Camera() {
@@ -24,6 +24,7 @@ namespace inc {
         cam_ = new ci::MayaCamUI();
         create_camera();
 
+        /*
         interface_ = ci::params::InterfaceGl("Camera", ci::Vec2i(100, 200));
         interface_.addParam("Zoom Speed", &zoom_speed_, "min=0.1 max=50.0");
         interface_.addParam("Far Clip", &far_clip_, "min=0.1 max=10000000.0");
@@ -33,6 +34,7 @@ namespace inc {
 
         interface_.addParam("Test Bool", temp, "");
         interface_.addParam("Test string", temp_str, "");
+        */
     }
 
     void Camera::create_camera() {
@@ -60,8 +62,10 @@ namespace inc {
     }
 
     bool Camera::mouseDown(ci::app::MouseEvent m_event) {
+        /*
         if (draw_interface_)
             return false;
+        */
 
         cam_->mouseDown(m_event.getPos());
         return false;
@@ -80,8 +84,10 @@ namespace inc {
 
     // Zoom code taken from Cinder::MayaCamUI
     bool Camera::mouseWheel(ci::app::MouseEvent m_event) {
+        /*
         if (draw_interface_) 
             return false;
+        */
 
         float mouse_delta = m_event.getWheelIncrement() * zoom_speed_;
         //float direction = mouse_delta > 0.0f ? 1.0 : -1.0;

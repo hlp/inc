@@ -123,7 +123,7 @@ namespace inc {
 
     SolidFactory::SolidFactory() {
         instance_ = this;
-        gravity_ = -9.8f;
+        gravity_ = 0.0f;//-9.8f;
         last_gravity_ = gravity_;
     }
 
@@ -314,7 +314,7 @@ namespace inc {
     SolidPtr SolidFactory::create_sphere_container() {
         ci::app::console() << "creating sphere container" << std::endl;
 
-        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock3.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -349,7 +349,7 @@ namespace inc {
         m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
         // This sets the origin / starting position
         soft_body->transform(btTransform(m, 
-            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 200.0f, 0.0f))));
+            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
         soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*3.0f));
         
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
