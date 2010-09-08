@@ -336,10 +336,12 @@ namespace inc {
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
+        /*
         btBvhTriangleMeshShape* tri_mesh = 
             ci::bullet::createStaticConcaveMeshShape(mesh, ci::Vec3f::one() * 10.0f);
+            */
 
-        ci::app::console() << mesh.getNumIndices() << " : " << mesh.getNumTriangles() << std::endl;
+        //ci::app::console() << mesh.getNumIndices() << " : " << mesh.getNumTriangles() << std::endl;
 
         /*
         btScalar* vertices = new float[mesh.getNumVertices() * 3];
@@ -366,10 +368,27 @@ namespace inc {
             vertices, triangles, mesh.getNumTriangles(), false);
         */
 
+        std::vector<ci::Vec3f> vertices = mesh.getVertices();
+		std::vector<size_t> indices = mesh.getIndices();
+		
+		btTriangleMesh* tmesh = new btTriangleMesh(true, false);
+		
+        for(int i = 0; i < mesh.getNumIndices(); i += 3)
+		{
+			tmesh->addTriangle(ci::bullet::toBulletVector3(vertices[indices[i]]), 
+								ci::bullet::toBulletVector3(vertices[indices[i+1]]), 
+								ci::bullet::toBulletVector3(vertices[indices[i+2]]), 
+								true);
+		}
+
+		btBvhTriangleMeshShape* tri_mesh = new btBvhTriangleMeshShape(tmesh, true, true);
+        tri_mesh->setLocalScaling(ci::bullet::toBulletVector3(ci::Vec3f::one() * 10.0f));
+		tri_mesh->setMargin(0.05f);
+
         btDefaultMotionState *motion_state = new btDefaultMotionState(btTransform(
             ci::bullet::toBulletQuaternion(ci::Quatf(-M_PI / 2.0f, 0.0f, 0.0f)),
-            ci::bullet::toBulletVector3((ci::Vec3f(0.0, 50.0f, 0.0f)))));
-		btRigidBody::btRigidBodyConstructionInfo body_ci(1.0f, motion_state, tri_mesh, btVector3(0,0,0));
+            ci::bullet::toBulletVector3((ci::Vec3f(0.0, 5.0f, 0.0f)))));
+		btRigidBody::btRigidBodyConstructionInfo body_ci(0.0f, motion_state, tri_mesh, btVector3(0,0,0));
 		btRigidBody* rigid_body = new btRigidBody(body_ci);
 
         /*
