@@ -123,14 +123,14 @@ namespace inc {
 
     SolidFactory::SolidFactory() {
         instance_ = this;
-        gravity_ = 0.0f;//-9.8f;
+        gravity_ = -9.8f;//0.0f;//-9.8f;
         last_gravity_ = gravity_;
     }
 
     void SolidFactory::setup() {
         init_physics();
 
-        interface_ = ci::params::InterfaceGl("Solids Factory", ci::Vec2i(100, 200));
+        interface_ = ci::params::InterfaceGl("Solids_Factory", ci::Vec2i(100, 200));
         interface_.addParam("Gravity", &gravity_, 
             "min=-20.0 max=20.0 step=0.1 keyIncr=g keyDecr=G");
     }
@@ -314,13 +314,16 @@ namespace inc {
     SolidPtr SolidFactory::create_sphere_container() {
         ci::app::console() << "creating sphere container" << std::endl;
 
-        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock3.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock4.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
         btBvhTriangleMeshShape* tri_mesh = 
-            ci::bullet::createStaticConcaveMeshShape(mesh, ci::Vec3f::one());
+            ci::bullet::createStaticConcaveMeshShape(mesh, ci::Vec3f::one() * 10.0f);
 
+        ci::app::console() << mesh.getNumIndices() << " : " << mesh.getNumTriangles() << std::endl;
+
+        /*
         btScalar* vertices = new float[mesh.getNumVertices() * 3];
 
         int i = 0;
@@ -343,24 +346,46 @@ namespace inc {
         btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
             SolidFactory::instance().soft_body_world_info(),
             vertices, triangles, mesh.getNumTriangles(), false);
+        */
 
+        btDefaultMotionState *motion_state = new btDefaultMotionState(btTransform(
+            ci::bullet::toBulletQuaternion(ci::Quatf(-M_PI / 2.0f, 0.0f, 0.0f)),
+            ci::bullet::toBulletVector3((ci::Vec3f(0.0, 50.0f, 0.0f)))));
+		btRigidBody::btRigidBodyConstructionInfo body_ci(1.0f, motion_state, tri_mesh, btVector3(0,0,0));
+		btRigidBody* rigid_body = new btRigidBody(body_ci);
+
+        /*
+        btRigidBody* rigid_body = ci::bullet::createStaticRigidBody(SolidFactory::instance().dynamics_world(),
+            tri_mesh, ci::Vec3f(0.0f, 50.0f, 0.0f));
+        */
+
+        /*
         btMatrix3x3 m;
         // This sets the axis, I think
         m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
         // This sets the origin / starting position
-        soft_body->transform(btTransform(m, 
+        rigid_body->transform(btTransform(m, 
             ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
-        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*3.0f));
+        rigid_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*3.0f));
+        */
         
-        SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
+        //SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
+        SolidFactory::instance().soft_dynamics_world()->addRigidBody(rigid_body);
 
         // TODO: anchor the top points in place
 
-        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+        /*
+        SolidPtr solid(new SoftSolid(NULL, soft_solid, 
+            SolidFactory::instance().dynamics_world()));
+        */
+
+        SolidPtr solid(new RigidSolid(NULL, rigid_body,
             SolidFactory::instance().dynamics_world()));
 
+        /*
         delete [] triangles;
         delete [] vertices;
+        */
 
         return solid;
     }

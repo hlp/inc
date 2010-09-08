@@ -29,7 +29,7 @@ namespace inc {
         void update();
         void draw();
 
-        ci::params::InterfaceGl& interface();
+        //ci::params::InterfaceGl& interface();
 
         SolidList& solids();
         GraphicItemList& graphic_items();
@@ -41,7 +41,7 @@ namespace inc {
         ModuleList modules_;
         ModuleList::const_iterator modules_it_;
 
-        ci::params::InterfaceGl interface_;
+        //ci::params::InterfaceGl interface_;
 
         static Manager* instance_;
     };

@@ -18,8 +18,6 @@ namespace inc {
 
         void draw_init();
 
-        //ci::params::InterfaceGl& interface();
-
     private:
         void begin3D();
         void draw_objects();

@@ -13,11 +13,13 @@ namespace inc {
     void Origin::setup() {
         origin_graphic_item_ = new OriginGraphicItem();
 
+        /*
         interface_ = ci::params::InterfaceGl("Origin", ci::Vec2i(100, 200));
         interface_.addParam("Grid Plane Size", 
             origin_graphic_item_->grid_plane_size_ptr(), "");
         interface_.addParam("Grid Plane Intervals",
             origin_graphic_item_->grid_plane_intervals_ptr(), "");
+            */
 
         
         solid_plane_ = SolidFactory::create_static_solid_box(

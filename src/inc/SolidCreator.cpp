@@ -18,7 +18,7 @@ namespace inc {
     }
 
     void SolidCreator::setup() {
-        interface_ = ci::params::InterfaceGl("Solid Creator", ci::Vec2i(100, 100));
+        interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(100, 100));
         interface_.addParam("Create Object", &create_callback_);
         interface_.addParam("Load Obj", &create_obj_callback_);
     }

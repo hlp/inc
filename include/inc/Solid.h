@@ -109,8 +109,8 @@ namespace inc {
         float last_gravity_;
 
         static SolidFactory* instance_;
-
     };
+
     /*
 	enum	DebugDrawModes
 	{

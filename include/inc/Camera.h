@@ -26,8 +26,10 @@ namespace inc {
         virtual bool mouseDown(ci::app::MouseEvent);
         virtual bool mouseDrag(ci::app::MouseEvent);
         virtual bool mouseWheel(ci::app::MouseEvent);
+        /*
         virtual bool keyDown(ci::app::KeyEvent);
         virtual bool keyUp(ci::app::KeyEvent);
+        */
 
         static Camera& instance();
 
@@ -37,12 +39,9 @@ namespace inc {
         void create_camera();
 
         ci::MayaCamUI* cam_;
-        ci::params::InterfaceGl interface_;
         
         float zoom_speed_;
         float far_clip_;
-
-        bool draw_interface_;
 
         static Camera* instance_;
     };

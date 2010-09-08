@@ -20,7 +20,7 @@ namespace inc {
 
     private:
         OriginGraphicItem* origin_graphic_item_;
-        ci::params::InterfaceGl interface_;
+        //ci::params::InterfaceGl interface_;
         std::tr1::shared_ptr<Solid> solid_plane_;
         std::tr1::shared_ptr<Solid> sock_;
     };

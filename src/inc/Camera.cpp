@@ -11,7 +11,6 @@ namespace inc {
         
         zoom_speed_ = 30.0f;
         far_clip_ = 10000.0f;
-        //draw_interface_ = true;
     }
 
     Camera::~Camera() {
@@ -23,18 +22,6 @@ namespace inc {
 
         cam_ = new ci::MayaCamUI();
         create_camera();
-
-        /*
-        interface_ = ci::params::InterfaceGl("Camera", ci::Vec2i(100, 200));
-        interface_.addParam("Zoom Speed", &zoom_speed_, "min=0.1 max=50.0");
-        interface_.addParam("Far Clip", &far_clip_, "min=0.1 max=10000000.0");
-        
-        bool* temp = new bool(false);
-        std::string* temp_str = new std::string("foo");
-
-        interface_.addParam("Test Bool", temp, "");
-        interface_.addParam("Test string", temp_str, "");
-        */
     }
 
     void Camera::create_camera() {
@@ -62,21 +49,11 @@ namespace inc {
     }
 
     bool Camera::mouseDown(ci::app::MouseEvent m_event) {
-        /*
-        if (draw_interface_)
-            return false;
-        */
-
         cam_->mouseDown(m_event.getPos());
         return false;
     }
 
     bool Camera::mouseDrag(ci::app::MouseEvent m_event) {
-        /*
-        if (draw_interface_)
-            return false;
-        */
-
         cam_->mouseDrag(m_event.getPos(), m_event.isLeftDown(), m_event.isMiddleDown(), 
             m_event.isRightDown());
         return false;
@@ -84,11 +61,6 @@ namespace inc {
 
     // Zoom code taken from Cinder::MayaCamUI
     bool Camera::mouseWheel(ci::app::MouseEvent m_event) {
-        /*
-        if (draw_interface_) 
-            return false;
-        */
-
         float mouse_delta = m_event.getWheelIncrement() * zoom_speed_;
         //float direction = mouse_delta > 0.0f ? 1.0 : -1.0;
         
@@ -110,28 +82,16 @@ namespace inc {
     }
 
     bool Camera::draw_interface() {
-        return draw_interface_;
+        return true;
     }
 
+    /*
     bool Camera::keyDown(ci::app::KeyEvent k_event) {
-        // I don't like this hack from a usability standpoint
-        /*
-        if (k_event.getCode() == ci::app::KeyEvent::KEY_LSHIFT ||
-            k_event.getCode() == ci::app::KeyEvent::KEY_RSHIFT)
-            draw_interface_ = true; 
-        */
-
         return false;
     }
 
     bool Camera::keyUp(ci::app::KeyEvent k_event) {
-        // removed, see above
-        /*
-        if (k_event.getCode() == ci::app::KeyEvent::KEY_LSHIFT ||
-            k_event.getCode() == ci::app::KeyEvent::KEY_RSHIFT)
-            draw_interface_ = false;
-        */
-
         return false;
     }
+    */
 }
