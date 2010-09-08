@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <deque>
+
 #include <btBulletDynamicsCommon.h>
 #include <LinearMath/btIDebugDraw.h>
 #include <BulletSoftBody/btSoftBody.h>
@@ -90,14 +92,24 @@ namespace inc {
         btDynamicsWorld* dynamics_world();
         btSoftRigidDynamicsWorld* soft_dynamics_world();
 
-        static SolidPtr create_solid_box(ci::Vec3f dimensions, ci::Vec3f position);
-        static SolidPtr create_rigid_mesh(ci::TriMesh&, ci::Vec3f position, 
-            ci::Vec3f scale, float mass);
+
         static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f scale);
+        static std::tr1::shared_ptr<std::deque<SolidPtr> > create_linked_soft_spheres(
+            ci::Vec3f pos, ci::Vec3f scl);
+        static std::tr1::shared_ptr<std::deque<SolidPtr> > create_soft_sphere_matrix(
+            ci::Vec3f pos, ci::Vec3f scl, int w, int h, int d);
+
+        static SolidPtr create_sphere_container();
+
+        // I don't use these
         static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);
         static SolidPtr create_static_solid_box(ci::Vec3f dimensions, 
             ci::Vec3f position);
-        static SolidPtr create_sphere_container();
+        static SolidPtr create_solid_box(ci::Vec3f dimensions, 
+            ci::Vec3f position);
+        static SolidPtr create_rigid_mesh(ci::TriMesh&, 
+            ci::Vec3f position, 
+            ci::Vec3f scale, float mass);
 
         static SolidFactory& instance();
 
@@ -106,6 +118,8 @@ namespace inc {
     private:
         void init_physics();
         void update_object_gravity();
+        static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
+            ci::Vec3f scale, float res);
 
         //btDynamicsWorld* dynamics_world_;
         btSoftRigidDynamicsWorld* dynamics_world_;

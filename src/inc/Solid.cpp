@@ -19,6 +19,8 @@
 
 #include <math.h>
 
+#include <deque>
+
 #include <LinearMath/btIDebugDraw.h>
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletSoftBody/btSoftBodyHelpers.h>
@@ -52,7 +54,6 @@
 namespace inc {
     Solid::Solid(GraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
         : graphic_item_(item), body_(body), world_(world) {
-        ci::app::console() << "Creating Solid" << std::endl;
     }
 
     Solid::~Solid() {
@@ -305,28 +306,87 @@ namespace inc {
         return solid;
     }
 
-    // creates a soft sphere that tries to maintain a constant volume
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
-        btSoftBody*	soft_body = btSoftBodyHelpers::CreateEllipsoid(
+        btSoftBody*	soft_body = create_bullet_soft_sphere(position, scale, 20);
+
+        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+            SolidFactory::instance().dynamics_world()));
+
+        return solid;
+    }
+
+    std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_linked_soft_spheres(
+        ci::Vec3f position, ci::Vec3f scale) {
+
+        ci::Vec3f offset = ci::Vec3f(0.0f, 5.0f, 0.0f);
+
+        ci::Vec3f p1 = position + offset;
+        ci::Vec3f p2 = position - offset;
+
+        btSoftBody* sb1 = create_bullet_soft_sphere(
+            p1, scale, 20);
+        btSoftBody* sb2 = create_bullet_soft_sphere(
+            p2, scale, 20);
+
+        ci::app::console() << sb1 << " : " << sb2 << std::endl;
+
+        btSoftBody::LJoint::Specs lj;
+        lj.cfm = 1;
+	    lj.erp = 1;
+	    lj.position = ci::bullet::toBulletVector3((p1 + p2) / 2.0f);
+        sb1->appendLinearJoint(lj, sb2);
+
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+
+        d_ptr->push_back(SolidPtr(new SoftSolid(NULL, sb1, 
+            SolidFactory::instance().dynamics_world())));
+        d_ptr->push_back(SolidPtr(new SoftSolid(NULL, sb2, 
+            SolidFactory::instance().dynamics_world())));
+
+        return d_ptr;
+    }
+
+    std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_matrix(
+        ci::Vec3f position, ci::Vec3f scale, int w, int h, int d) {
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+
+        return d_ptr;
+    }
+
+    // creates a soft sphere that tries to maintain a constant volume
+    btSoftBody* SolidFactory::create_bullet_soft_sphere(ci::Vec3f position, 
+        ci::Vec3f scale, float res) {
+        btVector3 pos = ci::bullet::toBulletVector3(position);
+        btVector3 scl = ci::bullet::toBulletVector3(scale);
+
+        btSoftBody* soft_body = btSoftBodyHelpers::CreateEllipsoid(
             SolidFactory::instance().soft_body_world_info(),
-            btVector3(0, 25, 0), btVector3(1, 1, 1)*3, 20);
-        soft_body->m_materials[0]->m_kLST = 0.45;
+            pos, scl, res);
+
+        btSoftBody::Material* pm = soft_body->appendMaterial();
+	    pm->m_kLST = 0.45;
+	    pm->m_flags -= btSoftBody::fMaterial::DebugDraw;			
+	    soft_body->generateBendingConstraints(2, pm);
+
         soft_body->m_cfg.kVC = 20;
-        soft_body->setTotalMass(50,true);
+        soft_body->m_cfg.kDF = 1;
+        soft_body->setTotalMass(50, true);
         soft_body->setPose(true,false);
+        soft_body->generateClusters(20);
 
         // change these for different collision types (with other soft, with ridgid, with static...)
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
+        //soft_body->m_cfg.collisions = btSoftBody::fCollision::CL_SS + 
+        //    btSoftBody::fCollision::CL_RS;
         //soft_body->m_cfg.collisions |= btSoftBody::fCollision::SDF_RS;
         //soft_body->m_cfg.collisions |= btSoftBody::fCollision::RVSmask;
         //soft_body->randomizeConstraints();
 
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
-        SolidPtr solid(new SoftSolid(NULL, soft_body, 
-            SolidFactory::instance().dynamics_world()));
-
-        return solid;
+        return soft_body;
     }
 
     SolidPtr SolidFactory::create_sphere_container() {

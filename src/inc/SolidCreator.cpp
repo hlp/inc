@@ -29,25 +29,29 @@
 namespace inc {
 
     SolidCreator::SolidCreator() {
-        create_callback_ = false;
-        last_create_ = false;
-        create_obj_callback_ = false;
-        last_create_obj_ = false;
+        for (int i = 0; i < 3; ++i) {
+            cb_[i] = false;
+            last_cb_[i] = false;
+        }
     }
 
     void SolidCreator::setup() {
-        interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(100, 100));
-        interface_.addParam("Create Object", &create_callback_);
-        interface_.addParam("Load Obj", &create_obj_callback_);
+        interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(300, 100));
+        interface_.addParam("Create soft sphere", &cb_[0]);
+        interface_.addParam("Create linked spheres", &cb_[1]);
+        interface_.addParam("Create sphere matrix", &cb_[2]);
     }
 
     void SolidCreator::update() {
-        if (create_callback_ != last_create_) {
-            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(15.0f, 15.0f, 15.0f));
-            last_create_ = create_callback_;
-        } else if (create_obj_callback_ != last_create_obj_) {
-            load_obj_as_rigid(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f(25.0f, 25.0f, 25.0f));
-            last_create_obj_ = create_obj_callback_;
+        if (cb_[0] != last_cb_[0]) {
+            create_soft_sphere(ci::Vec3f(0.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f);
+            last_cb_[0] = cb_[0];
+        } else if (cb_[1] != last_cb_[1]) {
+            create_linked_spheres(ci::Vec3f(0.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f);
+            last_cb_[1] = cb_[1];
+        } else if (cb_[2] != last_cb_[2]) {
+            // create matrix
+            last_cb_[2] = cb_[2];
         }
     }
 
@@ -58,6 +62,14 @@ namespace inc {
     void SolidCreator::create_soft_sphere(ci::Vec3f pos, ci::Vec3f size) {
         Manager::instance().solids().push_back(
             SolidFactory::create_soft_sphere(pos, size));
+    }
+
+    void SolidCreator::create_linked_spheres(ci::Vec3f pos, ci::Vec3f size) {
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            SolidFactory::create_linked_soft_spheres(pos, size);
+
+        std::for_each(d_ptr->begin(), d_ptr->end(),
+            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
     }
 
     void SolidCreator::create_solid_box(ci::Vec3f pos, ci::Vec3f size) {

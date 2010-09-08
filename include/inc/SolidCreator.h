@@ -36,15 +36,14 @@ namespace inc {
 
     private:
         void create_soft_sphere(ci::Vec3f pos, ci::Vec3f size);
+        void create_linked_spheres(ci::Vec3f pos, ci::Vec3f size);
+
         void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
         void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
         ci::params::InterfaceGl interface_;
 
-        bool create_callback_;
-        bool last_create_;
-
-        bool create_obj_callback_;
-        bool last_create_obj_;
+        bool cb_[3];
+        bool last_cb_[3];
     };
 }
