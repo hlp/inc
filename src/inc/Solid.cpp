@@ -151,7 +151,7 @@ namespace inc {
 
     SolidFactory::SolidFactory() {
         instance_ = this;
-        gravity_ = -9.8f;//0.0f;//-9.8f;
+        gravity_ = -0.2f;//-9.8f;//0.0f;//-9.8f;
         last_gravity_ = gravity_;
     }
 
@@ -468,7 +468,7 @@ namespace inc {
 
         soft_body->m_cfg.kVC = 20;
         soft_body->m_cfg.kDF = 1;
-        soft_body->setTotalMass(50, true);
+        soft_body->setTotalMass(10, true);
         soft_body->setPose(true,false);
         soft_body->generateClusters(20);
 
@@ -486,7 +486,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock4.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -509,7 +509,7 @@ namespace inc {
 
         btDefaultMotionState *motion_state = new btDefaultMotionState(btTransform(
             ci::bullet::toBulletQuaternion(ci::Quatf(-M_PI / 2.0f, 0.0f, 0.0f)),
-            ci::bullet::toBulletVector3((ci::Vec3f(0.0, 5.0f, 0.0f)))));
+            ci::bullet::toBulletVector3((ci::Vec3f(0.0, 15.0f, 0.0f)))));
 		btRigidBody::btRigidBodyConstructionInfo body_ci(0.0f, motion_state, tri_mesh, btVector3(0,0,0));
 		btRigidBody* rigid_body = new btRigidBody(body_ci);
 

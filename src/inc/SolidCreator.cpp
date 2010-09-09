@@ -50,7 +50,7 @@ namespace inc {
 
     void SolidCreator::update() {
         if (cb_[0] != last_cb_[0]) {
-            create_soft_sphere(ci::Vec3f(0.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f);
+            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);
             last_cb_[0] = cb_[0];
         } else if (cb_[1] != last_cb_[1]) {
             create_linked_spheres(ci::Vec3f(0.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f);
@@ -58,7 +58,7 @@ namespace inc {
         } else if (cb_[2] != last_cb_[2]) {
             // create matrix
             create_sphere_matrix(ci::Vec3f(20.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f,
-                3, 3, 3);
+                4, 4, 4);
             last_cb_[2] = cb_[2];
         }
     }

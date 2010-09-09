@@ -50,6 +50,7 @@ namespace inc {
             ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
             ci::Vec3f().zero());
         
+        
         sock_ = SolidFactory::create_sphere_container();
     }
 
@@ -62,5 +63,4 @@ namespace inc {
         sock_->draw();
         origin_graphic_item_->draw();
     }
-
 }
