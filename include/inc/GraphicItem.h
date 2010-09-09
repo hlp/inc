@@ -27,7 +27,7 @@
 namespace inc {
     class GraphicItem {
     public:
-        virtual ~GraphicItem() { };
+        virtual ~GraphicItem(); 
         virtual void draw() = 0;
     };
 

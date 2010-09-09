@@ -30,6 +30,12 @@ namespace inc {
         background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
     }
 
+    Renderer::~Renderer() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting Renderer" << std::endl;
+#endif
+    }
+
     void Renderer::setup() {
         interface_ = ci::params::InterfaceGl("Renderer", ci::Vec2i(100, 200));
         interface_.addParam("Background Color", &background_color_, "");

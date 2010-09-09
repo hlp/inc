@@ -32,6 +32,12 @@ namespace inc {
     }
 
     Camera::~Camera() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting Camera" << std::endl;
+#endif
+
+        IncApp::instance().removeListener(this);
+
         delete cam_;
     }
 

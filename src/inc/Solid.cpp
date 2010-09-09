@@ -57,8 +57,11 @@ namespace inc {
     }
 
     Solid::~Solid() {
-        delete graphic_item_;
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting Solid" << std::endl;
+#endif
 
+        delete graphic_item_;
         delete body_;
     }
 
@@ -84,6 +87,10 @@ namespace inc {
     RigidSolid::~RigidSolid() {
         if (rigid_body().getMotionState())
             delete rigid_body().getMotionState();
+
+        if (rigid_body().getCollisionShape())
+            delete rigid_body().getCollisionShape();
+
         world_->removeRigidBody(rigid_body_ptr());
     }
 
@@ -139,6 +146,8 @@ namespace inc {
     }
 
 
+
+    std::deque<btTriangleMesh*> SolidFactory::mesh_cleanup_;
 
     SolidFactory::SolidFactory() {
         instance_ = this;
@@ -206,16 +215,19 @@ namespace inc {
     }
 
     SolidFactory::~SolidFactory() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting SolidFactory" << std::endl;
+#endif
+        
+        // all the bullet bodies should be deleted by now
+        std::for_each(mesh_cleanup_.begin(), mesh_cleanup_.end(),
+            [] (btTriangleMesh* ptr) { delete ptr; } );
+
         delete debug_draw_;
-
         delete dynamics_world_;
-
         delete solver_;
-
-        delete broadphase_;
-
         delete dispatcher_;
-
+        delete broadphase_;
         delete collision_configuration_;
     }
 
@@ -279,12 +291,12 @@ namespace inc {
         return solid;
     }
 
-    SolidPtr SolidFactory::create_static_solid_box(ci::Vec3f dimensions,
+    SolidPtr SolidFactory::create_static_solid_box(ci::Vec3f dimensions, 
         ci::Vec3f position) {
         btCollisionShape* box = new btBoxShape(
             ci::bullet::toBulletVector3(dimensions) / 2.0f);
 
-		btDefaultMotionState* motionState = 
+		btDefaultMotionState* motion_state = 
             new btDefaultMotionState(
             btTransform(ci::bullet::toBulletQuaternion(ci::Quatf()),
             ci::bullet::toBulletVector3(position)));
@@ -292,7 +304,7 @@ namespace inc {
 		btVector3 inertia(0,0,0);
 		float mass = 0.0f; // objects of mass 0 do not move
 		box->calculateLocalInertia(mass, inertia);
-		btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motionState, 
+		btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, 
             box, inertia);
 		
 		btRigidBody *rigid_body = new btRigidBody(rigidBodyCI);
@@ -472,6 +484,7 @@ namespace inc {
 		std::vector<size_t> indices = mesh.getIndices();
 		
 		btTriangleMesh* tmesh = new btTriangleMesh(true, false);
+        mesh_cleanup_.push_back(tmesh);
 		
         for(int i = 0; i < mesh.getNumIndices(); i += 3) {
 			tmesh->addTriangle(ci::bullet::toBulletVector3(vertices[indices[i]]), 

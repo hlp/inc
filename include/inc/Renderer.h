@@ -29,6 +29,7 @@ namespace inc {
     class Renderer : public Module {
     public:
         Renderer();
+        virtual ~Renderer();
         
         void setup();
         void update();

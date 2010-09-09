@@ -19,10 +19,17 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
+#include <cinder/app/App.h>
 
 #include <inc/GraphicItem.h>
 
 namespace inc {
+
+    GraphicItem::~GraphicItem() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting GraphicItem" << std::endl;
+#endif
+    };
 
     BoxGraphicItem::BoxGraphicItem(ci::Vec3f dims) : dimensions_(dims) {
     }

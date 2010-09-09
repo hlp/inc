@@ -17,11 +17,19 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/app/App.h>
+
 #include <inc/Manager.h>
 
 namespace inc {
     Manager::Manager() {
         instance_ = this;
+    }
+    
+    Manager::~Manager() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting Manager" << std::endl;
+#endif
     }
 
     void Manager::setup() {
@@ -70,5 +78,17 @@ namespace inc {
 
     void Manager::add_module(std::tr1::shared_ptr<Module> module) {
         modules_.push_back(module);
+    }
+
+    void Manager::clear_module_list() {
+        modules_.clear();
+    }
+
+    void Manager::clear_solid_list() {
+        solids_.clear();
+    }
+
+    void Manager::clear_graphic_item_list() {
+        graphic_items_.clear();
     }
 }

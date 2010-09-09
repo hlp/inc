@@ -134,6 +134,8 @@ namespace inc {
         btSequentialImpulseConstraintSolver* solver_;
         DebugDraw* debug_draw_;
 
+        static std::deque<btTriangleMesh*> mesh_cleanup_;
+
         ci::params::InterfaceGl interface_;
 
         double time_step_;

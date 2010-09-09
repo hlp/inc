@@ -41,13 +41,13 @@ void IncApp::prepareSettings(Settings* settings) {
 void IncApp::setup() {
     manager_ = std::tr1::shared_ptr<inc::Manager>(new inc::Manager());
     manager_->add_module(manager_);
-
+    
     solid_factory_ = std::tr1::shared_ptr<inc::SolidFactory>(new inc::SolidFactory());
     manager_->add_module(solid_factory_);
 
     renderer_ = std::tr1::shared_ptr<inc::Renderer>(new inc::Renderer());
     manager_->add_module(renderer_);
-
+    
     camera_ = std::tr1::shared_ptr<inc::Camera>(new inc::Camera());
     manager_->add_module(camera_);
 
@@ -75,10 +75,19 @@ void IncApp::draw() {
 }
 
 void IncApp::shutdown() {
+#ifdef TRACE_DTORS
+    console() << "IncApp Shutdown" << std::endl;
+#endif
+
+    // remove other shared_ptr refs to modules
+    manager_->clear_module_list();
+
+    solid_creator_.reset();
+    origin_.reset();
     camera_.reset();
-    manager_.reset();
     renderer_.reset();
     solid_factory_.reset();
+    manager_.reset();
 }
 
 IncApp* IncApp::instance_;

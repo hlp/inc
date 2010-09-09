@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/app/App.h>
+
 #include <inc/Origin.h>
 #include <inc/GraphicItem.h>
 #include <inc/Solid.h>
@@ -24,6 +26,11 @@
 namespace inc {
 
     Origin::~Origin() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting Origin" << std::endl;
+#endif
+
+        sock_.reset();
         solid_plane_.reset();
         delete origin_graphic_item_;
     }
@@ -37,14 +44,12 @@ namespace inc {
             origin_graphic_item_->grid_plane_size_ptr(), "");
         interface_.addParam("Grid Plane Intervals",
             origin_graphic_item_->grid_plane_intervals_ptr(), "");
-            */
-
+        */
         
         solid_plane_ = SolidFactory::create_static_solid_box(
             ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
             ci::Vec3f().zero());
         
-
         sock_ = SolidFactory::create_sphere_container();
     }
 

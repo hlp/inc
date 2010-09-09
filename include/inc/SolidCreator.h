@@ -28,7 +28,7 @@ namespace inc {
     class SolidCreator : public Module {
     public:
         SolidCreator();
-        virtual ~SolidCreator() { }
+        virtual ~SolidCreator();
 
         void setup();
         void update();

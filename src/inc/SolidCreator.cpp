@@ -35,6 +35,12 @@ namespace inc {
         }
     }
 
+    SolidCreator::~SolidCreator() {
+#ifdef TRACE_DTORS
+        ci::app::console() << "Deleting SolidCreator" << std::endl;
+#endif
+    }
+
     void SolidCreator::setup() {
         interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(300, 100));
         interface_.addParam("Create soft sphere", &cb_[0]);

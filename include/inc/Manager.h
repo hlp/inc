@@ -35,6 +35,7 @@ namespace inc {
     class Manager : public Module {
     public:
         Manager();
+        virtual ~Manager();
 
         static Manager& instance();
 
@@ -46,6 +47,10 @@ namespace inc {
         void setup();
         void update();
         void draw();
+
+        void clear_module_list();
+        void clear_solid_list();
+        void clear_graphic_item_list();
 
         //ci::params::InterfaceGl& interface();
 
