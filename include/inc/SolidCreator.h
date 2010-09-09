@@ -35,9 +35,9 @@ namespace inc {
         void draw();
 
     private:
-        void create_soft_sphere(ci::Vec3f pos, ci::Vec3f size);
-        void create_linked_spheres(ci::Vec3f pos, ci::Vec3f size);
-        void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f size,
+        void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
+        void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
+        void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
             int w, int h, int d);
 
         void create_solid_box(ci::Vec3f pos, ci::Vec3f size);

@@ -306,8 +306,8 @@ namespace inc {
         return solid;
     }
 
-    SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f scale) {
-        btSoftBody*	soft_body = create_bullet_soft_sphere(position, scale, 20);
+    SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
+        btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 20);
 
         SolidPtr solid(new SoftSolid(NULL, soft_body, 
             SolidFactory::instance().dynamics_world()));
@@ -316,7 +316,7 @@ namespace inc {
     }
 
     std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_linked_soft_spheres(
-        ci::Vec3f position, ci::Vec3f scale) {
+        ci::Vec3f position, ci::Vec3f radius) {
 
         ci::Vec3f offset = ci::Vec3f(0.0f, 5.0f, 0.0f);
 
@@ -324,17 +324,11 @@ namespace inc {
         ci::Vec3f p2 = position - offset;
 
         btSoftBody* sb1 = create_bullet_soft_sphere(
-            p1, scale, 20);
+            p1, radius, 20);
         btSoftBody* sb2 = create_bullet_soft_sphere(
-            p2, scale, 20);
+            p2, radius, 20);
 
-        ci::app::console() << sb1 << " : " << sb2 << std::endl;
-
-        btSoftBody::LJoint::Specs lj;
-        lj.cfm = 1;
-	    lj.erp = 1;
-	    lj.position = ci::bullet::toBulletVector3((p1 + p2) / 2.0f);
-        sb1->appendLinearJoint(lj, sb2);
+        socket_link_soft_spheres(sb1, sb2, p1, p2);
 
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
@@ -348,24 +342,102 @@ namespace inc {
     }
 
     std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_matrix(
-        ci::Vec3f position, ci::Vec3f scale, int w, int h, int d) {
+        ci::Vec3f position, ci::Vec3f radius, int w, int h, int d) {
+
+        std::vector<std::vector<std::vector<btSoftBody*> > > s_bodies;
+        std::vector<std::vector<std::vector<ci::Vec3f> > > positions;
+
+        s_bodies.resize(w);
+        positions.resize(w);
+        for (int i = 0; i < w; ++i) {
+            s_bodies[i].resize(h);
+            positions[i].resize(h);
+            for (int j = 0; j < h; ++j) {
+                s_bodies[i][j].resize(d);
+                positions[i][j].resize(d);
+            }
+        }
+
+        ci::Vec3f ptemp = position;
+        float r = radius.x;
+        float gap = r/2.0f;
+        ci::Vec3f xgap = ci::Vec3f(gap, 0.0f, 0.0f);
+        ci::Vec3f ygap = ci::Vec3f(0.0f, gap, 0.0f);
+        ci::Vec3f zgap = ci::Vec3f(0.0f, 0.0f, gap);
+        ci::Vec3f xdiam = ci::Vec3f(r*2.0f, 0.0f, 0.0f);
+        ci::Vec3f ydiam = ci::Vec3f(0.0f, r*2.0f, 0.0f);
+        ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
+        int resolution = 30;
+
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
 
+        for (int i = 0; i < w; ++i) {
+            for (int j = 0; j < h; ++j) {
+                for (int k = 0; k < d; ++k) {
+                    ci::Vec3f p = position + xgap * i + ygap * j + zgap * k +
+                        xdiam * i + ydiam * j + zdiam * k;
+                    positions[i][j][k] = p;
+                    s_bodies[i][j][k] = create_bullet_soft_sphere(p, radius,
+                        resolution);
 
+                    d_ptr->push_back(SolidPtr(new SoftSolid(NULL, s_bodies[i][j][k], 
+                        SolidFactory::instance().dynamics_world())));
+                }
+            }
+        }
+
+        for (int i = 0; i < w; ++i) {
+            for (int j = 0; j < h; ++j) {
+                for (int k = 0; k < d; ++k) {
+                    if (i > 0) {
+                        socket_link_soft_spheres(
+                            s_bodies[i-1][j][k],
+                            s_bodies[i][j][k],
+                            positions[i-1][j][k],
+                            positions[i][j][k]);
+                    }
+
+                    if (j > 0) {
+                        socket_link_soft_spheres(
+                            s_bodies[i][j-1][k],
+                            s_bodies[i][j][k],
+                            positions[i][j-1][k],
+                            positions[i][j][k]);
+                    }
+
+                   if (k > 0) {
+                        socket_link_soft_spheres(
+                            s_bodies[i][j][k-1],
+                            s_bodies[i][j][k],
+                            positions[i][j][k-1],
+                            positions[i][j][k]);
+                    }
+                }
+            }
+        }
 
         return d_ptr;
     }
 
+    void SolidFactory::socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
+        const ci::Vec3f& p1, const ci::Vec3f& p2) {
+        btSoftBody::LJoint::Specs lj;
+        lj.cfm = 1;
+	    lj.erp = 1;
+	    lj.position = ci::bullet::toBulletVector3((p1 + p2) / 2.0f);
+        s1->appendLinearJoint(lj, s2);
+    }
+
     // creates a soft sphere that tries to maintain a constant volume
     btSoftBody* SolidFactory::create_bullet_soft_sphere(ci::Vec3f position, 
-        ci::Vec3f scale, float res) {
+        ci::Vec3f radius, float res) {
         btVector3 pos = ci::bullet::toBulletVector3(position);
-        btVector3 scl = ci::bullet::toBulletVector3(scale);
+        btVector3 r = ci::bullet::toBulletVector3(radius);
 
         btSoftBody* soft_body = btSoftBodyHelpers::CreateEllipsoid(
             SolidFactory::instance().soft_body_world_info(),
-            pos, scl, res);
+            pos, r, res);
 
         btSoftBody::Material* pm = soft_body->appendMaterial();
 	    pm->m_kLST = 0.45;
