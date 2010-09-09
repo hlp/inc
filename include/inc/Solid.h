@@ -115,9 +115,12 @@ namespace inc {
 
         btSoftBodyWorldInfo& soft_body_world_info();
 
+        void delete_constraints();
+
     private:
         void init_physics();
         void update_object_gravity();
+        
         static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
             ci::Vec3f radius, float res);
         static void socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,

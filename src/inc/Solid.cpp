@@ -60,8 +60,9 @@ namespace inc {
 #ifdef TRACE_DTORS
         ci::app::console() << "Deleting Solid" << std::endl;
 #endif
+        if (graphic_item_)
+            delete graphic_item_;
 
-        delete graphic_item_;
         delete body_;
     }
 
@@ -108,13 +109,12 @@ namespace inc {
         body_->activate();
     }
 
-    // TODO: fix this
     btRigidBody& RigidSolid::rigid_body() {
-        return *((btRigidBody*)body_);
+        return *(btRigidBody::upcast(body_));
     }
 
     btRigidBody* RigidSolid::rigid_body_ptr() {
-        return (btRigidBody*)body_;
+        return btRigidBody::upcast(body_);
     }
 
 
@@ -124,7 +124,8 @@ namespace inc {
     }
 
     SoftSolid::~SoftSolid() {
-        world_->removeCollisionObject(body_);
+        SolidFactory::instance().soft_dynamics_world()->removeSoftBody(
+            soft_body_ptr());
     }
 
     void SoftSolid::draw() {
@@ -136,13 +137,12 @@ namespace inc {
         body_->activate();
     }
 
-    // TODO: fix this
     btSoftBody& SoftSolid::soft_body() {
-        return *((btSoftBody*)body_);
+        return *(btSoftBody::upcast(body_));
     }
 
     btSoftBody* SoftSolid::soft_body_ptr() {
-        return (btSoftBody*)body_;
+        return btSoftBody::upcast(body_);
     }
 
 
@@ -223,12 +223,22 @@ namespace inc {
         std::for_each(mesh_cleanup_.begin(), mesh_cleanup_.end(),
             [] (btTriangleMesh* ptr) { delete ptr; } );
 
+        soft_body_world_info_.m_sparsesdf.Reset();
+
         delete debug_draw_;
         delete dynamics_world_;
         delete solver_;
         delete dispatcher_;
         delete broadphase_;
         delete collision_configuration_;
+    }
+
+    void SolidFactory::delete_constraints() {
+        while (dynamics_world_->getNumConstraints()) {
+			btTypedConstraint* pc = dynamics_world_->getConstraint(0);
+			dynamics_world_->removeConstraint(pc);
+			delete pc;
+		}
     }
 
     SolidPtr SolidFactory::create_solid_box(ci::Vec3f dimensions, 

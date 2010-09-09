@@ -79,6 +79,11 @@ void IncApp::shutdown() {
     console() << "IncApp Shutdown" << std::endl;
 #endif
 
+    solid_factory_->delete_constraints();
+
+    // delete all objets in the scene
+    manager_->clear_solid_list();
+
     // remove other shared_ptr refs to modules
     manager_->clear_module_list();
 
