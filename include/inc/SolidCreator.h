@@ -37,6 +37,8 @@ namespace inc {
     private:
         void create_soft_sphere(ci::Vec3f pos, ci::Vec3f size);
         void create_linked_spheres(ci::Vec3f pos, ci::Vec3f size);
+        void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f size,
+            int w, int h, int d);
 
         void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
         void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);

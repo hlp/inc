@@ -352,6 +352,8 @@ namespace inc {
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
 
+
+
         return d_ptr;
     }
 
