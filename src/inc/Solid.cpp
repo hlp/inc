@@ -69,9 +69,8 @@ namespace inc {
     }
 
     void Solid::draw() {
-        return;
-
-        graphic_item_->draw();
+        if (graphic_item_ != NULL)
+            graphic_item_->draw();
     }
 
     btCollisionObject& Solid::collision_object() {
@@ -186,11 +185,13 @@ namespace inc {
 
         soft_body_world_info_.m_sparsesdf.Initialize();
 
+#ifdef BULLET_DEBUG_DRAW
         debug_draw_ = new DebugDraw();
         debug_draw_->setDebugMode(
             btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawConstraints);
             //btIDebugDraw::DBG_DrawAabb);
         dynamics_world_->setDebugDrawer(debug_draw_);
+#endif
     }
 
     void SolidFactory::update() {
@@ -210,10 +211,12 @@ namespace inc {
     }
 
     void SolidFactory::draw() {
+#ifdef BULLET_DEBUG_DRAW
         glLineWidth(0.9f);
         glBegin(GL_LINES);
         dynamics_world_->debugDrawWorld();
         glEnd();
+#endif
     }
 
     SolidFactory::~SolidFactory() {
@@ -227,7 +230,9 @@ namespace inc {
 
         soft_body_world_info_.m_sparsesdf.Reset();
 
+#ifdef BULLET_DEBUG_DRAW
         delete debug_draw_;
+#endif
         delete dynamics_world_;
         delete solver_;
         delete dispatcher_;
@@ -333,7 +338,7 @@ namespace inc {
     SolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius) {
         btRigidBody* body = create_bullet_rigid_sphere(position, radius.x);
 
-        SolidPtr solid(new RigidSolid(NULL, body, 
+        SolidPtr solid(new RigidSolid(new SphereGraphicItem(radius.x), body, 
             SolidFactory::instance().dynamics_world()));
 
         return solid;
@@ -492,7 +497,8 @@ namespace inc {
                     positions[i][j][k] = p;
                     r_bodies[i][j][k] = create_bullet_rigid_sphere(p, r);
 
-                    d_ptr->push_back(SolidPtr(new RigidSolid(NULL, r_bodies[i][j][k], 
+                    d_ptr->push_back(SolidPtr(new RigidSolid(
+                        new SphereGraphicItem(radius.x), r_bodies[i][j][k], 
                         SolidFactory::instance().dynamics_world())));
                 }
             }
@@ -540,7 +546,8 @@ namespace inc {
                     positions[i][j][k] = p;
                     r_bodies[i][j][k] = create_bullet_rigid_sphere(p, r);
 
-                    d_ptr->push_back(SolidPtr(new RigidSolid(NULL, r_bodies[i][j][k], 
+                    d_ptr->push_back(SolidPtr(new RigidSolid(
+                        new SphereGraphicItem(radius.x), r_bodies[i][j][k], 
                         SolidFactory::instance().dynamics_world())));
                 }
             }

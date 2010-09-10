@@ -82,4 +82,15 @@ namespace inc {
         ci::gl::VboMesh vbo_mesh_;
         ci::Vec3f scale_;
     };
+
+    class SphereGraphicItem : public GraphicItem {
+    public:
+        SphereGraphicItem(float radius);
+        virtual ~SphereGraphicItem();
+
+        virtual void draw();
+
+    private:
+        float radius_;
+    };
 }

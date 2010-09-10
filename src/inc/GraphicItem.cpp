@@ -35,8 +35,8 @@ namespace inc {
     }
 
     void BoxGraphicItem::draw() {
-        glColor4f(0.0f, 1.0f, 1.0f, 0.9f);
-        glLineWidth(0.9f);
+        glColor4f(0.0f, 1.0f, 1.0f, 0.25f);
+        glLineWidth(3.0f);
         ci::gl::enableWireframe();
         ci::gl::drawCube(ci::Vec3f::zero(), dimensions_);
     }
@@ -62,8 +62,8 @@ namespace inc {
     }
 
     void OriginGraphicItem::draw_axis() {
-        glColor4f( 1.0f, 1.0f, 1.0f, 0.55f );
-        glLineWidth(3.0f);
+        glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
+        glLineWidth(2.0f);
 #if ! defined( CINDER_GLES )
         glEnable( GL_LINE_STIPPLE );
         glLineStipple( 10, 0xAAAA );
@@ -87,7 +87,7 @@ namespace inc {
     }
 
     void OriginGraphicItem::draw_grid_plane_lines() {
-        glColor4f( 1.0f, 0.0f, 0.0f, 0.75f );
+        glColor4f( .9019f, 0.4039f, 0.0f, 0.25f );
         glLineWidth(0.5f);
 
         int num_lines = 2*grid_plane_intervals_*4;
@@ -143,4 +143,20 @@ namespace inc {
             ci::gl::draw(vbo_mesh_);
         ci::gl::popMatrices();
     }
+
+
+    SphereGraphicItem::SphereGraphicItem(float r) : radius_(r) {
+    }
+
+    SphereGraphicItem::~SphereGraphicItem() {
+    }
+
+    void SphereGraphicItem::draw() {
+        glColor4f(1.0f, 1.0f, 1.0f, 0.4);
+        glLineWidth(0.9f);
+        ci::gl::enableWireframe();
+        ci::gl::drawSphere(ci::Vec3f::zero(), radius_);
+    }
+
+
 }
