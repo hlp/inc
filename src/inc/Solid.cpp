@@ -678,7 +678,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_soft_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("sock-cap.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("sock-blob-2.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -713,8 +713,10 @@ namespace inc {
 
         soft_body->m_materials[0]->m_kLST = 0.1;
 	    soft_body->m_cfg.kDF = 1;
-	    soft_body->m_cfg.kDP = 0.001; // fun factor...
-	    soft_body->m_cfg.kPR = 2500;
+	    soft_body->m_cfg.kDP = 2.0f; // no fun
+        soft_body->m_cfg.kDG = 2.0f; // no fun
+	    soft_body->m_cfg.kPR = 0.0f;
+        soft_body->m_cfg.kMT = 0.0f; // pose rigiditiy
 
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         
@@ -723,9 +725,13 @@ namespace inc {
         //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
         m.setIdentity();
         // This sets the origin / starting position
-        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*15.0f));
+        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*10.0f));
         soft_body->transform(btTransform(m, 
             ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
+
+        for (int i = 0; i < mesh.getVertices().size(); ++i) {
+            soft_body->setMass(i, 1.0f);
+        }
         
         std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
 
