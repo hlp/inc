@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <boost/cstdint.hpp>
+
 #include <cinder/params/Params.h>
 
 #include <inc/Module.h>
@@ -39,13 +41,19 @@ namespace inc {
         void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
         void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
             int w, int h, int d);
+        void create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
+            int w, int h, int d);
 
         void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
         void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
         ci::params::InterfaceGl interface_;
 
-        bool cb_[3];
-        bool last_cb_[3];
+        bool cb_[4];
+        bool last_cb_[4];
+
+        boost::int32_t r_matrix_w_;
+        boost::int32_t r_matrix_h_;
+        boost::int32_t r_matrix_d_;
     };
 }

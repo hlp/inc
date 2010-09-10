@@ -91,12 +91,15 @@ namespace inc {
         float time_step();
         btDynamicsWorld* dynamics_world();
         btSoftRigidDynamicsWorld* soft_dynamics_world();
+        float gravity();
 
 
         static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
         static std::tr1::shared_ptr<std::deque<SolidPtr> > create_linked_soft_spheres(
             ci::Vec3f pos, ci::Vec3f radius);
         static std::tr1::shared_ptr<std::deque<SolidPtr> > create_soft_sphere_matrix(
+            ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
+        static std::tr1::shared_ptr<std::deque<SolidPtr> > create_rigid_sphere_matrix(
             ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
 
         static SolidPtr create_sphere_container();
@@ -125,6 +128,10 @@ namespace inc {
             ci::Vec3f radius, float res);
         static void socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
             const ci::Vec3f& p1, const ci::Vec3f& p2);
+        static void spring_link_rigid_spheres(btRigidBody* r1, btRigidBody* r2,
+            const ci::Vec3f& p1, const ci::Vec3f& p2);
+        static btRigidBody* create_bullet_rigid_sphere(ci::Vec3f position,
+            float radius);
 
         //btDynamicsWorld* dynamics_world_;
         btSoftRigidDynamicsWorld* dynamics_world_;

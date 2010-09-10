@@ -151,7 +151,7 @@ namespace inc {
 
     SolidFactory::SolidFactory() {
         instance_ = this;
-        gravity_ = -0.2f;//-9.8f;//0.0f;//-9.8f;
+        gravity_ = -1.1f;//-9.8f;//0.0f;//-9.8f;
         last_gravity_ = gravity_;
     }
 
@@ -329,7 +329,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
-        btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 20);
+        btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
         SolidPtr solid(new SoftSolid(NULL, soft_body, 
             SolidFactory::instance().dynamics_world()));
@@ -340,15 +340,15 @@ namespace inc {
     std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_linked_soft_spheres(
         ci::Vec3f position, ci::Vec3f radius) {
 
-        ci::Vec3f offset = ci::Vec3f(0.0f, 5.0f, 0.0f);
+        ci::Vec3f offset = ci::Vec3f(0.0f, radius.x * 1.1f, 0.0f);
 
         ci::Vec3f p1 = position + offset;
         ci::Vec3f p2 = position - offset;
 
         btSoftBody* sb1 = create_bullet_soft_sphere(
-            p1, radius, 20);
+            p1, radius, 100);
         btSoftBody* sb2 = create_bullet_soft_sphere(
-            p2, radius, 20);
+            p2, radius, 100);
 
         socket_link_soft_spheres(sb1, sb2, p1, p2);
 
@@ -382,14 +382,14 @@ namespace inc {
 
         ci::Vec3f ptemp = position;
         float r = radius.x;
-        float gap = r/2.0f;
+        float gap = r * 0.4f;
         ci::Vec3f xgap = ci::Vec3f(gap, 0.0f, 0.0f);
         ci::Vec3f ygap = ci::Vec3f(0.0f, gap, 0.0f);
         ci::Vec3f zgap = ci::Vec3f(0.0f, 0.0f, gap);
         ci::Vec3f xdiam = ci::Vec3f(r*2.0f, 0.0f, 0.0f);
         ci::Vec3f ydiam = ci::Vec3f(0.0f, r*2.0f, 0.0f);
         ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
-        int resolution = 30;
+        int resolution = 50;
 
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
@@ -442,6 +442,86 @@ namespace inc {
         return d_ptr;
     }
 
+    std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_rigid_sphere_matrix(
+        ci::Vec3f position, ci::Vec3f radius, int w, int h, int d) {
+
+        std::vector<std::vector<std::vector<btRigidBody*> > > r_bodies;
+        std::vector<std::vector<std::vector<ci::Vec3f> > > positions;
+
+        r_bodies.resize(w);
+        positions.resize(w);
+        for (int i = 0; i < w; ++i) {
+            r_bodies[i].resize(h);
+            positions[i].resize(h);
+            for (int j = 0; j < h; ++j) {
+                r_bodies[i][j].resize(d);
+                positions[i][j].resize(d);
+            }
+        }
+
+        ci::Vec3f ptemp = position;
+        float r = radius.x;
+        float gap = r * 0.3f;
+        ci::Vec3f xgap = ci::Vec3f(gap, 0.0f, 0.0f);
+        ci::Vec3f ygap = ci::Vec3f(0.0f, gap, 0.0f);
+        ci::Vec3f zgap = ci::Vec3f(0.0f, 0.0f, gap);
+        ci::Vec3f xdiam = ci::Vec3f(r*2.0f, 0.0f, 0.0f);
+        ci::Vec3f ydiam = ci::Vec3f(0.0f, r*2.0f, 0.0f);
+        ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
+        int resolution = 20;
+
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+
+        for (int i = 0; i < w; ++i) {
+            for (int j = 0; j < h; ++j) {
+                for (int k = 0; k < d; ++k) {
+                    ci::Vec3f p = position + xgap * i + ygap * j + zgap * k +
+                        xdiam * i + ydiam * j + zdiam * k;
+                    positions[i][j][k] = p;
+                    r_bodies[i][j][k] = create_bullet_rigid_sphere(p, r);
+
+                    d_ptr->push_back(SolidPtr(new RigidSolid(NULL, r_bodies[i][j][k], 
+                        SolidFactory::instance().dynamics_world())));
+                }
+            }
+        }
+
+        /*
+        for (int i = 0; i < w; ++i) {
+            for (int j = 0; j < h; ++j) {
+                for (int k = 0; k < d; ++k) {
+                    if (i > 0) {
+                        spring_link_rigid_spheres(
+                            r_bodies[i-1][j][k],
+                            r_bodies[i][j][k],
+                            positions[i-1][j][k],
+                            positions[i][j][k]);
+                    }
+
+                    if (j > 0) {
+                        spring_link_rigid_spheres(
+                            r_bodies[i][j-1][k],
+                            r_bodies[i][j][k],
+                            positions[i][j-1][k],
+                            positions[i][j][k]);
+                    }
+
+                   if (k > 0) {
+                        spring_link_rigid_spheres(
+                            r_bodies[i][j][k-1],
+                            r_bodies[i][j][k],
+                            positions[i][j][k-1],
+                            positions[i][j][k]);
+                    }
+                }
+            }
+        }
+        */
+
+        return d_ptr;
+    }
+
     void SolidFactory::socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
         const ci::Vec3f& p1, const ci::Vec3f& p2) {
         btSoftBody::LJoint::Specs lj;
@@ -449,6 +529,61 @@ namespace inc {
 	    lj.erp = 1;
 	    lj.position = ci::bullet::toBulletVector3((p1 + p2) / 2.0f);
         s1->appendLinearJoint(lj, s2);
+    }
+
+    void SolidFactory::spring_link_rigid_spheres(btRigidBody* r1, btRigidBody* r2,
+        const ci::Vec3f& p1, const ci::Vec3f& p2) {
+
+		btTransform frameInA, frameInB;
+		frameInA = btTransform::getIdentity();
+		frameInA.setOrigin(ci::bullet::toBulletVector3(p1));
+		frameInB = btTransform::getIdentity();
+		frameInB.setOrigin(ci::bullet::toBulletVector3(p2));
+
+		btGeneric6DofSpringConstraint* spring = 
+            new btGeneric6DofSpringConstraint(*r1, *r2, frameInA, frameInB, true);
+		spring->setLinearUpperLimit(btVector3(5., 0., 0.));
+		spring->setLinearLowerLimit(btVector3(-5., 0., 0.));
+
+		spring->setAngularLowerLimit(btVector3(0.f, 0.f, -1.5f));
+		spring->setAngularUpperLimit(btVector3(0.f, 0.f, 1.5f));
+
+        SolidFactory::instance().dynamics_world()->addConstraint(spring, true);
+		spring->setDbgDrawSize(btScalar(5.f));
+		
+		spring->enableSpring(0, true);
+		spring->setStiffness(0, 39.478f);
+		spring->setDamping(0, 0.5f);
+		spring->enableSpring(5, true);
+		spring->setStiffness(5, 39.478f);
+		spring->setDamping(0, 0.3f);
+		spring->setEquilibriumPoint();
+    }
+
+    // N.B. see note in BasicDemo.cpp line 143 on how to increase performance of these
+    // spheres by reusing a collision shape
+    btRigidBody* SolidFactory::create_bullet_rigid_sphere(ci::Vec3f position, float radius) {
+        
+        ci::Quatf rotation = ci::Quatf::identity();
+
+        btCollisionShape* sphere = new btSphereShape((btScalar) radius);
+		btDefaultMotionState* motion_state = new btDefaultMotionState(
+            btTransform(ci::bullet::toBulletQuaternion(rotation),
+            ci::bullet::toBulletVector3(position)));
+	
+		btVector3 inertia(0,0,0);
+		float mass = 5.0f;//radius * radius * radius * PI * 4.0f/3.0f;
+		sphere->calculateLocalInertia(mass, inertia);
+		btRigidBody::btRigidBodyConstructionInfo rigid_body_ci(mass, motion_state, 
+            sphere, inertia);
+		btRigidBody* rigid_body = new btRigidBody(rigid_body_ci);
+
+        SolidFactory::instance().dynamics_world()->addRigidBody(rigid_body);
+        
+        rigid_body->setGravity(ci::bullet::toBulletVector3(
+            ci::Vec3f(0.0f, SolidFactory::instance().gravity(), 0.0f)));
+
+        return rigid_body;
     }
 
     // creates a soft sphere that tries to maintain a constant volume
@@ -461,15 +596,20 @@ namespace inc {
             SolidFactory::instance().soft_body_world_info(),
             pos, r, res);
 
-        btSoftBody::Material* pm = soft_body->appendMaterial();
-	    pm->m_kLST = 0.45;
-	    pm->m_flags -= btSoftBody::fMaterial::DebugDraw;			
-	    soft_body->generateBendingConstraints(2, pm);
-
-        soft_body->m_cfg.kVC = 20;
-        soft_body->m_cfg.kDF = 1;
-        soft_body->setTotalMass(10, true);
+        /*
+        // volume based simulation
+	    soft_body->m_cfg.kVC = 20;
+        soft_body->m_materials[0]->m_kLST = 0.45;
+        soft_body->setTotalMass(50, true);
         soft_body->setPose(true,false);
+        */
+
+        // pressure based simulation
+        soft_body->m_materials[0]->m_kLST = 0.1;
+	    soft_body->m_cfg.kDF = 1;
+	    soft_body->m_cfg.kDP = 0.001; // fun factor...
+	    soft_body->m_cfg.kPR = 2500;
+
         soft_body->generateClusters(20);
 
         // change these for different collision types (with other soft, with ridgid, with static...)
@@ -486,7 +626,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("/projects/inc/sock.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("sock.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -547,6 +687,10 @@ namespace inc {
         }
     }
 
+    float SolidFactory::gravity() {
+        return gravity_;
+    }
+
 
     DebugDraw::DebugDraw() : mode_(DBG_NoDebug) {
     }
@@ -579,6 +723,5 @@ namespace inc {
     int DebugDraw::getDebugMode() const { 
         return mode_;
     }
-
 
 }
