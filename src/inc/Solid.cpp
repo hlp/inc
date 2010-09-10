@@ -20,6 +20,8 @@
 #include <math.h>
 
 #include <deque>
+#include <map>
+#include <algorithm>
 
 #include <LinearMath/btIDebugDraw.h>
 #include <BulletSoftBody/btSoftBody.h>
@@ -630,6 +632,11 @@ namespace inc {
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
+        std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
+            remove_mesh_duplicates(mesh);
+
+        mesh = *mesh_ptr;
+
         std::vector<ci::Vec3f> vertices = mesh.getVertices();
 		std::vector<size_t> indices = mesh.getIndices();
 		
@@ -689,6 +696,55 @@ namespace inc {
 
     float SolidFactory::gravity() {
         return gravity_;
+    }
+
+    std::tr1::shared_ptr<ci::TriMesh> SolidFactory::remove_mesh_duplicates(
+        const ci::TriMesh& mesh) {
+
+        std::vector<ci::Vec3f> vertices = mesh.getVertices();
+		std::vector<size_t> indices = mesh.getIndices();
+
+        std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
+            std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh());
+
+        std::vector<ci::Vec3f> vertex_reduce;
+        std::vector<ci::Vec3f>::const_iterator reduce_it;
+
+        for (std::vector<ci::Vec3f>::const_iterator it = vertices.begin();
+            it != vertices.end(); ++it) {
+
+            reduce_it = find(vertex_reduce.begin(), vertex_reduce.end(), *it);
+            if (reduce_it != vertex_reduce.end())
+                continue;
+
+            vertex_reduce.push_back(*it);
+            mesh_ptr->appendVertex(*it);
+        }
+
+        // algorithm to find the indice of the vector
+        auto find_indice = [] (const std::vector<ci::Vec3f>& vec, 
+            ci::Vec3f val)->int {
+            for (int i = 0; i < vec.size(); ++i) {
+                if (vec[i] == val)
+                    return i;
+            }
+
+            return 0;
+        };
+
+        for (std::vector<size_t>::const_iterator it = indices.begin();
+            it != indices.end(); ) {
+
+            int in1, in2, in3;
+
+            in1 = find_indice(vertex_reduce, vertices[*it]); ++it;
+            in2 = find_indice(vertex_reduce, vertices[*it]); ++it;
+            in3 = find_indice(vertex_reduce, vertices[*it]); ++it;
+
+            mesh_ptr->appendTriangle(in1, in2, in3);
+        }
+
+        return mesh_ptr;
     }
 
 

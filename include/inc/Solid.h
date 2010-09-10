@@ -133,6 +133,9 @@ namespace inc {
         static btRigidBody* create_bullet_rigid_sphere(ci::Vec3f position,
             float radius);
 
+        static std::tr1::shared_ptr<ci::TriMesh> remove_mesh_duplicates(
+            const ci::TriMesh& mesh);
+
         //btDynamicsWorld* dynamics_world_;
         btSoftRigidDynamicsWorld* dynamics_world_;
         btSoftBodyWorldInfo soft_body_world_info_;
