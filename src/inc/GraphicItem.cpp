@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <BulletSoftBody/btSoftBody.h>
+
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
 #include <cinder/app/App.h>
@@ -159,4 +161,40 @@ namespace inc {
     }
 
 
+    SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body) 
+        : soft_body_(soft_body) {
+    }
+
+    SoftBodyGraphicItem::~SoftBodyGraphicItem() {
+    }
+
+    // theres almost certainly a better way to implement this method
+    void SoftBodyGraphicItem::draw() {
+        glColor4f(0.7f, 0.7f, 1.0f, 0.4);
+        glLineWidth(0.9f);
+
+        glBegin(GL_LINES);
+
+        int num_faces = soft_body_->m_faces.size();
+
+        for (int i = 0; i < num_faces; ++i) {
+            make_gl_vertex(i, 0);
+            make_gl_vertex(i, 1);
+
+            make_gl_vertex(i, 1);
+            make_gl_vertex(i, 2);
+
+            make_gl_vertex(i, 0);
+            make_gl_vertex(i, 2);
+        }
+
+        glEnd();
+    }
+
+    void SoftBodyGraphicItem::make_gl_vertex(int face, int node) {
+        glVertex3f(
+            soft_body_->m_faces[face].m_n[node]->m_x.x(),
+            soft_body_->m_faces[face].m_n[node]->m_x.y(),
+            soft_body_->m_faces[face].m_n[node]->m_x.z());
+    }
 }

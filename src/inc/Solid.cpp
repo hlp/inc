@@ -347,7 +347,7 @@ namespace inc {
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
         btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
-        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+        SolidPtr solid(new SoftSolid(new SoftBodyGraphicItem(soft_body), soft_body, 
             SolidFactory::instance().dynamics_world()));
 
         return solid;
@@ -371,9 +371,11 @@ namespace inc {
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
 
-        d_ptr->push_back(SolidPtr(new SoftSolid(NULL, sb1, 
+        d_ptr->push_back(SolidPtr(new SoftSolid(
+            new SoftBodyGraphicItem(sb1), sb1, 
             SolidFactory::instance().dynamics_world())));
-        d_ptr->push_back(SolidPtr(new SoftSolid(NULL, sb2, 
+        d_ptr->push_back(SolidPtr(new SoftSolid(
+            new SoftBodyGraphicItem(sb2), sb2, 
             SolidFactory::instance().dynamics_world())));
 
         return d_ptr;
@@ -419,7 +421,8 @@ namespace inc {
                     s_bodies[i][j][k] = create_bullet_soft_sphere(p, radius,
                         resolution);
 
-                    d_ptr->push_back(SolidPtr(new SoftSolid(NULL, s_bodies[i][j][k], 
+                    d_ptr->push_back(SolidPtr(new SoftSolid(
+                        new SoftBodyGraphicItem(s_bodies[i][j][k]), s_bodies[i][j][k], 
                         SolidFactory::instance().dynamics_world())));
                 }
             }
@@ -552,7 +555,6 @@ namespace inc {
                 }
             }
         }
-
         
         for (int i = 0; i < w; ++i) {
             for (int j = 0; j < h; ++j) {
@@ -584,7 +586,6 @@ namespace inc {
             }
         }
         
-
         return d_ptr;
     }
 
@@ -803,7 +804,8 @@ namespace inc {
         // TODO: anchor the top points in place
         soft_body->setMass(0, 0.0f);
 
-        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+        SolidPtr solid(new SoftSolid(
+            new SoftBodyGraphicItem(soft_body), soft_body, 
             SolidFactory::instance().dynamics_world()));
 
         delete [] triangles;

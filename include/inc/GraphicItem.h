@@ -20,6 +20,9 @@
 #pragma once
 
 // GraphicItems do not have positions, rotations, or scales
+// those are determined by the physics engine
+
+#include <BulletSoftBody/btSoftBody.h>
 
 #include <cinder/Vector.h>
 #include <cinder/gl/Vbo.h>
@@ -92,5 +95,18 @@ namespace inc {
 
     private:
         float radius_;
+    };
+
+    class SoftBodyGraphicItem : public GraphicItem {
+    public:
+        SoftBodyGraphicItem(btSoftBody* soft_body);
+        virtual ~SoftBodyGraphicItem();
+
+        virtual void draw();
+
+    private:
+        void make_gl_vertex(int face, int node);
+
+        btSoftBody* soft_body_;
     };
 }

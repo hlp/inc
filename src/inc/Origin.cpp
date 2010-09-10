@@ -52,7 +52,7 @@ namespace inc {
         
         
         //sock_ = SolidFactory::create_rigid_sphere_container();
-        //sock_ = SolidFactory::create_soft_sphere_container();
+        sock_ = SolidFactory::create_soft_sphere_container();
     }
 
     void Origin::update() {
@@ -62,7 +62,7 @@ namespace inc {
     void Origin::draw() {
         solid_plane_->draw();
 
-        //sock_->draw();
+        sock_->draw();
         origin_graphic_item_->draw();
     }
 }
