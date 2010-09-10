@@ -188,8 +188,8 @@ namespace inc {
 
         debug_draw_ = new DebugDraw();
         debug_draw_->setDebugMode(
-            btIDebugDraw::DBG_DrawWireframe);
-            //btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
+            btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawConstraints);
+            //btIDebugDraw::DBG_DrawAabb);
         dynamics_world_->setDebugDrawer(debug_draw_);
     }
 
@@ -498,7 +498,55 @@ namespace inc {
             }
         }
 
-        /*
+        return d_ptr;
+    }
+
+    std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_rigid_sphere_spring_matrix(
+        ci::Vec3f position, ci::Vec3f radius, int w, int h, int d) {
+
+        std::vector<std::vector<std::vector<btRigidBody*> > > r_bodies;
+        std::vector<std::vector<std::vector<ci::Vec3f> > > positions;
+
+        r_bodies.resize(w);
+        positions.resize(w);
+        for (int i = 0; i < w; ++i) {
+            r_bodies[i].resize(h);
+            positions[i].resize(h);
+            for (int j = 0; j < h; ++j) {
+                r_bodies[i][j].resize(d);
+                positions[i][j].resize(d);
+            }
+        }
+
+        ci::Vec3f ptemp = position;
+        float r = radius.x;
+        float gap = r * 0.3f;
+        ci::Vec3f xgap = ci::Vec3f(gap, 0.0f, 0.0f);
+        ci::Vec3f ygap = ci::Vec3f(0.0f, gap, 0.0f);
+        ci::Vec3f zgap = ci::Vec3f(0.0f, 0.0f, gap);
+        ci::Vec3f xdiam = ci::Vec3f(r*2.0f, 0.0f, 0.0f);
+        ci::Vec3f ydiam = ci::Vec3f(0.0f, r*2.0f, 0.0f);
+        ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
+        int resolution = 20;
+
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+
+        for (int i = 0; i < w; ++i) {
+            for (int j = 0; j < h; ++j) {
+                for (int k = 0; k < d; ++k) {
+                    ci::Vec3f p = position + xgap * i + ygap * j + zgap * k +
+                        xdiam * i + ydiam * j + zdiam * k;
+                    positions[i][j][k] = p;
+                    r_bodies[i][j][k] = create_bullet_rigid_sphere(p, r);
+
+                    d_ptr->push_back(SolidPtr(new RigidSolid(NULL, r_bodies[i][j][k], 
+                        SolidFactory::instance().dynamics_world())));
+                }
+            }
+        }
+
+        
         for (int i = 0; i < w; ++i) {
             for (int j = 0; j < h; ++j) {
                 for (int k = 0; k < d; ++k) {
@@ -528,7 +576,7 @@ namespace inc {
                 }
             }
         }
-        */
+        
 
         return d_ptr;
     }
@@ -545,16 +593,19 @@ namespace inc {
     void SolidFactory::spring_link_rigid_spheres(btRigidBody* r1, btRigidBody* r2,
         const ci::Vec3f& p1, const ci::Vec3f& p2) {
 
+        ci::Vec3f dist = p2 - p1;
+
 		btTransform frameInA, frameInB;
 		frameInA = btTransform::getIdentity();
-		frameInA.setOrigin(ci::bullet::toBulletVector3(p1));
+		frameInA.setOrigin(ci::bullet::toBulletVector3(dist));
 		frameInB = btTransform::getIdentity();
-		frameInB.setOrigin(ci::bullet::toBulletVector3(p2));
+        frameInB.setOrigin(ci::bullet::toBulletVector3(ci::Vec3f::zero()));
 
 		btGeneric6DofSpringConstraint* spring = 
             new btGeneric6DofSpringConstraint(*r1, *r2, frameInA, frameInB, true);
-		spring->setLinearUpperLimit(btVector3(5., 0., 0.));
-		spring->setLinearLowerLimit(btVector3(-5., 0., 0.));
+
+		spring->setLinearUpperLimit(ci::bullet::toBulletVector3(dist / 2.0f));
+		spring->setLinearLowerLimit(ci::bullet::toBulletVector3(dist / -2.0f));
 
 		spring->setAngularLowerLimit(btVector3(0.f, 0.f, -1.5f));
 		spring->setAngularUpperLimit(btVector3(0.f, 0.f, 1.5f));
@@ -562,13 +613,14 @@ namespace inc {
         SolidFactory::instance().dynamics_world()->addConstraint(spring, true);
 		spring->setDbgDrawSize(btScalar(5.f));
 		
-		spring->enableSpring(0, true);
-		spring->setStiffness(0, 39.478f);
-		spring->setDamping(0, 0.5f);
-		spring->enableSpring(5, true);
-		spring->setStiffness(5, 39.478f);
-		spring->setDamping(0, 0.3f);
-		spring->setEquilibriumPoint();
+        for (int i = 0; i < 6; ++i) {
+		    spring->enableSpring(i, true);
+		    spring->setStiffness(0, 20.f);
+            //spring->setStiffness(i, 0.01f);
+		    spring->setDamping(i, 0.1f); // 0 - 1, 1 == no damping
+        }
+
+        spring->setEquilibriumPoint();
     }
 
     // N.B. see note in BasicDemo.cpp line 143 on how to increase performance of these

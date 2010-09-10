@@ -44,14 +44,16 @@ namespace inc {
             int w, int h, int d);
         void create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
             int w, int h, int d);
+       void create_rigid_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
+            int w, int h, int d);
 
         void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
         void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
         ci::params::InterfaceGl interface_;
 
-        bool cb_[5];
-        bool last_cb_[5];
+        bool cb_[6];
+        bool last_cb_[6];
 
         boost::int32_t r_matrix_w_;
         boost::int32_t r_matrix_h_;

@@ -29,7 +29,7 @@
 namespace inc {
 
     SolidCreator::SolidCreator() {
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 6; ++i) {
             cb_[i] = false;
             last_cb_[i] = false;
         }
@@ -47,12 +47,13 @@ namespace inc {
     }
 
     void SolidCreator::setup() {
-        interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(300, 200));
+        interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(380, 200));
         interface_.addParam("Create rigid sphere", &cb_[0]);
         interface_.addParam("Create soft sphere", &cb_[1]);
         interface_.addParam("Create linked spheres", &cb_[2]);
         interface_.addParam("Create soft sphere matrix", &cb_[3]);
-        interface_.addParam("Create spring matrix", &cb_[4]);
+        interface_.addParam("Create rigid sphere spring matrix", &cb_[4]);
+        interface_.addParam("Create rigid sphere matrix", &cb_[5]);
         interface_.addParam("Matrix width", &r_matrix_w_);
         interface_.addParam("Matrix height", &r_matrix_h_);
         interface_.addParam("Matrix depth", &r_matrix_d_);
@@ -72,13 +73,19 @@ namespace inc {
         } else if (cb_[3] != last_cb_[3]) {
             // create matrix
             create_sphere_matrix(ci::Vec3f(20.0f, 150.0f, 0.0f), ci::Vec3f::one() * 3.0f,
-                4, 4, 4);
+                r_matrix_w_, r_matrix_h_, r_matrix_d_);
             last_cb_[3] = cb_[3];
         } else if (cb_[4] != last_cb_[4]) {
             create_sphere_spring_matrix(ci::Vec3f(0.0f, 150.0f, 0.0f), 
                 ci::Vec3f::one() * 3.0f,
                 r_matrix_w_, r_matrix_h_, r_matrix_d_);
             last_cb_[4] = cb_[4];
+        } else if (cb_[5] != last_cb_[5]) {
+            create_rigid_sphere_matrix(ci::Vec3f(0.0f, 150.0f, 0.0f), 
+                ci::Vec3f::one() * 3.0f,
+                r_matrix_w_, r_matrix_h_, r_matrix_d_);
+
+            last_cb_[5] = cb_[5];
         }
     }
 
@@ -113,10 +120,19 @@ namespace inc {
             [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
     }
 
-    void SolidCreator::create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
+    void SolidCreator::create_rigid_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
         int w, int h, int d) {
         std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
             SolidFactory::create_rigid_sphere_matrix(pos, radius, w, h, d);
+
+        std::for_each(d_ptr->begin(), d_ptr->end(),
+            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
+    }
+
+    void SolidCreator::create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
+        int w, int h, int d) {
+        std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+            SolidFactory::create_rigid_sphere_spring_matrix(pos, radius, w, h, d);
 
         std::for_each(d_ptr->begin(), d_ptr->end(),
             [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
