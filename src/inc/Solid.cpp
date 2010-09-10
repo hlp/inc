@@ -712,6 +712,7 @@ namespace inc {
             vertices, triangles, mesh.getNumTriangles(), false);
 
         soft_body->m_materials[0]->m_kLST = 0.1;
+        //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
 	    soft_body->m_cfg.kDF = 1;
 	    soft_body->m_cfg.kDP = 2.0f; // no fun
         soft_body->m_cfg.kDG = 2.0f; // no fun
@@ -730,7 +731,7 @@ namespace inc {
             ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
 
         for (int i = 0; i < mesh.getVertices().size(); ++i) {
-            soft_body->setMass(i, 1.0f);
+            soft_body->setMass(i, 25.0f);
         }
         
         std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
