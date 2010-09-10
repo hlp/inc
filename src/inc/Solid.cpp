@@ -330,6 +330,15 @@ namespace inc {
         return solid;
     }
 
+    SolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius) {
+        btRigidBody* body = create_bullet_rigid_sphere(position, radius.x);
+
+        SolidPtr solid(new RigidSolid(NULL, body, 
+            SolidFactory::instance().dynamics_world()));
+
+        return solid;
+    }
+
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
         btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
@@ -574,7 +583,7 @@ namespace inc {
             ci::bullet::toBulletVector3(position)));
 	
 		btVector3 inertia(0,0,0);
-		float mass = 5.0f;//radius * radius * radius * PI * 4.0f/3.0f;
+		float mass = radius * radius * radius * PI * 4.0f/3.0f;
 		sphere->calculateLocalInertia(mass, inertia);
 		btRigidBody::btRigidBodyConstructionInfo rigid_body_ci(mass, motion_state, 
             sphere, inertia);
@@ -669,7 +678,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_soft_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("sock.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("sock-cap.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -701,19 +710,32 @@ namespace inc {
         btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
             SolidFactory::instance().soft_body_world_info(),
             vertices, triangles, mesh.getNumTriangles(), false);
+
+        soft_body->m_materials[0]->m_kLST = 0.1;
+	    soft_body->m_cfg.kDF = 1;
+	    soft_body->m_cfg.kDP = 0.001; // fun factor...
+	    soft_body->m_cfg.kPR = 2500;
+
+        soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         
         btMatrix3x3 m;
         // This sets the axis, I think
-        m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
+        //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
+        m.setIdentity();
         // This sets the origin / starting position
-        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*30.0f));
+        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*15.0f));
         soft_body->transform(btTransform(m, 
-            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 100.0f, 0.0f))));
+            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
         
+        std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
+
+        std::for_each(anchors->begin(), anchors->end(),
+            [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
         
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
         // TODO: anchor the top points in place
+        soft_body->setMass(0, 0.0f);
 
         SolidPtr solid(new SoftSolid(NULL, soft_body, 
             SolidFactory::instance().dynamics_world()));
@@ -801,6 +823,37 @@ namespace inc {
         }
 
         return mesh_ptr;
+    }
+
+    std::tr1::shared_ptr<std::vector<int> > SolidFactory::get_top_vertices(
+        const ci::TriMesh& mesh) {
+        float top_height = 0.0f;
+        float bottom_height = 0.0f;
+
+        std::vector<ci::Vec3f> vertices = mesh.getVertices();
+
+        for (std::vector<ci::Vec3f>::const_iterator it = vertices.begin();
+            it != vertices.end(); ++it) {
+            if (it->y >= top_height)
+                top_height = it->y;
+
+            if (it->y <= bottom_height)
+                bottom_height = it->y;
+        }
+
+        float spread = (top_height - bottom_height) / 10.0f;
+
+        std::tr1::shared_ptr<std::vector<int> > indices = 
+            std::tr1::shared_ptr<std::vector<int> >(new std::vector<int>());
+
+        for (int i = 0; i < vertices.size(); ++i) {
+            if (vertices[i].y < top_height + spread &&
+                vertices[i].y > top_height - spread) {
+                indices->push_back(i);
+            }
+        }
+
+        return indices;
     }
 
 

@@ -37,6 +37,7 @@ namespace inc {
         void draw();
 
     private:
+        void create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
         void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
         void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
         void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
@@ -49,8 +50,8 @@ namespace inc {
 
         ci::params::InterfaceGl interface_;
 
-        bool cb_[4];
-        bool last_cb_[4];
+        bool cb_[5];
+        bool last_cb_[5];
 
         boost::int32_t r_matrix_w_;
         boost::int32_t r_matrix_h_;

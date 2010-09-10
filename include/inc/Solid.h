@@ -93,7 +93,8 @@ namespace inc {
         btSoftRigidDynamicsWorld* soft_dynamics_world();
         float gravity();
 
-
+        
+        static SolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
         static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
         static std::tr1::shared_ptr<std::deque<SolidPtr> > create_linked_soft_spheres(
             ci::Vec3f pos, ci::Vec3f radius);
@@ -135,6 +136,8 @@ namespace inc {
             float radius);
 
         static std::tr1::shared_ptr<ci::TriMesh> remove_mesh_duplicates(
+            const ci::TriMesh& mesh);
+        static std::tr1::shared_ptr<std::vector<int> > get_top_vertices(
             const ci::TriMesh& mesh);
 
         //btDynamicsWorld* dynamics_world_;
