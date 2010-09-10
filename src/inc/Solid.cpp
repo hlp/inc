@@ -627,7 +627,7 @@ namespace inc {
         return soft_body;
     }
 
-    SolidPtr SolidFactory::create_sphere_container() {
+    SolidPtr SolidFactory::create_rigid_sphere_container() {
         ci::ObjLoader loader(ci::loadFileStream("sock.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
@@ -665,6 +665,62 @@ namespace inc {
         SolidPtr solid(new RigidSolid(NULL, rigid_body,
             SolidFactory::instance().dynamics_world()));
 
+        return solid;
+    }
+
+    SolidPtr SolidFactory::create_soft_sphere_container() {
+        ci::ObjLoader loader(ci::loadFileStream("sock.obj"));
+        ci::TriMesh mesh;
+        loader.load(&mesh, true);
+
+        std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
+            remove_mesh_duplicates(mesh);
+
+        mesh = *mesh_ptr;
+
+        btScalar* vertices = new float[mesh.getNumVertices() * 3];
+
+        int i = 0;
+        for (std::vector<ci::Vec3f>::const_iterator it = mesh.getVertices().begin();
+            it != mesh.getVertices().end(); ++it) { 
+            vertices[i] = it->x; ++i;
+            vertices[i] = it->y; ++i;
+            vertices[i] = it->z; ++i;
+        }
+
+        int* triangles = new int[mesh.getNumIndices()];
+
+        
+        i = 0;
+        for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
+            it != mesh.getIndices().end(); ++it) {
+            triangles[i] = *it;
+            ++i;
+        }
+        
+        btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
+            SolidFactory::instance().soft_body_world_info(),
+            vertices, triangles, mesh.getNumTriangles(), false);
+        
+        btMatrix3x3 m;
+        // This sets the axis, I think
+        m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
+        // This sets the origin / starting position
+        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*30.0f));
+        soft_body->transform(btTransform(m, 
+            ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 100.0f, 0.0f))));
+        
+        
+        SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
+
+        // TODO: anchor the top points in place
+
+        SolidPtr solid(new SoftSolid(NULL, soft_body, 
+            SolidFactory::instance().dynamics_world()));
+
+        delete [] triangles;
+        delete [] vertices;
+    
         return solid;
     }
 

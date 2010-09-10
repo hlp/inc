@@ -102,7 +102,8 @@ namespace inc {
         static std::tr1::shared_ptr<std::deque<SolidPtr> > create_rigid_sphere_matrix(
             ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
 
-        static SolidPtr create_sphere_container();
+        static SolidPtr create_rigid_sphere_container();
+        static SolidPtr create_soft_sphere_container();
 
         // I don't use these
         static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);
