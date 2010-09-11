@@ -738,7 +738,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_soft_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("sock-blob-2.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("sock-narrow-2.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -786,23 +786,20 @@ namespace inc {
         //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
         m.setIdentity();
         // This sets the origin / starting position
-        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*10.0f));
+        soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
         soft_body->transform(btTransform(m, 
             ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
 
-        for (int i = 0; i < mesh.getVertices().size(); ++i) {
-            soft_body->setMass(i, 25.0f);
+        for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
+            soft_body->setMass(i, 1.0f);
         }
         
         std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
 
         std::for_each(anchors->begin(), anchors->end(),
             [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
-        
-        SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
-        // TODO: anchor the top points in place
-        soft_body->setMass(0, 0.0f);
+        SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
         SolidPtr solid(new SoftSolid(
             new SoftBodyGraphicItem(soft_body), soft_body, 
