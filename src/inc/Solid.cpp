@@ -52,6 +52,7 @@
 #include <inc/GraphicItem.h>
 #include <inc/Manager.h>
 #include <inc/BunnyMesh.h>
+#include <inc/DxfSaver.h>
 
 //#define BULLET_DEBUG_DRAW 1
 
@@ -107,6 +108,11 @@ namespace inc {
         glPopMatrix();
     }
 
+    // saving rigid solids is not supported at the moment
+    void RigidSolid::save(Exporter&) {
+        // nothing here
+    }
+
     void RigidSolid::set_gravity(float g) {
         rigid_body().setGravity(btVector3(0.0, g, 0.0));
         body_->activate();
@@ -133,6 +139,10 @@ namespace inc {
 
     void SoftSolid::draw() {
         Solid::draw();
+    }
+
+    void SoftSolid::save(Exporter& exporter) {
+        exporter.input_soft_solid(*this);
     }
 
     // TODO: actually set gravity
@@ -333,9 +343,9 @@ namespace inc {
 		btRigidBody *rigid_body = new btRigidBody(rigidBodyCI);
 		SolidFactory::instance().dynamics_world()->addRigidBody(rigid_body);
 
-        GraphicItem* item = new BoxGraphicItem(dimensions);
+        //GraphicItem* item = new BoxGraphicItem(dimensions);
 
-        SolidPtr solid(new RigidSolid(item, rigid_body, 
+        SolidPtr solid(new RigidSolid(NULL, rigid_body, 
             SolidFactory::instance().dynamics_world()));
 
         return solid;

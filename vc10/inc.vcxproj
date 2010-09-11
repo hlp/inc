@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\incApp.cpp" />
     <ClCompile Include="..\src\inc\Camera.cpp" />
+    <ClCompile Include="..\src\inc\DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\GraphicItem.cpp" />
     <ClCompile Include="..\src\inc\Manager.cpp" />
     <ClCompile Include="..\src\inc\Origin.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="..\include\incApp.h" />
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
     <ClInclude Include="..\include\inc\Camera.h" />
+    <ClInclude Include="..\include\inc\DxfSaver.h" />
     <ClInclude Include="..\include\inc\GraphicItem.h" />
     <ClInclude Include="..\include\inc\Manager.h" />
     <ClInclude Include="..\include\inc\Module.h" />

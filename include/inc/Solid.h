@@ -36,12 +36,15 @@ namespace cinder {
 }
 
 namespace inc {
+    class Exporter;
+    
     class Solid {
     public:
         Solid(GraphicItem*, btCollisionObject*, btDynamicsWorld*);
         virtual ~Solid();
 
         virtual void draw();
+        virtual void save(Exporter&) = 0;
         virtual void set_gravity(float) = 0;
         virtual btCollisionObject& collision_object();
         virtual bool detect_selection(ci::app::MouseEvent, float* dist);
@@ -59,6 +62,7 @@ namespace inc {
         virtual ~RigidSolid();
 
         virtual void draw();
+        virtual void save(Exporter&);
         virtual void set_gravity(float);
         virtual btRigidBody& rigid_body();
         virtual btRigidBody* rigid_body_ptr();
@@ -70,6 +74,7 @@ namespace inc {
         virtual ~SoftSolid();
 
         virtual void draw();
+        virtual void save(Exporter&);
         virtual void set_gravity(float);
         virtual btSoftBody& soft_body();
         virtual btSoftBody* soft_body_ptr();
