@@ -53,6 +53,8 @@
 #include <inc/Manager.h>
 #include <inc/BunnyMesh.h>
 
+//#define BULLET_DEBUG_DRAW 1
+
 namespace inc {
     Solid::Solid(GraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
         : graphic_item_(item), body_(body), world_(world) {
@@ -149,11 +151,15 @@ namespace inc {
 
 
     std::deque<btTriangleMesh*> SolidFactory::mesh_cleanup_;
+    ci::ColorA SolidFactory::sphere_color_;
+    ci::ColorA SolidFactory::container_color_;
 
     SolidFactory::SolidFactory() {
         instance_ = this;
         gravity_ = -1.1f;//-9.8f;//0.0f;//-9.8f;
         last_gravity_ = gravity_;
+        sphere_color_ = ci::ColorA(0.f ,0.4549f, 0.6275f, 0.45f);
+        container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.15f);
     }
 
     void SolidFactory::setup() {
@@ -347,7 +353,8 @@ namespace inc {
     SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
         btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
-        SolidPtr solid(new SoftSolid(new SoftBodyGraphicItem(soft_body), soft_body, 
+        SolidPtr solid(new SoftSolid(new SoftBodyGraphicItem(soft_body,
+            sphere_color_), soft_body, 
             SolidFactory::instance().dynamics_world()));
 
         return solid;
@@ -372,10 +379,10 @@ namespace inc {
             std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
 
         d_ptr->push_back(SolidPtr(new SoftSolid(
-            new SoftBodyGraphicItem(sb1), sb1, 
+            new SoftBodyGraphicItem(sb1, sphere_color_), sb1, 
             SolidFactory::instance().dynamics_world())));
         d_ptr->push_back(SolidPtr(new SoftSolid(
-            new SoftBodyGraphicItem(sb2), sb2, 
+            new SoftBodyGraphicItem(sb2, sphere_color_), sb2, 
             SolidFactory::instance().dynamics_world())));
 
         return d_ptr;
@@ -422,8 +429,8 @@ namespace inc {
                         resolution);
 
                     d_ptr->push_back(SolidPtr(new SoftSolid(
-                        new SoftBodyGraphicItem(s_bodies[i][j][k]), s_bodies[i][j][k], 
-                        SolidFactory::instance().dynamics_world())));
+                        new SoftBodyGraphicItem(s_bodies[i][j][k],sphere_color_), 
+                        s_bodies[i][j][k], SolidFactory::instance().dynamics_world())));
                 }
             }
         }
@@ -681,6 +688,8 @@ namespace inc {
 	    soft_body->m_cfg.kDP = 0.001; // fun factor...
 	    soft_body->m_cfg.kPR = 2500;
 
+        soft_body->setTotalMass(1000.0f);
+
         soft_body->generateClusters(20);
 
         // change these for different collision types (with other soft, with ridgid, with static...)
@@ -738,7 +747,7 @@ namespace inc {
     }
 
     SolidPtr SolidFactory::create_soft_sphere_container() {
-        ci::ObjLoader loader(ci::loadFileStream("sock-narrow-2.obj"));
+        ci::ObjLoader loader(ci::loadFileStream("sock-narrow-3.obj"));
         ci::TriMesh mesh;
         loader.load(&mesh, true);
 
@@ -758,7 +767,6 @@ namespace inc {
         }
 
         int* triangles = new int[mesh.getNumIndices()];
-
         
         i = 0;
         for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
@@ -777,7 +785,7 @@ namespace inc {
 	    soft_body->m_cfg.kDP = 2.0f; // no fun
         soft_body->m_cfg.kDG = 2.0f; // no fun
 	    soft_body->m_cfg.kPR = 0.0f;
-        soft_body->m_cfg.kMT = 0.0f; // pose rigiditiy
+        soft_body->m_cfg.kMT = 0.5f; // pose rigiditiy
 
         soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         
@@ -802,8 +810,8 @@ namespace inc {
         SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
         SolidPtr solid(new SoftSolid(
-            new SoftBodyGraphicItem(soft_body), soft_body, 
-            SolidFactory::instance().dynamics_world()));
+            new SoftBodyGraphicItem(soft_body, container_color_), 
+            soft_body, SolidFactory::instance().dynamics_world()));
 
         delete [] triangles;
         delete [] vertices;
@@ -890,6 +898,7 @@ namespace inc {
         return mesh_ptr;
     }
 
+    // N.B. some of the mesh y verts must be positive, and some must be negative
     std::tr1::shared_ptr<std::vector<int> > SolidFactory::get_top_vertices(
         const ci::TriMesh& mesh) {
         float top_height = 0.0f;
@@ -912,8 +921,8 @@ namespace inc {
             std::tr1::shared_ptr<std::vector<int> >(new std::vector<int>());
 
         for (int i = 0; i < vertices.size(); ++i) {
-            if (vertices[i].y < top_height + spread &&
-                vertices[i].y > top_height - spread) {
+            if (vertices[i].y < (top_height + spread) &&
+                vertices[i].y > (top_height - spread)) {
                 indices->push_back(i);
             }
         }

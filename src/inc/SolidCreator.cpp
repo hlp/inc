@@ -65,7 +65,7 @@ namespace inc {
             create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);
             last_cb_[0] = cb_[0];
         } else if (cb_[1] != last_cb_[1]) {
-            create_soft_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);
+            create_soft_sphere(ci::Vec3f(0.0f, 75.0f, 0.0f), ci::Vec3f::one() * 3.0f);
             last_cb_[1] = cb_[1];
         } else if (cb_[2] != last_cb_[2]) {
             create_linked_spheres(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);

@@ -99,7 +99,7 @@ namespace inc {
 
     class SoftBodyGraphicItem : public GraphicItem {
     public:
-        SoftBodyGraphicItem(btSoftBody* soft_body);
+        SoftBodyGraphicItem(btSoftBody* soft_body, ci::ColorA color);
         virtual ~SoftBodyGraphicItem();
 
         virtual void draw();
@@ -108,5 +108,6 @@ namespace inc {
         void make_gl_vertex(int face, int node);
 
         btSoftBody* soft_body_;
+        ci::ColorA color_;
     };
 }

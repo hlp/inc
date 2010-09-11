@@ -157,6 +157,9 @@ namespace inc {
 
         ci::params::InterfaceGl interface_;
 
+        static ci::ColorA sphere_color_;
+        static ci::ColorA container_color_;
+
         double time_step_;
         double last_time_;
 

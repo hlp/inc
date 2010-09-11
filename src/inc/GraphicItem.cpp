@@ -161,8 +161,8 @@ namespace inc {
     }
 
 
-    SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body) 
-        : soft_body_(soft_body) {
+    SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body,
+        ci::ColorA color) : soft_body_(soft_body), color_(color) {
     }
 
     SoftBodyGraphicItem::~SoftBodyGraphicItem() {
@@ -170,7 +170,7 @@ namespace inc {
 
     // theres almost certainly a better way to implement this method
     void SoftBodyGraphicItem::draw() {
-        glColor4f(0.7f, 0.7f, 1.0f, 0.4);
+        ci::gl::color(color_);
         glLineWidth(0.9f);
 
         glBegin(GL_LINES);
