@@ -26,6 +26,7 @@ namespace inc {
     class Renderer;
     class Manager;
     class Camera;
+    class Menu;
     class Origin;
     class SolidCreator;
 }
@@ -48,6 +49,7 @@ class IncApp : public ci::app::AppBasic {
         std::tr1::shared_ptr<inc::Renderer> renderer_;
         std::tr1::shared_ptr<inc::Manager> manager_;
         std::tr1::shared_ptr<inc::Camera> camera_;
+        std::tr1::shared_ptr<inc::Menu> menu_;
         std::tr1::shared_ptr<inc::Origin> origin_;
         std::tr1::shared_ptr<inc::SolidCreator> solid_creator_;
 

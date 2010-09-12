@@ -23,6 +23,7 @@
 #include <inc/Renderer.h>
 #include <inc/Manager.h>
 #include <inc/Camera.h>
+#include <inc/Menu.h>
 #include <inc/Origin.h>
 #include <inc/Module.h>
 #include <inc/SolidCreator.h>
@@ -50,6 +51,9 @@ void IncApp::setup() {
     
     camera_ = std::tr1::shared_ptr<inc::Camera>(new inc::Camera());
     manager_->add_module(camera_);
+
+    menu_ = std::tr1::shared_ptr<inc::Menu>(new inc::Menu());
+    manager_->add_module(menu_);
 
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
@@ -89,6 +93,7 @@ void IncApp::shutdown() {
 
     solid_creator_.reset();
     origin_.reset();
+    menu_.reset();
     camera_.reset();
     renderer_.reset();
     solid_factory_.reset();

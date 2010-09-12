@@ -21,9 +21,8 @@
 #include <fstream>
 #include <vector>
 
-#include <cinder/TriMesh.h>
+#include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
-#include <cinder/PolyLine.h>
 
 namespace inc {
 
@@ -36,6 +35,7 @@ public:
     virtual void input_soft_solid(SoftSolid& solid) = 0;
 
     virtual void set_layer(int) = 0;
+    virtual void add_layer() = 0;
 };
 
 
@@ -51,6 +51,7 @@ public:
     void end();
 
     void set_layer(int);
+    void add_layer();
 
     //void write_file();
 
@@ -71,7 +72,7 @@ private:
     std::vector<ci::Vec3f> vertices_;
     int current_layer_;
 
-    const float EPSILON = 0.0001f;
+    float INC_EPSILON;
 };
 
 }

@@ -27,40 +27,41 @@
 
 namespace inc {
 
-    class Camera : public Module, public ci::app::App::Listener {
-    public:
-        Camera();
-        virtual ~Camera();
+class Camera : public Module, public ci::app::App::Listener {
+public:
+    Camera();
+    virtual ~Camera();
         
-        void setup();
-        void update();
-        void draw();
+    void setup();
+    void update();
+    void draw();
 
-        void set_matrices();
+    void set_matrices();
 
-        // If a method returns true, event propegation stops. If it returns false,
-        // the message propegates to other Listeners.
-        virtual bool resize(int, int);
-        virtual bool mouseDown(ci::app::MouseEvent);
-        virtual bool mouseDrag(ci::app::MouseEvent);
-        virtual bool mouseWheel(ci::app::MouseEvent);
-        /*
-        virtual bool keyDown(ci::app::KeyEvent);
-        virtual bool keyUp(ci::app::KeyEvent);
-        */
+    // If a method returns true, event propegation stops. If it returns false,
+    // the message propegates to other Listeners.
+    virtual bool resize(int, int);
+    virtual bool mouseDown(ci::app::MouseEvent);
+    virtual bool mouseDrag(ci::app::MouseEvent);
+    virtual bool mouseWheel(ci::app::MouseEvent);
+    /*
+    virtual bool keyDown(ci::app::KeyEvent);
+    virtual bool keyUp(ci::app::KeyEvent);
+    */
 
-        static Camera& instance();
+    static Camera& instance();
 
-        bool draw_interface();
+    bool draw_interface();
 
-    private:
-        void create_camera();
+private:
+    void create_camera();
 
-        ci::MayaCamUI* cam_;
+    ci::MayaCamUI* cam_;
         
-        float zoom_speed_;
-        float far_clip_;
+    float zoom_speed_;
+    float far_clip_;
 
-        static Camera* instance_;
-    };
+    static Camera* instance_;
+};
+
 }

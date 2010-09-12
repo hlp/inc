@@ -36,6 +36,7 @@ namespace inc {
 DxfSaver::DxfSaver(const std::string& file_name) :
     file_name_(file_name) {
     current_layer_ = 0;
+    INC_EPSILON = 0.0001f;
 }
 
 void DxfSaver::set_path(const std::string& file_name) {
@@ -44,6 +45,10 @@ void DxfSaver::set_path(const std::string& file_name) {
 
 void DxfSaver::set_layer(int layer) {
     current_layer_ = layer;
+}
+
+void DxfSaver::add_layer() {
+    ++current_layer_;
 }
 
 void DxfSaver::input_soft_solid(SoftSolid& solid) {
@@ -121,7 +126,8 @@ void DxfSaver::write_line(const ci::Vec3f& v1, const ci::Vec3f& v2) {
 
 void DxfSaver::write_triangle(const ci::Vec3f& v1,
     const ci::Vec3f& v2, const ci::Vec3f& v3) {
-    write_triangle(v1.x, v1.y, v1.z,
+    write_triangle(
+        v1.x, v1.y, v1.z,
         v2.x, v2.y, v2.z,
         v3.x, v3.y, v3.z);
 }
@@ -160,9 +166,9 @@ void DxfSaver::write_triangle(float v1x, float v1y, float v1z,
     // without adding EPSILON, rhino kinda freaks out
     // a face is actually a quad, not a triangle,
     // so instead kinda fudging the final point here.
-    write("13", v3x + EPSILON);
-    write("23", v3y + EPSILON);
-    write("33", v3z + EPSILON);
+    write("13", v3x + INC_EPSILON);
+    write("23", v3y + INC_EPSILON);
+    write("33", v3z + INC_EPSILON);
 }
 
 

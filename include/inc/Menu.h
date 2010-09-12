@@ -17,27 +17,29 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
-#include <cinder/params/Params.h>
+#include <cinder/app/KeyEvent.h>
+#include <cinder/app/App.h>
 
 #include <inc/Module.h>
 
 namespace inc {
-    class OriginGraphicItem;
-    class Solid;
 
-    class Origin : public Module {
-    public:
-        Origin() { }
-        virtual ~Origin();
+class Menu : public Module, public ci::app::App::Listener {
+public:
+    Menu();
+    virtual ~Menu();
 
-        void setup();
-        void update();
-        void draw();
+    void setup();
+    void update();
+    void draw();
 
-    private:
-        OriginGraphicItem* origin_graphic_item_;
-        //ci::params::InterfaceGl interface_;
-    };
+    virtual bool keyDown(ci::app::KeyEvent);
+    virtual bool keyUp(ci::app::KeyEvent);
+
+    Menu& instance();
+
+private:
+    static Menu* instance_;
+};
+
 }
