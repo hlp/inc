@@ -24,7 +24,7 @@
 
 namespace inc {
 
-class Menu : public Module, public ci::app::App::Listener {
+class Menu : public Module {
 public:
     Menu();
     virtual ~Menu();
@@ -40,6 +40,8 @@ public:
 
 private:
     static Menu* instance_;
+
+    ci::CallbackId key_down_cb_id_;
 };
 
 }

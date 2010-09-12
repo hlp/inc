@@ -908,13 +908,16 @@ namespace inc {
         return mesh_ptr;
     }
 
-    // N.B. some of the mesh y verts must be positive, and some must be negative
     std::tr1::shared_ptr<std::vector<int> > SolidFactory::get_top_vertices(
         const ci::TriMesh& mesh) {
-        float top_height = 0.0f;
-        float bottom_height = 0.0f;
 
         std::vector<ci::Vec3f> vertices = mesh.getVertices();
+
+        if (vertices.empty())
+            return std::tr1::shared_ptr<std::vector<int> >(new std::vector<int>());
+
+        float top_height = vertices[0].y;
+        float bottom_height = vertices[0].y;
 
         for (std::vector<ci::Vec3f>::const_iterator it = vertices.begin();
             it != vertices.end(); ++it) {

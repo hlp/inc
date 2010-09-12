@@ -34,11 +34,11 @@ Menu::~Menu() {
     ci::app::console() << "Deleting Menu" << std::endl;
 #endif
 
-    IncApp::instance().removeListener(this);
+    IncApp::instance().unregisterKeyDown(key_down_cb_id_);
 }
 
 void Menu::setup() {
-    IncApp::instance().addListener(this);
+    key_down_cb_id_ = IncApp::instance().registerKeyDown(this, &Menu::keyDown);
 }
 
 void Menu::update() {

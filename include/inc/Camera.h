@@ -27,7 +27,7 @@
 
 namespace inc {
 
-class Camera : public Module, public ci::app::App::Listener {
+class Camera : public Module {
 public:
     Camera();
     virtual ~Camera();
@@ -38,16 +38,10 @@ public:
 
     void set_matrices();
 
-    // If a method returns true, event propegation stops. If it returns false,
-    // the message propegates to other Listeners.
     virtual bool resize(int, int);
-    virtual bool mouseDown(ci::app::MouseEvent);
-    virtual bool mouseDrag(ci::app::MouseEvent);
-    virtual bool mouseWheel(ci::app::MouseEvent);
-    /*
-    virtual bool keyDown(ci::app::KeyEvent);
-    virtual bool keyUp(ci::app::KeyEvent);
-    */
+    virtual bool mouse_down(ci::app::MouseEvent);
+    virtual bool mouse_drag(ci::app::MouseEvent);
+    virtual bool mouse_wheel(ci::app::MouseEvent);
 
     static Camera& instance();
 
@@ -62,6 +56,10 @@ private:
     float far_clip_;
 
     static Camera* instance_;
+
+    ci::CallbackId mouse_down_cb_id_;
+    ci::CallbackId mouse_drag_cb_id_;
+    ci::CallbackId mouse_wheel_cb_id_;
 };
 
 }

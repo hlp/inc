@@ -50,14 +50,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;TRACE_DTORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\cinder_0.8.1_msw\include;C:\dev\cinder_0.8.1_msw\boost;C:\dev\cinder_0.8.1_msw\blocks\bullet\bullet\src;C:\dev\cinder_0.8.1_msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dev\cinder_0.8.1_msw\blocks\bullet\bullet\lib\Debug;C:\dev\cinder_0.8.1_msw\lib\msw;C:\dev\cinder_0.8.1_msw\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Debug;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>cinder_d.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\cinder_0.8.1_msw\include;C:\dev\cinder_0.8.1_msw\boost;C:\dev\cinder_0.8.1_msw\blocks\bullet\bullet\src;C:\dev\cinder_0.8.1_msw;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UndefinePreprocessorDefinitions>
@@ -84,7 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\dev\cinder_0.8.1_msw\blocks\bullet\bullet\lib\Release;C:\dev\cinder_0.8.1_msw\lib\msw;C:\dev\cinder_0.8.1_msw\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Release;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>

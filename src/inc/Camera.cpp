@@ -36,13 +36,20 @@ namespace inc {
         ci::app::console() << "Deleting Camera" << std::endl;
 #endif
 
-        IncApp::instance().removeListener(this);
+        IncApp::instance().unregisterMouseDown(mouse_down_cb_id_);
+        IncApp::instance().unregisterMouseDrag(mouse_drag_cb_id_);
+        IncApp::instance().unregisterMouseWheel(mouse_wheel_cb_id_);
 
         delete cam_;
     }
 
     void Camera::setup() {
-        IncApp::instance().addListener(this);
+        mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, 
+            &Camera::mouse_down);
+        mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, 
+            &Camera::mouse_drag);
+        mouse_wheel_cb_id_ = IncApp::instance().registerMouseWheel(this, 
+            &Camera::mouse_wheel);
 
         cam_ = new ci::MayaCamUI();
         create_camera();
@@ -72,19 +79,19 @@ namespace inc {
         return false;
     }
 
-    bool Camera::mouseDown(ci::app::MouseEvent m_event) {
+    bool Camera::mouse_down(ci::app::MouseEvent m_event) {
         cam_->mouseDown(m_event.getPos());
         return false;
     }
 
-    bool Camera::mouseDrag(ci::app::MouseEvent m_event) {
+    bool Camera::mouse_drag(ci::app::MouseEvent m_event) {
         cam_->mouseDrag(m_event.getPos(), m_event.isLeftDown(), m_event.isMiddleDown(), 
             m_event.isRightDown());
         return false;
     }
 
     // Zoom code taken from Cinder::MayaCamUI
-    bool Camera::mouseWheel(ci::app::MouseEvent m_event) {
+    bool Camera::mouse_wheel(ci::app::MouseEvent m_event) {
         float mouse_delta = m_event.getWheelIncrement() * zoom_speed_;
         //float direction = mouse_delta > 0.0f ? 1.0 : -1.0;
         
@@ -108,14 +115,4 @@ namespace inc {
     bool Camera::draw_interface() {
         return true;
     }
-
-    /*
-    bool Camera::keyDown(ci::app::KeyEvent k_event) {
-        return false;
-    }
-
-    bool Camera::keyUp(ci::app::KeyEvent k_event) {
-        return false;
-    }
-    */
 }
