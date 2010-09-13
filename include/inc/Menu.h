@@ -58,6 +58,7 @@ public:
 
     bool test_float_changed(float);
     bool test_button_changed(bool);
+    bool test_int_changed(float);
 
     /*
     bool save_dxf(int);

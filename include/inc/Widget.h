@@ -92,4 +92,28 @@ private:
     bool last_val_;
 };
 
+
+template<typename T>
+class GenericWidget : public Widget {
+public:
+    GenericWidget(Menu&, std::string label, T* monitor = NULL);
+    virtual ~GenericWidget();
+
+    virtual void add();
+
+    virtual void update();
+
+    // use this to register objects to be called back
+    ci::CallbackMgr<bool (T)>& value_changed();
+
+private:
+    void call_callbacks();
+
+    ci::CallbackMgr<bool (T)> value_changed_;
+
+    bool owner_;
+    T* monitor_;
+    T last_val_;
+};
+
 }

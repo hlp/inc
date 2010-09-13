@@ -120,4 +120,62 @@ void ButtonWidget::call_callbacks() {
     }
 }
 
+
+template<typename T>
+GenericWidget<T>::GenericWidget(Menu& menu, std::string label, T* monitor) 
+    : Widget(menu, label) {
+
+    if (monitor == NULL) {
+        owner_ = true;
+        monitor_ = new T();
+        *monitor_ = T();
+    } else {
+        owner_ = false;
+        monitor_ = monitor;
+    }
+
+    last_val_ = *monitor_;
+}
+
+template<typename T>
+GenericWidget<T>::~GenericWidget() {
+    if (owner_)
+        delete monitor_;
+}
+
+template<typename T>
+ci::CallbackMgr<bool (T)>& GenericWidget<T>::value_changed() {
+    return value_changed_;
+}
+
+template<typename T>
+void GenericWidget<T>::add() {
+    menu_.interface().addParam(label_, monitor_);
+}
+
+template<typename T>
+void GenericWidget<T>::update() {
+    if (last_val_ != *monitor_) {
+        call_callbacks();
+        last_val_ = *monitor_;
+    }
+}
+
+template<typename T>
+void GenericWidget<T>::call_callbacks() {
+    bool handled = false;
+
+	for (ci::CallbackMgr<bool (T)>::iterator it = value_changed_.begin(); 
+        it != value_changed_.end(); ++it) {
+        handled = (it->second)(*monitor_);
+    }
+}
+
+template class GenericWidget<int>;
+template class GenericWidget<float>;
+template class GenericWidget<ci::Vec3f>;
+template class GenericWidget<ci::Color>;
+template class GenericWidget<ci::ColorA>;
+template class GenericWidget<std::string>;
+
 }

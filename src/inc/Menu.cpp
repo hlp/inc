@@ -87,6 +87,17 @@ void MainMenu::setup() {
         std::bind1st(std::mem_fun(&inc::MainMenu::test_button_changed), this));
 
     add_widget(test_button);
+
+
+    std::tr1::shared_ptr<GenericWidget<float> > test_int = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Test int"));
+
+    test_int->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MainMenu::test_int_changed), this));
+
+    add_widget(test_int);
+
     
     /*
     save_dxf_cb_id_ = button_->press().registerCb(
@@ -107,6 +118,12 @@ bool MainMenu::test_float_changed(float f) {
 
 bool MainMenu::test_button_changed(bool b) {
     ci::app::console() << b << std::endl;
+
+    return false;
+}
+
+bool MainMenu::test_int_changed(float f) {
+    ci::app::console() << "test changed " << f << std::endl;
 
     return false;
 }
