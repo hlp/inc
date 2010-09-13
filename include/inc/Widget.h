@@ -46,52 +46,6 @@ protected:
 
 typedef std::tr1::shared_ptr<Widget> WidgetPtr;
 
-// simple widget for changing float data information
-class FloatWidget : public Widget {
-public:
-    FloatWidget(Menu&, std::string label, float* monitor = NULL);
-    virtual ~FloatWidget();
-
-    virtual void add();
-
-    virtual void update();
-
-    // use this to register objects to be called back
-    ci::CallbackMgr<bool (float)>& value_changed();
-
-private:
-    void call_callbacks();
-
-    ci::CallbackMgr<bool (float)> value_changed_;
-
-    bool owner_;
-    float* monitor_;
-    float last_val_;
-};
-
-
-class ButtonWidget : public Widget {
-public:
-    ButtonWidget(Menu&, std::string label, bool* monitor = NULL);
-    virtual ~ButtonWidget();
-
-    virtual void add();
-
-    virtual void update();
-
-    // use this to register objects to be called back
-    ci::CallbackMgr<bool (bool)>& value_changed();
-
-private:
-    void call_callbacks();
-
-    ci::CallbackMgr<bool (bool)> value_changed_;
-
-    bool owner_;
-    bool* monitor_;
-    bool last_val_;
-};
-
 
 template<typename T>
 class GenericWidget : public Widget {

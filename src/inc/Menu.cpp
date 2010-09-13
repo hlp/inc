@@ -71,8 +71,9 @@ MainMenu::~MainMenu() {
 void MainMenu::setup() {
     interface_ = ci::params::InterfaceGl("Main_Menu", ci::Vec2i(300, 200));
 
-    std::tr1::shared_ptr<FloatWidget> test_float = 
-        std::tr1::shared_ptr<FloatWidget>(new FloatWidget(*this, "Hello world"));
+    std::tr1::shared_ptr<GenericWidget<float> > test_float = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Hello world"));
 
     test_float->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::MainMenu::test_float_changed), this));
@@ -80,8 +81,9 @@ void MainMenu::setup() {
     add_widget(test_float);
 
 
-    std::tr1::shared_ptr<ButtonWidget> test_button = 
-        std::tr1::shared_ptr<ButtonWidget>(new ButtonWidget(*this, "Button"));
+    std::tr1::shared_ptr<GenericWidget<bool> > test_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Button"));
 
     test_button->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::MainMenu::test_button_changed), this));
@@ -89,9 +91,9 @@ void MainMenu::setup() {
     add_widget(test_button);
 
 
-    std::tr1::shared_ptr<GenericWidget<float> > test_int = 
-        std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Test int"));
+    std::tr1::shared_ptr<GenericWidget<bool> > test_int = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Test int"));
 
     test_int->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::MainMenu::test_int_changed), this));
@@ -122,7 +124,7 @@ bool MainMenu::test_button_changed(bool b) {
     return false;
 }
 
-bool MainMenu::test_int_changed(float f) {
+bool MainMenu::test_int_changed(bool f) {
     ci::app::console() << "test changed " << f << std::endl;
 
     return false;
