@@ -56,14 +56,7 @@ public:
 
     ci::params::InterfaceGl& interface();
 
-    bool test_float_changed(float);
-    bool test_button_changed(bool);
-    bool test_int_changed(bool);
-
-    /*
-    bool save_dxf(int);
-    ci::CallbackId save_dxf_cb_id_;
-    */
+    bool save_dxf(bool); // called by a button so its passed a bool
 
     MainMenu& instance();
 

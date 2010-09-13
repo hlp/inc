@@ -69,71 +69,22 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Main_Menu", ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl("Main_Menu", ci::Vec2i(200, 200));
 
-    std::tr1::shared_ptr<GenericWidget<float> > test_float = 
-        std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Hello world"));
-
-    test_float->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::test_float_changed), this));
-
-    add_widget(test_float);
-
-
-    std::tr1::shared_ptr<GenericWidget<bool> > test_button = 
+    std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Button"));
+        new GenericWidget<bool>(*this, "Save DXF"));
 
-    test_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::test_button_changed), this));
-
-    add_widget(test_button);
-
-
-    std::tr1::shared_ptr<GenericWidget<bool> > test_int = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Test int"));
-
-    test_int->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::test_int_changed), this));
-
-    add_widget(test_int);
-
-    
-    /*
-    save_dxf_cb_id_ = button_->press().registerCb(
+    save_dxf_button->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
-    
-    add_widget(button_);
-    */
 
-    // this calls setup() on the widgets
+    add_widget(save_dxf_button);
+
+    // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
 }
 
-bool MainMenu::test_float_changed(float f) {
-    ci::app::console() << f << std::endl;
-
-    return false;
-}
-
-bool MainMenu::test_button_changed(bool b) {
-    ci::app::console() << b << std::endl;
-
-    return false;
-}
-
-bool MainMenu::test_int_changed(bool f) {
-    ci::app::console() << "test changed " << f << std::endl;
-
-    return false;
-}
-
-/*
-bool MainMenu::save_dxf(int) {
-    ci::app::console() << "pressed" << std::endl;
-
+bool MainMenu::save_dxf(bool) {
     DxfSaver saver = DxfSaver("out.dxf");
 
     saver.begin();
@@ -149,7 +100,6 @@ bool MainMenu::save_dxf(int) {
 
     return false;
 }
-*/
 
 ci::params::InterfaceGl& MainMenu::interface() {
     return interface_;
