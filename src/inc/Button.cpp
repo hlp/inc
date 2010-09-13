@@ -25,6 +25,8 @@
 #include <inc/Menu.h>
 #include <incApp.h>
 
+#if 0
+
 namespace inc {
 
 Button::Button(ci::Vec2f position, std::string label, Menu& menu) :
@@ -131,3 +133,5 @@ ci::Vec2f Button::local_position() {
 }
 
 }
+
+#endif

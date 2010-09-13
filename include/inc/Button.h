@@ -29,6 +29,8 @@
 
 #include <inc/Widget.h>
 
+#if 0
+
 namespace inc {
 
 class Menu;
@@ -68,3 +70,5 @@ private:
 };
 
 }
+
+#endif

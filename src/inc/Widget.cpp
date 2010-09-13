@@ -17,11 +17,62 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/gl/gl.h>
+
 #include <inc/Widget.h>
+#include <inc/Menu.h>
 
 namespace inc {
 
+Widget::Widget(Menu& menu, std::string label) 
+    : menu_(menu), label_(label) {
+}
+
 Widget::~Widget() {
 }
+
+
+FloatWidget::FloatWidget(Menu& menu, std::string label, float* monitor) 
+    : Widget(menu, label) {
+
+    if (monitor == NULL) {
+        owner_ = true;
+        monitor_ = new float();
+        *monitor_ = 0.0f;
+    } else {
+        owner_ = false;
+        monitor_ = monitor;
+    }
+
+    last_val_ = *monitor_;
+}
+
+FloatWidget::~FloatWidget() {
+    if (owner_)
+        delete monitor_;
+}
+
+ci::CallbackMgr<bool (float)>& FloatWidget::value_changed() {
+    return value_changed_;
+}
+
+void FloatWidget::add() {
+    menu_.interface().addParam(label_, monitor_);
+}
+
+void FloatWidget::update() {
+    if (last_val_ != *monitor_)
+        call_callbacks();
+}
+
+void FloatWidget::call_callbacks() {
+    bool handled = false;
+
+	for (ci::CallbackMgr<bool (float)>::iterator it = value_changed_.begin(); 
+        it != value_changed_.end(); ++it) {
+        handled = (it->second)(*monitor_);
+    }
+}
+
 
 }

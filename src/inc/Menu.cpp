@@ -41,36 +41,23 @@ Menu::~Menu() {
 void Menu::setup() {
     std::for_each(widgets_.begin(), widgets_.end(),
         [] (WidgetPtr ptr) { ptr->setup(); } );
+
+    std::for_each(widgets_.begin(), widgets_.end(),
+        [] (WidgetPtr ptr) { ptr->add(); } );
 }
 
 void Menu::update() {
-    // nothing here
+    std::for_each(widgets_.begin(), widgets_.end(),
+        [] (WidgetPtr ptr) { ptr->update(); } );
 }
 
 void Menu::draw() {
-    prepare_matrix();
-
-    ci::gl::pushMatrices();
-        ci::gl::translate(position_);
-
-        std::for_each(widgets_.begin(), widgets_.end(),
-            [] (WidgetPtr ptr) { ptr->draw(); } );
-
-    ci::gl::popMatrices();
+    // nothing here
 }
 
 void Menu::add_widget(WidgetPtr ptr) {
     widgets_.push_back(ptr);
 }
-
-void Menu::prepare_matrix() {
-    ci::gl::setMatricesWindow(IncApp::instance().getWindowSize());
-}
-
-const ci::Vec2f& Menu::position() const {
-    return position_;
-}
-
 
 
 
@@ -79,24 +66,37 @@ MainMenu::MainMenu() {
 }
 
 MainMenu::~MainMenu() {
-    button_->press().unregisterCb(save_dxf_cb_id_);
 }
 
 void MainMenu::setup() {
-    // create a button, and register to receive its pressed events
-    button_ = 
-        std::tr1::shared_ptr<Button>(new Button(ci::Vec2f(50.0f, 50.0f),
-        "Save DXF", *this));
+    interface_ = ci::params::InterfaceGl("Main_Menu", ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<FloatWidget> test_float = 
+        std::tr1::shared_ptr<FloatWidget>(new FloatWidget(*this, "Hello world"));
+
+    test_float->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MainMenu::test_float_changed), this));
+
+    add_widget(test_float);
     
+    /*
     save_dxf_cb_id_ = button_->press().registerCb(
         std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
     
     add_widget(button_);
+    */
 
     // this calls setup() on the widgets
     Menu::setup();
-};
+}
 
+bool MainMenu::test_float_changed(float f) {
+    ci::app::console() << f << std::endl;
+
+    return false;
+}
+
+/*
 bool MainMenu::save_dxf(int) {
     ci::app::console() << "pressed" << std::endl;
 
@@ -115,6 +115,12 @@ bool MainMenu::save_dxf(int) {
 
     return false;
 }
+*/
+
+ci::params::InterfaceGl& MainMenu::interface() {
+    return interface_;
+}
+
 
 MainMenu* MainMenu::instance_;
 

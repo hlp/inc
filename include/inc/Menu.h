@@ -26,7 +26,6 @@
 
 #include <inc/Module.h>
 #include <inc/Widget.h>
-#include <inc/Button.h>
 
 namespace inc {
 
@@ -39,19 +38,14 @@ public:
     virtual void update();
     virtual void draw();
 
-    void add_widget(WidgetPtr);
+    virtual ci::params::InterfaceGl& interface() = 0;
 
-    const ci::Vec2f& position() const;
+    void add_widget(WidgetPtr);
 
 private:
     std::deque<WidgetPtr> widgets_;
-    ci::Vec2f position_;
-
-    ci::CallbackId key_down_cb_id_;
-
-    // sets up the OpenGL matrix for 2D drawing
-    void prepare_matrix();
 };
+
 
 class MainMenu: public Menu {
 public:
@@ -60,15 +54,22 @@ public:
 
     virtual void setup();
 
+    ci::params::InterfaceGl& interface();
+
+    bool test_float_changed(float);
+
+    /*
     bool save_dxf(int);
     ci::CallbackId save_dxf_cb_id_;
+    */
 
     MainMenu& instance();
 
 private:
     static MainMenu* instance_;
 
-    std::tr1::shared_ptr<Button> button_;
+    ci::params::InterfaceGl interface_;
+
 };
 
 }

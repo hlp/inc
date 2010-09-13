@@ -20,22 +20,56 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include <cinder/Vector.h>
+#include <cinder/Function.h>
 
 namespace inc {
 
+class Menu;
+
 class Widget {
 public:
+    Widget(Menu&, std::string label);
     virtual ~Widget();
 
-    virtual ci::Vec2f global_position() = 0;
-    virtual ci::Vec2f local_position() = 0;
+    virtual void add() = 0; // add to the menu
 
-    virtual void setup() = 0;
-    virtual void draw() = 0;
+    virtual void setup() { }
+    virtual void update() { }
+
+protected:
+    Menu& menu_;
+    std::string label_;
 };
 
 typedef std::tr1::shared_ptr<Widget> WidgetPtr;
+
+// simple widget for changing float data information
+class FloatWidget : Widget {
+public:
+    FloatWidget(Menu&, std::string label, float* monitor = NULL);
+    virtual ~FloatWidget();
+
+    virtual void add();
+
+    virtual void update();
+
+    // use this to register objects to be called back
+    ci::CallbackMgr<bool (float)>& value_changed();
+
+private:
+    void call_callbacks();
+
+    ci::CallbackMgr<bool (float)> value_changed_;
+
+    bool owner_;
+    float* monitor_;
+    float last_val_;
+};
+
+
+
 
 }
