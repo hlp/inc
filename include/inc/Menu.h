@@ -17,10 +17,16 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
+#include <deque>
+
 #include <cinder/app/KeyEvent.h>
 #include <cinder/app/App.h>
 
 #include <inc/Module.h>
+#include <inc/Widget.h>
+#include <inc/Button.h>
 
 namespace inc {
 
@@ -29,19 +35,40 @@ public:
     Menu();
     virtual ~Menu();
 
-    void setup();
-    void update();
-    void draw();
+    virtual void setup();
+    virtual void update();
+    virtual void draw();
 
-    virtual bool keyDown(ci::app::KeyEvent);
-    virtual bool keyUp(ci::app::KeyEvent);
+    void add_widget(WidgetPtr);
 
-    Menu& instance();
+    const ci::Vec2f& position() const;
 
 private:
-    static Menu* instance_;
+    std::deque<WidgetPtr> widgets_;
+    ci::Vec2f position_;
 
     ci::CallbackId key_down_cb_id_;
+
+    // sets up the OpenGL matrix for 2D drawing
+    void prepare_matrix();
+};
+
+class MainMenu: public Menu {
+public:
+    MainMenu();
+    virtual ~MainMenu();
+
+    virtual void setup();
+
+    bool save_dxf(int);
+    ci::CallbackId save_dxf_cb_id_;
+
+    MainMenu& instance();
+
+private:
+    static MainMenu* instance_;
+
+    std::tr1::shared_ptr<Button> button_;
 };
 
 }

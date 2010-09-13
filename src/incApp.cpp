@@ -52,14 +52,16 @@ void IncApp::setup() {
     camera_ = std::tr1::shared_ptr<inc::Camera>(new inc::Camera());
     manager_->add_module(camera_);
 
-    menu_ = std::tr1::shared_ptr<inc::Menu>(new inc::Menu());
-    manager_->add_module(menu_);
+    main_menu_ = std::tr1::shared_ptr<inc::MainMenu>(new inc::MainMenu());
 
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
 
     solid_creator_ = std::tr1::shared_ptr<inc::SolidCreator>(new inc::SolidCreator());
     manager_->add_module(solid_creator_);
+
+    // menus must be drawn last
+    manager_->add_module(main_menu_);
 
     manager_->setup_modules();
 }
@@ -74,8 +76,7 @@ void IncApp::draw() {
     manager_->draw_modules();
 
     // Draw the GUI elements of each module
-    if (camera_->draw_interface())
-        ci::params::InterfaceGl::draw();
+    ci::params::InterfaceGl::draw();
 }
 
 void IncApp::shutdown() {
@@ -93,7 +94,7 @@ void IncApp::shutdown() {
 
     solid_creator_.reset();
     origin_.reset();
-    menu_.reset();
+    main_menu_.reset();
     camera_.reset();
     renderer_.reset();
     solid_factory_.reset();

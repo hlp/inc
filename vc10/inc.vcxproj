@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\incApp.cpp" />
+    <ClCompile Include="..\src\inc\Button.cpp" />
     <ClCompile Include="..\src\inc\Camera.cpp" />
     <ClCompile Include="..\src\inc\DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\GraphicItem.cpp" />
@@ -103,10 +104,12 @@
     <ClCompile Include="..\src\inc\Renderer.cpp" />
     <ClCompile Include="..\src\inc\Solid.cpp" />
     <ClCompile Include="..\src\inc\SolidCreator.cpp" />
+    <ClCompile Include="..\src\inc\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\incApp.h" />
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
+    <ClInclude Include="..\include\inc\Button.h" />
     <ClInclude Include="..\include\inc\Camera.h" />
     <ClInclude Include="..\include\inc\DxfSaver.h" />
     <ClInclude Include="..\include\inc\GraphicItem.h" />
@@ -118,6 +121,7 @@
     <ClInclude Include="..\include\inc\Solid.h" />
     <ClInclude Include="..\include\inc\SolidCreator.h" />
     <ClInclude Include="..\include\inc\Units.h" />
+    <ClInclude Include="..\include\inc\Widget.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TODO.txt" />

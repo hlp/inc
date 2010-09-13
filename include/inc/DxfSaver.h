@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <string>
 #include <fstream>
 #include <vector>

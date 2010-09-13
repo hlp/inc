@@ -17,28 +17,30 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/gl/gl.h>
+#include <cinder/Vector.h>
+
 #include <inc/Menu.h>
 #include <incApp.h>
 #include <inc/DxfSaver.h>
 #include <inc/Manager.h>
 #include <inc/Solid.h>
+#include <inc/Widget.h>
 
 namespace inc {
 
 Menu::Menu() {
-    instance_ = this;
 }
 
 Menu::~Menu() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting Menu" << std::endl;
 #endif
-
-    IncApp::instance().unregisterKeyDown(key_down_cb_id_);
 }
 
 void Menu::setup() {
-    key_down_cb_id_ = IncApp::instance().registerKeyDown(this, &Menu::keyDown);
+    std::for_each(widgets_.begin(), widgets_.end(),
+        [] (WidgetPtr ptr) { ptr->setup(); } );
 }
 
 void Menu::update() {
@@ -46,16 +48,58 @@ void Menu::update() {
 }
 
 void Menu::draw() {
-    // nothing here
+    prepare_matrix();
+
+    ci::gl::pushMatrices();
+        ci::gl::translate(position_);
+
+        std::for_each(widgets_.begin(), widgets_.end(),
+            [] (WidgetPtr ptr) { ptr->draw(); } );
+
+    ci::gl::popMatrices();
 }
 
-Menu* Menu::instance_;
-
-Menu& Menu::instance() {
-    return *instance_;
+void Menu::add_widget(WidgetPtr ptr) {
+    widgets_.push_back(ptr);
 }
 
-bool Menu::keyDown(ci::app::KeyEvent k_event) {
+void Menu::prepare_matrix() {
+    ci::gl::setMatricesWindow(IncApp::instance().getWindowSize());
+}
+
+const ci::Vec2f& Menu::position() const {
+    return position_;
+}
+
+
+
+
+MainMenu::MainMenu() {
+    instance_ = this;
+}
+
+MainMenu::~MainMenu() {
+    button_->press().unregisterCb(save_dxf_cb_id_);
+}
+
+void MainMenu::setup() {
+    // create a button, and register to receive its pressed events
+    button_ = 
+        std::tr1::shared_ptr<Button>(new Button(ci::Vec2f(50.0f, 50.0f),
+        "Save DXF", *this));
+    
+    save_dxf_cb_id_ = button_->press().registerCb(
+        std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
+    
+    add_widget(button_);
+
+    // this calls setup() on the widgets
+    Menu::setup();
+};
+
+bool MainMenu::save_dxf(int) {
+    ci::app::console() << "pressed" << std::endl;
+
     DxfSaver saver = DxfSaver("out.dxf");
 
     saver.begin();
@@ -72,8 +116,10 @@ bool Menu::keyDown(ci::app::KeyEvent k_event) {
     return false;
 }
 
-bool Menu::keyUp(ci::app::KeyEvent k_event) {
-    return false;
+MainMenu* MainMenu::instance_;
+
+MainMenu& MainMenu::instance() {
+    return *instance_;
 }
 
 }

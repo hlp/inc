@@ -44,15 +44,18 @@ namespace inc {
     }
 
     void Camera::setup() {
-        mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, 
-            &Camera::mouse_down);
-        mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, 
-            &Camera::mouse_drag);
-        mouse_wheel_cb_id_ = IncApp::instance().registerMouseWheel(this, 
-            &Camera::mouse_wheel);
+        mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, &Camera::mouse_down);
+        mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, &Camera::mouse_drag);
+        mouse_wheel_cb_id_ = IncApp::instance().registerMouseWheel(this, &Camera::mouse_wheel);
 
         cam_ = new ci::MayaCamUI();
         create_camera();
+
+        // set starting position
+        ci::CameraPersp new_cam = cam_->getCamera();
+        new_cam.setEyePoint(ci::Vec3f(75.0f, 50.0f, 75.0f) * 2.0f);
+        new_cam.setCenterOfInterestPoint(ci::Vec3f::zero());
+        cam_->setCurrentCam(new_cam);
     }
 
     void Camera::create_camera() {
