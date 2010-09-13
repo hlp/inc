@@ -42,7 +42,7 @@ public:
 
     void add_widget(WidgetPtr);
 
-private:
+protected:
     std::deque<WidgetPtr> widgets_;
 };
 
@@ -69,7 +69,6 @@ private:
     static MainMenu* instance_;
 
     ci::params::InterfaceGl interface_;
-
 };
 
 }

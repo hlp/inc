@@ -47,7 +47,7 @@ protected:
 typedef std::tr1::shared_ptr<Widget> WidgetPtr;
 
 // simple widget for changing float data information
-class FloatWidget : Widget {
+class FloatWidget : public Widget {
 public:
     FloatWidget(Menu&, std::string label, float* monitor = NULL);
     virtual ~FloatWidget();
