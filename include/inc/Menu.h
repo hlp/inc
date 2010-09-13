@@ -57,6 +57,7 @@ public:
     ci::params::InterfaceGl& interface();
 
     bool test_float_changed(float);
+    bool test_button_changed(bool);
 
     /*
     bool save_dxf(int);

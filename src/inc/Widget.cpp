@@ -61,8 +61,10 @@ void FloatWidget::add() {
 }
 
 void FloatWidget::update() {
-    if (last_val_ != *monitor_)
+    if (last_val_ != *monitor_) {
         call_callbacks();
+        last_val_ = *monitor_;
+    }
 }
 
 void FloatWidget::call_callbacks() {
@@ -74,5 +76,48 @@ void FloatWidget::call_callbacks() {
     }
 }
 
+
+ButtonWidget::ButtonWidget(Menu& menu, std::string label, bool* monitor) :
+    Widget(menu, label) {
+    if (monitor == NULL) {
+        owner_ = true;
+        monitor_ = new bool();
+        *monitor_ = false;
+    } else {
+        owner_ = false;
+        monitor_ = monitor;
+    }
+
+    last_val_ = *monitor_;
+}
+
+ButtonWidget::~ButtonWidget() {
+    if (owner_)
+        delete monitor_;
+}
+
+ci::CallbackMgr<bool (bool)>& ButtonWidget::value_changed() {
+    return value_changed_;
+}
+
+void ButtonWidget::add() {
+    menu_.interface().addParam(label_, monitor_);
+}
+
+void ButtonWidget::update() {
+    if (last_val_ != *monitor_) {
+        call_callbacks();
+        last_val_ = *monitor_;
+    }
+}
+
+void ButtonWidget::call_callbacks() {
+    bool handled = false;
+
+	for (ci::CallbackMgr<bool (bool)>::iterator it = value_changed_.begin(); 
+        it != value_changed_.end(); ++it) {
+        handled = (it->second)(*monitor_);
+    }
+}
 
 }

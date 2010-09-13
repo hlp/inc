@@ -70,6 +70,26 @@ private:
 };
 
 
+class ButtonWidget : public Widget {
+public:
+    ButtonWidget(Menu&, std::string label, bool* monitor = NULL);
+    virtual ~ButtonWidget();
 
+    virtual void add();
+
+    virtual void update();
+
+    // use this to register objects to be called back
+    ci::CallbackMgr<bool (bool)>& value_changed();
+
+private:
+    void call_callbacks();
+
+    ci::CallbackMgr<bool (bool)> value_changed_;
+
+    bool owner_;
+    bool* monitor_;
+    bool last_val_;
+};
 
 }
