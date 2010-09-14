@@ -47,13 +47,14 @@ namespace inc {
         virtual void save(Exporter&) = 0;
         virtual void set_gravity(float) = 0;
         virtual btCollisionObject& collision_object();
-        virtual bool detect_selection(ci::app::MouseEvent, float* dist);
+
+        virtual bool detect_selection(ci::Ray); 
+        virtual void select();   
 
     protected:
         GraphicItem* graphic_item_;
         btCollisionObject* body_;
         btDynamicsWorld* world_;
-
     };
 
     class RigidSolid : public Solid {
@@ -78,6 +79,8 @@ namespace inc {
         virtual void set_gravity(float);
         virtual btSoftBody& soft_body();
         virtual btSoftBody* soft_body_ptr();
+
+        // TODO: add detect selection method
     };
 
     class DebugDraw;

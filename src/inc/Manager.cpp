@@ -20,6 +20,7 @@
 #include <cinder/app/App.h>
 
 #include <inc/Manager.h>
+#include <inc/Solid.h>
 
 namespace inc {
     Manager::Manager() {
@@ -85,10 +86,19 @@ namespace inc {
     }
 
     void Manager::clear_solid_list() {
+        selectable_.clear();
         solids_.clear();
     }
 
     void Manager::clear_graphic_item_list() {
         graphic_items_.clear();
+    }
+
+    void Manager::register_for_selection(SolidPtr solid) {
+        selectable_.push_back(solid);
+    }
+
+    SolidList& Manager::get_selectable() {
+        return selectable_;
     }
 }

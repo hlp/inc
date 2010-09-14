@@ -80,8 +80,40 @@ namespace inc {
         return *body_;
     }
 
-    bool Solid::detect_selection(ci::app::MouseEvent event, float* distance) {
-        return false;
+    /* Original code from: http://www.devmaster.net/wiki/Ray-sphere_intersection
+    float intersectRaySphere(const Ray &ray, const Sphere &sphere) {
+	    Vec dst = ray.o - sphere.o;
+	    float B = dot(dst, ray.d);
+	    float C = dot(dst, dst) - sphere.r2;
+	    float D = B*B - C;
+	    return D > 0 ? -B - sqrt(D) : std::numeric_limits<float>::infinity();
+    }
+    */
+    bool Solid::detect_selection(ci::Ray r) {
+        btVector3 center;
+        float radius;
+
+        // note about radius: the radius is calculated from the bounding box,
+        // not a least-fit calculation around the object. Therefore, the 
+        // bounding sphere of a sphere-shaped object is the sphere that 
+        // contains the bounding box of the sphere (not just the sphere)
+        body_->getCollisionShape()->getBoundingSphere(center, radius);
+        center += body_->getWorldTransform().getOrigin();
+
+        // override the bullet sphere if possible
+        if (graphic_item_->has_alternate_bounding_sphere())
+            radius = graphic_item_->bounding_sphere_radius();
+
+        ci::Vec3f dst = r.getOrigin() - ci::Vec3f(center.x(), center.y(), center.z());
+        float B = dst.dot(r.getDirection());
+        float C = dst.dot(dst) - radius * radius;
+        float D = B * B - C;
+
+        return D > 0;
+    }
+
+    void Solid::select() {
+        ci::app::console() << "Selected" << std::endl;
     }
 
 
@@ -128,6 +160,7 @@ namespace inc {
 
 
 
+
     SoftSolid::SoftSolid(GraphicItem* item, btSoftBody* body, btDynamicsWorld* world) 
         : Solid(item, body, world) {
     }
@@ -157,7 +190,6 @@ namespace inc {
     btSoftBody* SoftSolid::soft_body_ptr() {
         return btSoftBody::upcast(body_);
     }
-
 
 
     std::deque<btTriangleMesh*> SolidFactory::mesh_cleanup_;

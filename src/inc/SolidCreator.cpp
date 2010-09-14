@@ -94,13 +94,17 @@ namespace inc {
     }
 
     void SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
-        Manager::instance().solids().push_back(
-            SolidFactory::create_rigid_sphere(pos, radius));
+        SolidPtr ptr = SolidFactory::create_rigid_sphere(pos, radius);
+
+        Manager::instance().solids().push_back(ptr);
+        Manager::instance().register_for_selection(ptr);
     }
 
     void SolidCreator::create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius) {
-        Manager::instance().solids().push_back(
-            SolidFactory::create_soft_sphere(pos, radius));
+        SolidPtr ptr = SolidFactory::create_soft_sphere(pos, radius);
+
+        Manager::instance().solids().push_back(ptr);
+        Manager::instance().register_for_selection(ptr);
     }
 
     void SolidCreator::create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius) {
@@ -108,7 +112,9 @@ namespace inc {
             SolidFactory::create_linked_soft_spheres(pos, radius);
 
         std::for_each(d_ptr->begin(), d_ptr->end(),
-            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
+            [] (SolidPtr s_ptr) { 
+                Manager::instance().solids().push_back(s_ptr); 
+                Manager::instance().register_for_selection(s_ptr); } );
     }
 
     void SolidCreator::create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
@@ -117,7 +123,9 @@ namespace inc {
             SolidFactory::create_soft_sphere_matrix(pos, radius, w, h, d);
 
         std::for_each(d_ptr->begin(), d_ptr->end(),
-            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
+            [] (SolidPtr s_ptr) { 
+                Manager::instance().solids().push_back(s_ptr); 
+                Manager::instance().register_for_selection(s_ptr); } );
     }
 
     void SolidCreator::create_rigid_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
@@ -126,7 +134,9 @@ namespace inc {
             SolidFactory::create_rigid_sphere_matrix(pos, radius, w, h, d);
 
         std::for_each(d_ptr->begin(), d_ptr->end(),
-            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
+            [] (SolidPtr s_ptr) { 
+                Manager::instance().solids().push_back(s_ptr);
+                Manager::instance().register_for_selection(s_ptr); } );
     }
 
     void SolidCreator::create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
@@ -135,7 +145,9 @@ namespace inc {
             SolidFactory::create_rigid_sphere_spring_matrix(pos, radius, w, h, d);
 
         std::for_each(d_ptr->begin(), d_ptr->end(),
-            [] (SolidPtr s_ptr) { Manager::instance().solids().push_back(s_ptr); } );
+            [] (SolidPtr s_ptr) { 
+                Manager::instance().solids().push_back(s_ptr); 
+                Manager::instance().register_for_selection(s_ptr); } );
     }
 
     void SolidCreator::create_solid_box(ci::Vec3f pos, ci::Vec3f size) {

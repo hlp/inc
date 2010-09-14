@@ -41,6 +41,7 @@ public:
     virtual bool resize(int, int);
     virtual bool mouse_down(ci::app::MouseEvent);
     virtual bool mouse_drag(ci::app::MouseEvent);
+    virtual bool mouse_up(ci::app::MouseEvent);
     virtual bool mouse_wheel(ci::app::MouseEvent);
 
     static Camera& instance();
@@ -49,6 +50,8 @@ public:
 
 private:
     void create_camera();
+    void check_selection(ci::Vec2i);
+    ci::Ray get_ray_from_screen_pos(ci::Vec2i pos);
 
     ci::MayaCamUI* cam_;
         
@@ -57,9 +60,15 @@ private:
 
     static Camera* instance_;
 
+    bool was_dragged_;
+    ci::Vec2i down_pos_;
+
     ci::CallbackId mouse_down_cb_id_;
     ci::CallbackId mouse_drag_cb_id_;
+    ci::CallbackId mouse_up_cb_id_;
     ci::CallbackId mouse_wheel_cb_id_;
+
+    ci::Vec3f last_test_;
 };
 
 }

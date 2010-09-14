@@ -52,6 +52,10 @@ public:
     void clear_solid_list();
     void clear_graphic_item_list();
 
+    void register_for_selection(std::tr1::shared_ptr<Solid>);
+
+    SolidList& get_selectable(); // returns the items the camera should check
+
     //ci::params::InterfaceGl& interface();
 
     SolidList& solids();
@@ -60,6 +64,7 @@ public:
 
 private:
     SolidList solids_;
+    SolidList selectable_;
     GraphicItemList graphic_items_;
     ModuleList modules_;
     ModuleList::const_iterator modules_it_;

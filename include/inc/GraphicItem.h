@@ -28,86 +28,99 @@
 #include <cinder/gl/Vbo.h>
 
 namespace inc {
-    class GraphicItem {
-    public:
-        virtual ~GraphicItem(); 
-        virtual void draw() = 0;
-    };
+class GraphicItem {
+public:
+    virtual ~GraphicItem(); 
+    virtual void draw() = 0;
 
-    class BoxGraphicItem : public GraphicItem {
-    public:
-        BoxGraphicItem(ci::Vec3f dimensions);
-        virtual ~BoxGraphicItem() { }
+    virtual bool has_alternate_bounding_sphere() { return false; }
+    virtual float bounding_sphere_radius() { return 0.0f; }
+};
 
-        virtual void draw();
 
-    private:
-        ci::Vec3f dimensions_;
-    };
+class OriginGraphicItem : public GraphicItem {
+public:
+    OriginGraphicItem();
+    virtual ~OriginGraphicItem() { }
 
-    class PlaneGraphicItem : public GraphicItem {
-    public:
-        PlaneGraphicItem(ci::Vec3f dimensions);
-        virtual ~PlaneGraphicItem() { }
+    virtual void draw();
 
-        virtual void draw();
+    float* grid_plane_size_ptr();
+    float* grid_plane_intervals_ptr();
 
-    private:
-        ci::Vec3f dimensions_;
-    };
+private:
+    void draw_axis();
+    void draw_grid_plane_lines();
 
-    class OriginGraphicItem : public GraphicItem {
-    public:
-        OriginGraphicItem();
-        virtual ~OriginGraphicItem() { }
+    float grid_plane_size_;
+    float grid_plane_intervals_;
+};
 
-        virtual void draw();
 
-        float* grid_plane_size_ptr();
-        float* grid_plane_intervals_ptr();
+class BoxGraphicItem : public GraphicItem {
+public:
+    BoxGraphicItem(ci::Vec3f dimensions);
+    virtual ~BoxGraphicItem() { }
 
-    private:
-        void draw_axis();
-        void draw_grid_plane_lines();
+    virtual void draw();
 
-        float grid_plane_size_;
-        float grid_plane_intervals_;
-    };
+private:
+    ci::Vec3f dimensions_;
+};
 
-    class VboGraphicItem : public GraphicItem {
-    public:
-        VboGraphicItem(ci::gl::VboMesh&, ci::Vec3f scale);
-        virtual ~VboGraphicItem() { }
 
-        virtual void draw();
+class PlaneGraphicItem : public GraphicItem {
+public:
+    PlaneGraphicItem(ci::Vec3f dimensions);
+    virtual ~PlaneGraphicItem() { }
 
-    private:
-        ci::gl::VboMesh vbo_mesh_;
-        ci::Vec3f scale_;
-    };
+    virtual void draw();
 
-    class SphereGraphicItem : public GraphicItem {
-    public:
-        SphereGraphicItem(float radius);
-        virtual ~SphereGraphicItem();
+private:
+    ci::Vec3f dimensions_;
+};
 
-        virtual void draw();
 
-    private:
-        float radius_;
-    };
+class VboGraphicItem : public GraphicItem {
+public:
+    VboGraphicItem(ci::gl::VboMesh&, ci::Vec3f scale);
+    virtual ~VboGraphicItem() { }
 
-    class SoftBodyGraphicItem : public GraphicItem {
-    public:
-        SoftBodyGraphicItem(btSoftBody* soft_body, ci::ColorA color);
-        virtual ~SoftBodyGraphicItem();
+    virtual void draw();
 
-        virtual void draw();
+private:
+    ci::gl::VboMesh vbo_mesh_;
+    ci::Vec3f scale_;
+};
 
-    private:
-        void make_gl_vertex(int face, int node);
 
-        btSoftBody* soft_body_;
-        ci::ColorA color_;
-    };
+class SphereGraphicItem : public GraphicItem {
+public:
+    SphereGraphicItem(float radius);
+    virtual ~SphereGraphicItem();
+
+    virtual void draw();
+
+    virtual bool has_alternate_bounding_sphere() { return true; }
+    virtual float bounding_sphere_radius();
+
+private:
+    float radius_;
+};
+
+
+class SoftBodyGraphicItem : public GraphicItem {
+public:
+    SoftBodyGraphicItem(btSoftBody* soft_body, ci::ColorA color);
+    virtual ~SoftBodyGraphicItem();
+
+    virtual void draw();
+
+private:
+    void make_gl_vertex(int face, int node);
+
+    btSoftBody* soft_body_;
+    ci::ColorA color_;
+};
+
 }
