@@ -40,7 +40,7 @@ class Exporter;
     
 class Solid {
 public:
-    Solid(GraphicItem*, btCollisionObject*, btDynamicsWorld*);
+    Solid(SolidGraphicItem*, btCollisionObject*, btDynamicsWorld*);
     virtual ~Solid();
 
     virtual void draw();
@@ -51,15 +51,19 @@ public:
     virtual bool detect_selection(ci::Ray); 
     virtual void select();   
 
+    bool selected();
+    void set_selected(bool);
+
 protected:
-    GraphicItem* graphic_item_;
+    SolidGraphicItem* graphic_item_;
     btCollisionObject* body_;
     btDynamicsWorld* world_;
+    bool selected_;
 };
 
 class RigidSolid : public Solid {
 public:
-    RigidSolid(GraphicItem*, btRigidBody*, btDynamicsWorld*);
+    RigidSolid(SolidGraphicItem*, btRigidBody*, btDynamicsWorld*);
     virtual ~RigidSolid();
 
     virtual void draw();
@@ -71,7 +75,7 @@ public:
 
 class SoftSolid : public Solid {
 public:
-    SoftSolid(GraphicItem*, btSoftBody*, btDynamicsWorld*);
+    SoftSolid(SolidGraphicItem*, btSoftBody*, btDynamicsWorld*);
     virtual ~SoftSolid();
 
     virtual void draw();

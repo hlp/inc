@@ -35,6 +35,18 @@ GraphicItem::~GraphicItem() {
 }
 
 
+SolidGraphicItem::~SolidGraphicItem() { 
+}
+
+Solid& SolidGraphicItem::solid() {
+    return *solid_;
+}
+
+void SolidGraphicItem::set_solid(Solid* s) {
+    solid_ = s;
+}
+
+
 OriginGraphicItem::OriginGraphicItem() {
     grid_plane_size_ = 1000.0f;
     grid_plane_intervals_ = 30;
@@ -155,7 +167,11 @@ SphereGraphicItem::~SphereGraphicItem() {
 }
 
 void SphereGraphicItem::draw() {
-    glColor4f(1.0f, 1.0f, 1.0f, 0.4);
+    if (solid().selected())
+        glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    else
+        glColor4f(1.0f, 1.0f, 1.0f, 0.4);
+
     glLineWidth(0.9f);
     ci::gl::enableWireframe();
     ci::gl::drawSphere(ci::Vec3f::zero(), radius_);
@@ -175,7 +191,11 @@ SoftBodyGraphicItem::~SoftBodyGraphicItem() {
 
 // theres almost certainly a better way to implement this method
 void SoftBodyGraphicItem::draw() {
-    ci::gl::color(color_);
+    if (solid().selected())
+        glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    else
+        ci::gl::color(color_);
+
     glLineWidth(0.9f);
 
     glBegin(GL_LINES);

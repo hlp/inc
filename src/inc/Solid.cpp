@@ -57,8 +57,13 @@
 //#define BULLET_DEBUG_DRAW 1
 
 namespace inc {
-Solid::Solid(GraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
+Solid::Solid(SolidGraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
     : graphic_item_(item), body_(body), world_(world) {
+    selected_ = false;
+
+    // it is still valid to have a solid without a graphic representation
+    if (item != NULL)
+        graphic_item_->set_solid(this);
 }
 
 Solid::~Solid() {
@@ -113,11 +118,19 @@ bool Solid::detect_selection(ci::Ray r) {
 }
 
 void Solid::select() {
-    ci::app::console() << "Selected" << std::endl;
+    selected_ = !selected_;
+}
+
+bool Solid::selected() {
+    return selected_;
+}
+
+void Solid::set_selected(bool s) {
+    selected_ = s;
 }
 
 
-RigidSolid::RigidSolid(GraphicItem* item, btRigidBody* body, btDynamicsWorld* world) 
+RigidSolid::RigidSolid(SolidGraphicItem* item, btRigidBody* body, btDynamicsWorld* world) 
     : Solid(item, body, world) {
 }
 
@@ -161,7 +174,7 @@ btRigidBody* RigidSolid::rigid_body_ptr() {
 
 
 
-SoftSolid::SoftSolid(GraphicItem* item, btSoftBody* body, btDynamicsWorld* world) 
+SoftSolid::SoftSolid(SolidGraphicItem* item, btSoftBody* body, btDynamicsWorld* world) 
     : Solid(item, body, world) {
 }
 
@@ -301,7 +314,7 @@ SolidPtr SolidFactory::create_solid_box(ci::Vec3f dimensions,
     btRigidBody* body = ci::bullet::createBox(SolidFactory::instance().dynamics_world(), 
         dimensions, ci::Quatf(), position);
 
-    GraphicItem* item = new BoxGraphicItem(dimensions);
+    SolidGraphicItem* item = new BoxGraphicItem(dimensions);
 
     SolidPtr solid(new RigidSolid(item, body, 
         SolidFactory::instance().dynamics_world()));
@@ -325,7 +338,7 @@ SolidPtr SolidFactory::create_rigid_mesh(ci::TriMesh& mesh,
 
     // Create GraphicItem object
     ci::gl::VboMesh vbo_mesh(mesh);
-    GraphicItem* item = new VboGraphicItem(vbo_mesh, scale);
+    SolidGraphicItem* item = new VboGraphicItem(vbo_mesh, scale);
 
     SolidPtr solid(new RigidSolid(item, body,
         SolidFactory::instance().dynamics_world()));
@@ -348,7 +361,7 @@ SolidPtr SolidFactory::create_plane(ci::Vec3f dimension,
     btRigidBody* body = new btRigidBody(groundRigidBodyCI);
     SolidFactory::instance().dynamics_world()->addRigidBody(body);
 
-    GraphicItem* item = new PlaneGraphicItem(dimension);
+    SolidGraphicItem* item = new PlaneGraphicItem(dimension);
 
     SolidPtr solid(new RigidSolid(item, body, 
         SolidFactory::instance().dynamics_world()));
@@ -375,7 +388,7 @@ SolidPtr SolidFactory::create_static_solid_box(ci::Vec3f dimensions,
 	btRigidBody *rigid_body = new btRigidBody(rigidBodyCI);
 	SolidFactory::instance().dynamics_world()->addRigidBody(rigid_body);
 
-    //GraphicItem* item = new BoxGraphicItem(dimensions);
+    //SolidGraphicItem* item = new BoxGraphicItem(dimensions);
 
     SolidPtr solid(new RigidSolid(NULL, rigid_body, 
         SolidFactory::instance().dynamics_world()));

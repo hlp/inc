@@ -38,6 +38,20 @@ public:
 };
 
 
+class Solid;
+
+class SolidGraphicItem : public GraphicItem {
+public:
+    virtual ~SolidGraphicItem();
+
+    Solid& solid();
+    void set_solid(Solid*);
+
+private:
+    Solid* solid_;
+};
+
+
 class OriginGraphicItem : public GraphicItem {
 public:
     OriginGraphicItem();
@@ -57,7 +71,7 @@ private:
 };
 
 
-class BoxGraphicItem : public GraphicItem {
+class BoxGraphicItem : public SolidGraphicItem {
 public:
     BoxGraphicItem(ci::Vec3f dimensions);
     virtual ~BoxGraphicItem() { }
@@ -69,7 +83,7 @@ private:
 };
 
 
-class PlaneGraphicItem : public GraphicItem {
+class PlaneGraphicItem : public SolidGraphicItem {
 public:
     PlaneGraphicItem(ci::Vec3f dimensions);
     virtual ~PlaneGraphicItem() { }
@@ -81,7 +95,7 @@ private:
 };
 
 
-class VboGraphicItem : public GraphicItem {
+class VboGraphicItem : public SolidGraphicItem {
 public:
     VboGraphicItem(ci::gl::VboMesh&, ci::Vec3f scale);
     virtual ~VboGraphicItem() { }
@@ -94,7 +108,7 @@ private:
 };
 
 
-class SphereGraphicItem : public GraphicItem {
+class SphereGraphicItem : public SolidGraphicItem {
 public:
     SphereGraphicItem(float radius);
     virtual ~SphereGraphicItem();
@@ -109,7 +123,7 @@ private:
 };
 
 
-class SoftBodyGraphicItem : public GraphicItem {
+class SoftBodyGraphicItem : public SolidGraphicItem {
 public:
     SoftBodyGraphicItem(btSoftBody* soft_body, ci::ColorA color);
     virtual ~SoftBodyGraphicItem();

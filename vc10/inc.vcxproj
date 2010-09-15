@@ -100,6 +100,7 @@
     <ClCompile Include="..\src\inc\GraphicItem.cpp" />
     <ClCompile Include="..\src\inc\Manager.cpp" />
     <ClCompile Include="..\src\inc\Menu.cpp" />
+    <ClCompile Include="..\src\inc\MeshCreator.cpp" />
     <ClCompile Include="..\src\inc\Origin.cpp" />
     <ClCompile Include="..\src\inc\Renderer.cpp" />
     <ClCompile Include="..\src\inc\Solid.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="..\include\inc\GraphicItem.h" />
     <ClInclude Include="..\include\inc\Manager.h" />
     <ClInclude Include="..\include\inc\Menu.h" />
+    <ClInclude Include="..\include\inc\MeshCreator.h" />
     <ClInclude Include="..\include\inc\Module.h" />
     <ClInclude Include="..\include\inc\Origin.h" />
     <ClInclude Include="..\include\inc\Renderer.h" />
