@@ -26,8 +26,11 @@ class MeshCreator {
 public:
     MeshCreator();
 
-    std::tr1::shared_ptr<ci::TriMesh> generate_bag(ci::Vec3f center,
+    std::tr1::shared_ptr<ci::TriMesh> generate_bag_mesh(ci::Vec3f center,
         float radius);
+
+    // creates a mesh, turns that into a soft body, and adds it to the scene
+    void add_solid_bag(ci::Vec3f center, float radius);
 
     static MeshCreator& instance();
 

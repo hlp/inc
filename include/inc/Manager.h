@@ -43,6 +43,7 @@ public:
     void update_modules();
     void draw_modules();
     void add_module(std::tr1::shared_ptr<Module>);
+    void add_solid(std::tr1::shared_ptr<Solid>);
         
     void setup();
     void update();

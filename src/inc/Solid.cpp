@@ -405,6 +405,78 @@ SolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius)
     return solid;
 }
 
+SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh) {
+    ci::TriMesh mesh_copy = *in_mesh; // TODO: remove this copy step
+
+    std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
+        remove_mesh_duplicates(mesh_copy);
+
+    ci::TriMesh mesh; // mesh with duplicates removed
+    mesh = *mesh_ptr;
+
+    btScalar* vertices = new float[mesh.getNumVertices() * 3];
+
+    int i = 0;
+    for (std::vector<ci::Vec3f>::const_iterator it = mesh.getVertices().begin();
+        it != mesh.getVertices().end(); ++it) { 
+        vertices[i] = it->x; ++i;
+        vertices[i] = it->y; ++i;
+        vertices[i] = it->z; ++i;
+    }
+
+    int* triangles = new int[mesh.getNumIndices()];
+        
+    i = 0;
+    for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
+        it != mesh.getIndices().end(); ++it) {
+        triangles[i] = *it;
+        ++i;
+    }
+        
+    btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
+        SolidFactory::instance().soft_body_world_info(),
+        vertices, triangles, mesh.getNumTriangles(), false);
+
+    soft_body->m_materials[0]->m_kLST = 0.1;
+    //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
+	soft_body->m_cfg.kDF = 1;
+	soft_body->m_cfg.kDP = 2.0f; // no fun
+    soft_body->m_cfg.kDG = 2.0f; // no fun
+	soft_body->m_cfg.kPR = 0.0f;
+    soft_body->m_cfg.kMT = 0.5f; // pose rigiditiy
+
+    soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
+        
+    btMatrix3x3 m;
+    // This sets the axis, I think
+    //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
+    m.setIdentity();
+    // This sets the origin / starting position
+    soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
+    soft_body->transform(btTransform(m, 
+        ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
+
+    for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
+        soft_body->setMass(i, 1.0f);
+    }
+        
+    std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
+
+    std::for_each(anchors->begin(), anchors->end(),
+        [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
+
+    SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
+
+    SolidPtr solid(new SoftSolid(
+        new SoftBodyGraphicItem(soft_body, container_color_), 
+        soft_body, SolidFactory::instance().dynamics_world()));
+
+    delete [] triangles;
+    delete [] vertices;
+    
+    return solid;
+}
+
 SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
     btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
@@ -807,71 +879,9 @@ SolidPtr SolidFactory::create_soft_sphere_container() {
     loader.load(&mesh, true);
 
     std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
-        remove_mesh_duplicates(mesh);
-
-    mesh = *mesh_ptr;
-
-    btScalar* vertices = new float[mesh.getNumVertices() * 3];
-
-    int i = 0;
-    for (std::vector<ci::Vec3f>::const_iterator it = mesh.getVertices().begin();
-        it != mesh.getVertices().end(); ++it) { 
-        vertices[i] = it->x; ++i;
-        vertices[i] = it->y; ++i;
-        vertices[i] = it->z; ++i;
-    }
-
-    int* triangles = new int[mesh.getNumIndices()];
-        
-    i = 0;
-    for (std::vector<size_t>::const_iterator it = mesh.getIndices().begin();
-        it != mesh.getIndices().end(); ++it) {
-        triangles[i] = *it;
-        ++i;
-    }
-        
-    btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(
-        SolidFactory::instance().soft_body_world_info(),
-        vertices, triangles, mesh.getNumTriangles(), false);
-
-    soft_body->m_materials[0]->m_kLST = 0.1;
-    //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
-	soft_body->m_cfg.kDF = 1;
-	soft_body->m_cfg.kDP = 2.0f; // no fun
-    soft_body->m_cfg.kDG = 2.0f; // no fun
-	soft_body->m_cfg.kPR = 0.0f;
-    soft_body->m_cfg.kMT = 0.5f; // pose rigiditiy
-
-    soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
-        
-    btMatrix3x3 m;
-    // This sets the axis, I think
-    //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
-    m.setIdentity();
-    // This sets the origin / starting position
-    soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
-    soft_body->transform(btTransform(m, 
-        ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
-
-    for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
-        soft_body->setMass(i, 1.0f);
-    }
-        
-    std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
-
-    std::for_each(anchors->begin(), anchors->end(),
-        [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
-
-    SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
-
-    SolidPtr solid(new SoftSolid(
-        new SoftBodyGraphicItem(soft_body, container_color_), 
-        soft_body, SolidFactory::instance().dynamics_world()));
-
-    delete [] triangles;
-    delete [] vertices;
+        std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh(mesh));
     
-    return solid;
+    return create_soft_mesh(mesh_ptr);
 }
 
 btDynamicsWorld* SolidFactory::dynamics_world() {

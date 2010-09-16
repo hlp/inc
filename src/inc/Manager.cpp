@@ -81,6 +81,10 @@ namespace inc {
         modules_.push_back(module);
     }
 
+    void Manager::add_solid(SolidPtr ptr) {
+        solids_.push_back(ptr);
+    }
+
     void Manager::clear_module_list() {
         modules_.clear();
     }

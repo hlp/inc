@@ -50,10 +50,8 @@ namespace inc {
             ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
             ci::Vec3f().zero()));
         
-        /*
         Manager::instance().solids().push_back(
             SolidFactory::create_soft_sphere_container());
-        */
     }
 
     void Origin::update() {

@@ -17,6 +17,10 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* SolidCreator:
+   - creates basisc shapes or structures, and adds them to the scene.
+*/
+
 #pragma once
 
 #include <boost/cstdint.hpp>

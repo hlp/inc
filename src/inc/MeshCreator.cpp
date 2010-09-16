@@ -18,6 +18,8 @@
 */
 
 #include <inc/MeshCreator.h>
+#include <inc/Manager.h>
+#include <inc/Solid.h>
 
 namespace inc {
 
@@ -25,12 +27,20 @@ MeshCreator::MeshCreator() {
     instance_ = this;
 }
 
-std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bag(
+std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bag_mesh(
     ci::Vec3f center, float radius) {
     std::tr1::shared_ptr<ci::TriMesh> mesh = 
         std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh());
 
+    // make the mesh
+
     return mesh;
+}
+
+void MeshCreator::add_solid_bag(ci::Vec3f center, float radius) {
+    std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bag_mesh(center, radius);
+
+    Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
 
