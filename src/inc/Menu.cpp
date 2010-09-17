@@ -26,6 +26,7 @@
 #include <inc/Manager.h>
 #include <inc/Solid.h>
 #include <inc/Widget.h>
+#include <inc/MeshCreator.h>
 
 namespace inc {
 
@@ -80,6 +81,15 @@ void MainMenu::setup() {
 
     add_widget(save_dxf_button);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > bag_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Make mesh"));
+
+    bag_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MainMenu::create_bag), this));
+
+    add_widget(bag_button);
+
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
 }
@@ -97,6 +107,13 @@ bool MainMenu::save_dxf(bool) {
         } );
 
     saver.end();
+
+    return false;
+}
+
+bool MainMenu::create_bag(bool) {
+    MeshCreator::instance().add_solid_bag(ci::Vec3f(0.0f, 2.0f, 0.0f),
+        3.0f);
 
     return false;
 }

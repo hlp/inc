@@ -35,8 +35,10 @@ public:
     static MeshCreator& instance();
 
 private:
-    static MeshCreator* instance_;
+    std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
+        ci::Vec3f center, float radius, int res);
 
+    static MeshCreator* instance_;
 };
 
 }

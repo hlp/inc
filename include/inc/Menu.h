@@ -57,6 +57,7 @@ public:
     ci::params::InterfaceGl& interface();
 
     bool save_dxf(bool); // called by a button so its passed a bool
+    bool create_bag(bool);
 
     MainMenu& instance();
 
