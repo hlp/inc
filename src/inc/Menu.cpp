@@ -113,7 +113,7 @@ bool MainMenu::save_dxf(bool) {
 
 bool MainMenu::create_bag(bool) {
     MeshCreator::instance().add_solid_bag(ci::Vec3f(0.0f, 2.0f, 0.0f),
-        3.0f);
+        1.5f);
 
     return false;
 }

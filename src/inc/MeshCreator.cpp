@@ -51,6 +51,10 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bag_mesh(
         for (int j = 0; j < line_res; ++j) {
             // rotate around the axis
             ci::Vec3f v = ci::Quatf(axis, theta) * (*base_line)[j];
+            
+            float stretch = 2.0f;
+            v = ci::Vec3f(v.x, v.y * stretch, v.z);
+
             v += center;
             line_segments[i].push_back(v);
         }
