@@ -17,7 +17,11 @@
 *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cinder/gl/gl.h>
 #include <cinder/CinderMath.h>
+#include <cinder/app/App.h>
+
+//#include <opennurbs.h>
 
 #include <inc/MeshCreator.h>
 #include <inc/Manager.h>
@@ -36,7 +40,7 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bag_mesh(
 
     // make the mesh at the origin, 
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > base_line = 
-        make_half_circle(ci::Vec3f::zero(), radius, line_res);
+        make_half_circle(ci::Vec3f(0.0f, 0.0f, 0.0f), radius, line_res);
 
     // find axis, the line between the first and last points
     ci::Vec3f axis = (*base_line)[base_line->size() - 1] - (*base_line)[0u];
@@ -117,6 +121,18 @@ void MeshCreator::add_solid_bag(ci::Vec3f center, float radius) {
     Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
+void MeshCreator::add_rhino_mesh() {
+    /*
+    ON::Begin();
+
+    ON_3dPoint point = ON_3dPoint(1.0, 2.0, 3.0);
+
+    ci::app::console() << point.x << " : " << point.y << " : " << 
+        point.z << std::endl;
+
+    ON::End();
+    */
+}
 
 MeshCreator* MeshCreator::instance_;
 

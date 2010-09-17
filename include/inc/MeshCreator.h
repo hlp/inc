@@ -32,6 +32,8 @@ public:
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_solid_bag(ci::Vec3f center, float radius);
 
+    void add_rhino_mesh();
+
     static MeshCreator& instance();
 
 private:
