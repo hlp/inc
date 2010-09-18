@@ -30,6 +30,9 @@ CurveSketcher::CurveSketcher() {
     active_ = true;
     degree_ = 3;
  
+    // TODO: this resolution should change as more points are added
+    // in fact, the resolution should represent the number of points
+    // between two control points
     rendering_resolution_ = 1.0f / 300.0f;
     line_thickness_ = 3.0f;
     line_color_ = ci::ColorA(1.0f, 0.5f, 0.25f, 0.9f);
@@ -50,7 +53,7 @@ void CurveSketcher::update() {
 }
 
 void CurveSketcher::draw() {
-    if (points_.size() < (size_t)degree_)
+    if (points_.size() < (size_t)degree_ + 1)
         return;
 
     ci::gl::color(line_color_);

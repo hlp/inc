@@ -124,10 +124,10 @@ namespace inc {
 
     bool Camera::mouse_up(ci::app::MouseEvent m_event) {
         // check if it was a click, if so, check selectable for selections
-        if (was_dragged_)
-            return false;
+        //if (was_dragged_)
+        //    return false;
 
-        if (m_event.getPos() != down_pos_)
+        if (m_event.getPos().distance(down_pos_) > 2)
             return false;
 
         check_selection(m_event.getPos());
