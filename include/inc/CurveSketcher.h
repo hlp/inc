@@ -46,6 +46,7 @@ public:
     void draw();
 
     // when the mouse is pressed and released without dragging
+    // TODO: remove from being called from Camera
     void on_mouse_click(ci::Ray);
 
     // callback for the button press
@@ -88,6 +89,7 @@ public:
     // this draws the billboarded circle
     virtual void draw();
 
+    // returns true if it is selected, false otherwise
     bool mouse_pressed(ci::Ray);
     bool mouse_dragged(ci::app::MouseEvent);
     bool mouse_released(ci::app::MouseEvent);
@@ -111,6 +113,9 @@ protected:
     float position_image_dim_;
     ci::Surface position_image_;
     ci::gl::Texture position_texture_;
+
+    ci::Surface active_image_;
+    ci::gl::Texture active_texture_;
 };
 
 /*

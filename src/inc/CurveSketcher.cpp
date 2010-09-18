@@ -90,6 +90,13 @@ void CurveSketcher::on_mouse_click(ci::Ray r) {
     if (!active_)
         return;
 
+    // check for intersections (selections) of the control points
+    for (std::vector<std::tr1::shared_ptr<ControlPoint> >::const_iterator it =
+        control_points_.begin(); it != control_points_.end(); ++it) {
+        if ((*it)->mouse_pressed(r))
+            return;
+    }
+
     // get the click position from the camera
     // calculate the intersection of the ray with the plane
 
@@ -179,7 +186,9 @@ bool ControlPoint::mouse_pressed(ci::Ray r) {
 
     active_ = true;
 
-    return false;
+    ci::app::console() << "Control Point selected" << std::endl;
+
+    return true;
 }
 
 bool ControlPoint::mouse_dragged(ci::app::MouseEvent evt) {
@@ -202,7 +211,7 @@ void ControlPoint::setup() {
     ci::cairo::SurfaceImage base(position_image_dim_, position_image_dim_, true);
 	ci::cairo::Context ctx(base);
 
-    // draw yellow circles
+    // draw a yellow circles
 	ctx.setSourceRgb( 1.0f, 1.0f, 0.0f );
 	ctx.newSubPath();
     float scl = 2.0f;
@@ -213,6 +222,20 @@ void ControlPoint::setup() {
 
     position_image_ = base.getSurface();
     position_texture_ = ci::gl::Texture(position_image_);
+
+    ci::cairo::SurfaceImage active_base(position_image_dim_, position_image_dim_, true);
+	ci::cairo::Context actx(active_base);
+
+    // draw a solid yellow circles
+	actx.setSourceRgb( 0.0f, 1.0f, 0.0f );
+	actx.newSubPath();
+    //ctx.setLineWidth(1.5f * scl);
+    actx.circle(ci::Vec2f(position_image_dim_ / 2.0f, position_image_dim_ / 2.0f), 
+        2.0f * scl);
+	actx.stroke();
+
+    active_image_ = active_base.getSurface();
+    active_texture_ = ci::gl::Texture(active_image_);
 }
 
 void ControlPoint::draw() {
@@ -223,7 +246,12 @@ void ControlPoint::draw() {
 
     glBegin(GL_QUADS);
 
-    position_texture_.bind();
+    if (active_) {
+        ci::app::console() << "binding active texture" << std::endl;
+        active_texture_.bind();
+    }
+    else
+        position_texture_.bind();
 
     float x = position_.x;
 	float y = position_.y;
