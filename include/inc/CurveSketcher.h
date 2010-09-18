@@ -57,6 +57,7 @@ private:
     std::tr1::shared_ptr<ci::BSpline3f> current_spline_;
     std::vector<ci::Vec3f> points_;
 
+    // specified by position and normal
     ci::Ray drawing_plane_;
     int degree_;
 
@@ -64,7 +65,6 @@ private:
     float rendering_resolution_;
     float line_thickness_;
     ci::ColorA line_color_;
-
 };
 
 }

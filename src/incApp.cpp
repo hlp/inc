@@ -27,6 +27,7 @@
 #include <inc/Origin.h>
 #include <inc/Module.h>
 #include <inc/SolidCreator.h>
+#include <inc/CurveSketcher.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -60,6 +61,9 @@ void IncApp::setup() {
     solid_creator_ = std::tr1::shared_ptr<inc::SolidCreator>(new inc::SolidCreator());
     manager_->add_module(solid_creator_);
 
+    curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
+    manager_->add_module(curve_sketcher_);
+
     // menus must be drawn last
     manager_->add_module(main_menu_);
 
@@ -92,6 +96,7 @@ void IncApp::shutdown() {
     // remove other shared_ptr refs to modules
     manager_->clear_module_list();
 
+    curve_sketcher_.reset();
     solid_creator_.reset();
     origin_.reset();
     main_menu_.reset();

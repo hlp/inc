@@ -25,6 +25,7 @@
 #include <incApp.h>
 #include <inc/Manager.h>
 #include <inc/Solid.h>
+#include <inc/CurveSketcher.h>
 
 namespace inc {
     Camera::Camera() {
@@ -126,8 +127,13 @@ namespace inc {
         if (was_dragged_)
             return false;
 
-        if (m_event.getPos() == down_pos_)
-            check_selection(m_event.getPos());
+        if (m_event.getPos() != down_pos_)
+            return false;
+
+        check_selection(m_event.getPos());
+
+        CurveSketcher::instance().on_mouse_click(
+            get_ray_from_screen_pos(m_event.getPos()));
 
         return false;
     }

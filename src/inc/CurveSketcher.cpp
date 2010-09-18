@@ -26,12 +26,15 @@ namespace inc {
 
 CurveSketcher::CurveSketcher() {
     instance_ = this;
-    active_ = false;
+
+    active_ = true;
     degree_ = 3;
  
     rendering_resolution_ = 1.0f / 300.0f;
     line_thickness_ = 3.0f;
     line_color_ = ci::ColorA(1.0f, 0.5f, 0.25f, 0.9f);
+
+    drawing_plane_ = ci::Ray(ci::Vec3f::zero(), ci::Vec3f::yAxis());
 }
 
 CurveSketcher::~CurveSketcher() {
@@ -47,6 +50,9 @@ void CurveSketcher::update() {
 }
 
 void CurveSketcher::draw() {
+    if (points_.size() < (size_t)degree_)
+        return;
+
     ci::gl::color(line_color_);
     glLineWidth(line_thickness_);
 
@@ -65,6 +71,18 @@ void CurveSketcher::on_mouse_click(ci::Ray r) {
 
     // get the click position from the camera
     // calculate the intersection of the ray with the plane
+
+    // http://local.wasp.uwa.edu.au/~pbourke/geometry/planeline/
+
+    // find distance to plane
+    float t = drawing_plane_.getDirection().dot(drawing_plane_.getOrigin() - r.getOrigin()) / 
+        drawing_plane_.getDirection().dot(r.getDirection());
+
+    ci::Vec3f p = r.getOrigin() + t * r.getDirection();
+
+    points_.push_back(p);
+
+    generate_spline(false);
 }
 
 bool CurveSketcher::activate_button_pressed(bool) {
