@@ -84,7 +84,8 @@ public:
     virtual btSoftBody& soft_body();
     virtual btSoftBody* soft_body_ptr();
 
-    // TODO: add detect selection method
+    // Override
+    virtual bool detect_selection(ci::Ray);
 };
 
 class DebugDraw;
@@ -104,7 +105,6 @@ public:
     btDynamicsWorld* dynamics_world();
     btSoftRigidDynamicsWorld* soft_dynamics_world();
     float gravity();
-
         
     static SolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
     static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);

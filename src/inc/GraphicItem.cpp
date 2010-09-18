@@ -222,4 +222,31 @@ void SoftBodyGraphicItem::make_gl_vertex(int face, int node) {
         soft_body_->m_faces[face].m_n[node]->m_x.y(),
         soft_body_->m_faces[face].m_n[node]->m_x.z());
 }
+
+bool SoftBodyGraphicItem::detect_selection(ci::Ray r) {
+    int num_faces = soft_body_->m_faces.size();
+
+    ci::Vec3f v1, v2, v3;
+    float dist;
+
+    for (int i = 0; i < num_faces; ++i) {
+        v1 = ci::Vec3f(soft_body_->m_faces[i].m_n[0]->m_x.x(),
+            soft_body_->m_faces[i].m_n[0]->m_x.y(),
+            soft_body_->m_faces[i].m_n[0]->m_x.z());
+
+        v2 = ci::Vec3f(soft_body_->m_faces[i].m_n[1]->m_x.x(),
+            soft_body_->m_faces[i].m_n[1]->m_x.y(),
+            soft_body_->m_faces[i].m_n[1]->m_x.z());
+
+        v3 = ci::Vec3f(soft_body_->m_faces[i].m_n[2]->m_x.x(),
+            soft_body_->m_faces[i].m_n[2]->m_x.y(),
+            soft_body_->m_faces[i].m_n[2]->m_x.z());
+
+        if (r.calcTriangleIntersection(v1, v2, v3, &dist))
+            return true;
+    }
+
+    return false;
+}
+
 }

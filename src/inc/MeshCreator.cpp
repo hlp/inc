@@ -21,8 +21,6 @@
 #include <cinder/CinderMath.h>
 #include <cinder/app/App.h>
 
-//#include <opennurbs.h>
-
 #include <inc/MeshCreator.h>
 #include <inc/Manager.h>
 #include <inc/Solid.h>
@@ -121,17 +119,8 @@ void MeshCreator::add_solid_bag(ci::Vec3f center, float radius) {
     Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
-void MeshCreator::add_rhino_mesh() {
-    /*
-    ON::Begin();
-
-    ON_3dPoint point = ON_3dPoint(1.0, 2.0, 3.0);
-
-    ci::app::console() << point.x << " : " << point.y << " : " << 
-        point.z << std::endl;
-
-    ON::End();
-    */
+void MeshCreator::add_cgal_mesh() {
+    ci::BSpline3f b;
 }
 
 MeshCreator* MeshCreator::instance_;

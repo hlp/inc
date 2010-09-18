@@ -50,15 +50,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;TRACE_DTORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\Cinder\blocks\openNURBS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Debug;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;C:\dev\Cinder\blocks\openNURBS\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cinder_d.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;opennurbs_staticMT.lib;zlib_MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Debug;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder_d.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\Cinder\blocks\openNURBS\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UndefinePreprocessorDefinitions>
@@ -84,8 +84,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Release;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;C:\dev\Cinder\blocks\openNURBS\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;opennurbs_staticMT.lib;zlibMT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Release;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <IgnoreSpecificDefaultLibraries>
@@ -96,6 +96,7 @@
     <ClCompile Include="..\src\incApp.cpp" />
     <ClCompile Include="..\src\inc\Button.cpp" />
     <ClCompile Include="..\src\inc\Camera.cpp" />
+    <ClCompile Include="..\src\inc\CurveSketcher.cpp" />
     <ClCompile Include="..\src\inc\DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\GraphicItem.cpp" />
     <ClCompile Include="..\src\inc\Manager.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
     <ClInclude Include="..\include\inc\Button.h" />
     <ClInclude Include="..\include\inc\Camera.h" />
+    <ClInclude Include="..\include\inc\CurveSketcher.h" />
     <ClInclude Include="..\include\inc\DxfSaver.h" />
     <ClInclude Include="..\include\inc\GraphicItem.h" />
     <ClInclude Include="..\include\inc\Manager.h" />

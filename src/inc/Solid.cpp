@@ -204,6 +204,10 @@ btSoftBody* SoftSolid::soft_body_ptr() {
     return btSoftBody::upcast(body_);
 }
 
+bool SoftSolid::detect_selection(ci::Ray r) {
+    return graphic_item_->detect_selection(r);
+}
+
 
 std::deque<btTriangleMesh*> SolidFactory::mesh_cleanup_;
 ci::ColorA SolidFactory::sphere_color_;

@@ -26,15 +26,13 @@
 
 #include <cinder/Vector.h>
 #include <cinder/gl/Vbo.h>
+#include <cinder/Ray.h>
 
 namespace inc {
 class GraphicItem {
 public:
     virtual ~GraphicItem(); 
     virtual void draw() = 0;
-
-    virtual bool has_alternate_bounding_sphere() { return false; }
-    virtual float bounding_sphere_radius() { return 0.0f; }
 };
 
 
@@ -46,6 +44,11 @@ public:
 
     Solid& solid();
     void set_solid(Solid*);
+
+    virtual bool has_alternate_bounding_sphere() { return false; }
+    virtual float bounding_sphere_radius() { return 0.0f; }
+
+    virtual bool detect_selection(ci::Ray) { return false; }
 
 private:
     Solid* solid_;
@@ -129,6 +132,9 @@ public:
     virtual ~SoftBodyGraphicItem();
 
     virtual void draw();
+
+    // check the ray intersection with all the triangles of the mesh
+    virtual bool detect_selection(ci::Ray);
 
 private:
     void make_gl_vertex(int face, int node);
