@@ -17,15 +17,23 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <vector>
 
+#include <cinder/gl/gl.h>
+#include <cinder/gl/Texture.h>
 #include <cinder/Ray.h>
 #include <cinder/BSpline.h>
 #include <cinder/Vector.h>
+#include <cinder/app/MouseEvent.h>
+#include <cinder/Surface.h>
 
 #include <inc/Module.h>
 
 namespace inc {
+
+class ControlPoint;
 
 class CurveSketcher : public Module {
 public:
@@ -51,6 +59,7 @@ private:
     void set_up_sketcher();
     void finish_sketcher();
     void generate_spline(bool closed); // called once per click
+    void draw_control_points();
 
     static CurveSketcher* instance_;
     bool active_;
@@ -65,6 +74,51 @@ private:
     float rendering_resolution_;
     float line_thickness_;
     ci::ColorA line_color_;
+
+    // there are as many control points as there are points_
+    std::vector<std::tr1::shared_ptr<ControlPoint> > control_points_;
 };
+
+
+class ControlPoint {
+public:
+    ControlPoint(ci::Vec3f pos);
+
+    virtual void setup();
+    // this draws the billboarded circle
+    virtual void draw();
+
+    bool mouse_pressed(ci::Ray);
+    bool mouse_dragged(ci::app::MouseEvent);
+    bool mouse_released(ci::app::MouseEvent);
+
+    // dircetions of the control points
+    enum Direction {
+        X_INCREASE,
+        X_DECREASE,
+        Z_INCREASE,
+        Z_DECREASE
+    };
+
+protected:
+    // called when there's been a sucessful drag
+    //virtual void move_point(ci::app::MouseEvent evt) = 0;
+
+    ci::Vec3f position_;
+    bool active_;
+    float arrow_size_;
+
+    float position_image_dim_;
+    ci::Surface position_image_;
+    ci::gl::Texture position_texture_;
+};
+
+/*
+class XIntreaseControlPoint : public ControlPoint {
+
+};
+*/
+
+
 
 }

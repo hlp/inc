@@ -160,6 +160,10 @@ namespace inc {
         return cam_->getCamera().generateRay(u, v, w / h);
     }
 
+    ci::MayaCamUI& Camera::cam() {
+        return *cam_;
+    }
+
     Camera* Camera::instance_;
 
     Camera& Camera::instance() {

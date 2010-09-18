@@ -58,7 +58,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Debug;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cinder_d.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cinder_d.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;cairo-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
@@ -85,7 +85,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\dev\Cinder\blocks\bullet\bullet\lib\Release;C:\dev\Cinder\lib\msw;C:\dev\Cinder\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cinder.lib;BulletDynamics.lib;BulletSoftBody.lib;BulletCollision.lib;LinearMath.lib;BulletFileLoader.lib;ConvexDecomposition.lib;cairo-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <IgnoreSpecificDefaultLibraries>

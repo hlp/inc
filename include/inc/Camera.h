@@ -48,6 +48,8 @@ public:
 
     bool draw_interface();
 
+    ci::MayaCamUI& cam();
+
 private:
     void create_camera();
     void check_selection(ci::Vec2i);
