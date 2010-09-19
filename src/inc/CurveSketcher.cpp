@@ -46,11 +46,15 @@ CurveSketcher::CurveSketcher() {
 }
 
 CurveSketcher::~CurveSketcher() {
-    // nothing here
+    IncApp::instance().unregisterMouseDown(mouse_down_cb_id_);
+    IncApp::instance().unregisterMouseDrag(mouse_drag_cb_id_);
+    IncApp::instance().unregisterMouseUp(mouse_up_cb_id_);
 }
 
 void CurveSketcher::setup() {
-    // nothing here
+    mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, &CurveSketcher::mouse_down);
+    mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, &CurveSketcher::mouse_drag);
+    mouse_up_cb_id_ = IncApp::instance().registerMouseUp(this, &CurveSketcher::mouse_up);
 }
 
 void CurveSketcher::update() {
@@ -58,7 +62,7 @@ void CurveSketcher::update() {
 }
 
 void CurveSketcher::draw() {
-    if (points_.size() < (size_t)degree_)
+    if (control_points_.size() < (size_t)degree_)
         return;
 
     ci::gl::color(line_color_);
@@ -83,38 +87,6 @@ void CurveSketcher::draw_control_points() {
         [] (std::tr1::shared_ptr<ControlPoint> point) { point->draw(); } );
 }
 
-void CurveSketcher::on_mouse_click(ci::Ray r) {
-    if (!active_)
-        return;
-
-    // check for intersections (selections) of the control points
-    for (std::vector<std::tr1::shared_ptr<ControlPoint> >::const_iterator it =
-        control_points_.begin(); it != control_points_.end(); ++it) {
-        if ((*it)->mouse_pressed(r))
-            return;
-    }
-
-    // get the click position from the camera
-    // calculate the intersection of the ray with the plane
-
-    // http://local.wasp.uwa.edu.au/~pbourke/geometry/planeline/
-
-    // find distance to plane
-    float t = drawing_plane_.getDirection().dot(drawing_plane_.getOrigin() - r.getOrigin()) / 
-        drawing_plane_.getDirection().dot(r.getDirection());
-
-    ci::Vec3f p = r.getOrigin() + t * r.getDirection();
-
-    points_.push_back(p);
-
-    std::tr1::shared_ptr<ControlPoint> cp = 
-        std::tr1::shared_ptr<ControlPoint>(new ControlPoint(p, *this));
-    cp->setup();
-    control_points_.push_back(cp);
-
-    generate_spline(false);
-}
-
 bool CurveSketcher::activate_button_pressed(bool) {
     if (!active_)
         set_up_sketcher();
@@ -127,7 +99,6 @@ bool CurveSketcher::activate_button_pressed(bool) {
 void CurveSketcher::set_up_sketcher() {
     // create bspline
     current_spline_.reset();
-    points_.clear();
     control_points_.clear();
 }
 
@@ -137,24 +108,129 @@ void CurveSketcher::finish_sketcher() {
 }
 
 void CurveSketcher::generate_spline(bool close) {
-    if (points_.size() < (size_t)degree_)
+    if (control_points_.size() < (size_t)degree_)
         return;
+
+    std::vector<ci::Vec3f> points;
+
+    std::for_each(control_points_.begin(), control_points_.end(),
+        [&] (std::tr1::shared_ptr<ControlPoint> ptr) {
+            points.push_back(ptr->position());
+    } );
 
     current_spline_ = std::tr1::shared_ptr<ci::BSpline3f>(
         // 3rd param = loop ie should it add extra points to close it
         // 4th param = open ie is it open
-        new ci::BSpline3f(points_, degree_, close, !close) );
+        new ci::BSpline3f(points, degree_, close, !close) );
 }
 
 std::tr1::shared_ptr<ci::BSpline3f> CurveSketcher::current_spline() {
     return current_spline_;
 }
 
+// on first press check for intersection, if so, do nothing and wait for a drag
+// if no intersection, make a new control point, deactivate any other active
+// control points, and wait for a drag
+
+bool CurveSketcher::mouse_down(ci::app::MouseEvent evt) {
+    if (!active_)
+        return false;
+
+    if (!evt.isLeftDown())
+        return false;
+
+    ci::Ray r = Camera::instance().get_ray_from_screen_pos(evt.getPos());
+
+    std::tr1::shared_ptr<ControlPoint> selected;
+
+    if (check_control_point_intersection(r, selected)) {
+        selected->set_active(true); // make sure selected is active
+        active_point_ = selected;
+        deactivate_all_but_active();
+        return false; // wait for drag
+    }
+
+    create_new_control_point(r);
+    deactivate_all_but_active();
+
+    generate_spline(false);
+
+    return false;
+}
+
+bool CurveSketcher::check_control_point_intersection(ci::Ray r,
+    std::tr1::shared_ptr<ControlPoint>& selected) {
+    // check for intersections (selections) of the control points
+    for (std::vector<std::tr1::shared_ptr<ControlPoint> >::const_iterator it =
+        control_points_.begin(); it != control_points_.end(); ++it) {
+        if ((*it)->mouse_pressed(r)) {
+            selected = *it;
+            return true;
+        }
+    }
+
+    selected.reset(); // make sure this is null
+    return false;
+}
+
+void CurveSketcher::create_new_control_point(ci::Ray r) {
+    std::tr1::shared_ptr<ControlPoint> cp = 
+        std::tr1::shared_ptr<ControlPoint>(
+        new ControlPoint(get_intersection_with_drawing_plane(r), *this));
+    cp->setup();
+    control_points_.push_back(cp);
+
+    active_point_ = cp;
+}
+
+ci::Vec3f CurveSketcher::get_intersection_with_drawing_plane(ci::Ray r) {
+    // based on:
+    // http://local.wasp.uwa.edu.au/~pbourke/geometry/planeline/
+
+    // find distance to plane
+    float t = drawing_plane_.getDirection().dot(drawing_plane_.getOrigin() - r.getOrigin()) / 
+        drawing_plane_.getDirection().dot(r.getDirection());
+
+    return r.getOrigin() + t * r.getDirection();
+}
+
+void CurveSketcher::deactivate_all_but_active() {
+    for (std::vector<std::tr1::shared_ptr<ControlPoint> >::const_iterator it =
+        control_points_.begin(); it != control_points_.end(); ++it) {
+        if (*it == active_point_)
+            continue;
+
+        (*it)->set_active(false);
+    }
+}
+
+bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
+    if (!active_)
+        return false;
+
+    if (!evt.isLeftDown())
+        return false;
+
+    active_point_->position() = get_intersection_with_drawing_plane(
+        Camera::instance().get_ray_from_screen_pos(evt.getPos()));
+
+    generate_spline(false);
+
+    return false;
+}
+
+bool CurveSketcher::mouse_up(ci::app::MouseEvent evt) {
+    return false;
+}
+
+
+
 CurveSketcher* CurveSketcher::instance_;
 
 CurveSketcher& CurveSketcher::instance() {
     return *instance_;
 }
+
 
 
 
@@ -188,10 +264,6 @@ bool ControlPoint::mouse_pressed(ci::Ray r) {
 
     if (D <= 0) // not an intersection
         return false;
-
-    set_active(true);
-
-    ci::app::console() << "Control Point selected" << std::endl;
 
     return true;
 }
@@ -392,6 +464,10 @@ void ControlPoint::draw_arrows() {
 
 
     glEnd();
+}
+
+ci::Vec3f& ControlPoint::position() {
+    return position_;
 }
 
 

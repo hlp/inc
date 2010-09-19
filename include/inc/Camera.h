@@ -50,10 +50,12 @@ public:
 
     ci::MayaCamUI& cam();
 
+    ci::Ray get_ray_from_screen_pos(ci::Vec2i pos);
+
 private:
     void create_camera();
+    // TODO: move this to another object
     void check_selection(ci::Vec2i);
-    ci::Ray get_ray_from_screen_pos(ci::Vec2i pos);
 
     ci::MayaCamUI* cam_;
         

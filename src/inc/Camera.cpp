@@ -132,9 +132,6 @@ namespace inc {
 
         check_selection(m_event.getPos());
 
-        CurveSketcher::instance().on_mouse_click(
-            get_ray_from_screen_pos(m_event.getPos()));
-
         return false;
     }
 

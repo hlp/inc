@@ -28,6 +28,7 @@
 #include <cinder/Vector.h>
 #include <cinder/app/MouseEvent.h>
 #include <cinder/Surface.h>
+#include <cinder/app/App.h>
 
 #include <inc/Module.h>
 
@@ -45,9 +46,9 @@ public:
     void update();
     void draw();
 
-    // when the mouse is pressed and released without dragging
-    // TODO: remove from being called from Camera
-    void on_mouse_click(ci::Ray);
+    bool mouse_down(ci::app::MouseEvent);
+    bool mouse_drag(ci::app::MouseEvent);
+    bool mouse_up(ci::app::MouseEvent);
 
     // callback for the button press
     bool activate_button_pressed(bool);
@@ -63,11 +64,16 @@ private:
     void finish_sketcher();
     void generate_spline(bool closed); // called once per click
     void draw_control_points();
+    bool check_control_point_intersection(ci::Ray,
+        std::tr1::shared_ptr<ControlPoint>&);
+    void create_new_control_point(ci::Ray);
+    void deactivate_all_but_active();
+    ci::Vec3f get_intersection_with_drawing_plane(ci::Ray);
+
 
     static CurveSketcher* instance_;
     bool active_;
     std::tr1::shared_ptr<ci::BSpline3f> current_spline_;
-    std::vector<ci::Vec3f> points_;
 
     // specified by position and normal
     ci::Ray drawing_plane_;
@@ -78,8 +84,14 @@ private:
     float line_thickness_;
     ci::ColorA line_color_;
 
+    std::tr1::shared_ptr<ControlPoint> active_point_;
+
     // there are as many control points as there are points_
     std::vector<std::tr1::shared_ptr<ControlPoint> > control_points_;
+
+    ci::CallbackId mouse_down_cb_id_;
+    ci::CallbackId mouse_drag_cb_id_;
+    ci::CallbackId mouse_up_cb_id_;
 };
 
 
@@ -105,6 +117,9 @@ public:
         Z_INCREASE,
         Z_DECREASE
     };
+
+    ci::Vec3f& position();
+    
 
 protected:
     // called when there's been a sucessful drag
@@ -133,13 +148,6 @@ protected:
 private:
     void draw_arrows();
 };
-
-/*
-class XIntreaseControlPoint : public ControlPoint {
-
-};
-*/
-
 
 
 }
