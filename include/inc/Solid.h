@@ -105,6 +105,8 @@ public:
     btDynamicsWorld* dynamics_world();
     btSoftRigidDynamicsWorld* soft_dynamics_world();
     float gravity();
+    void set_gravity(float);
+    void update_object_gravity();
         
     static SolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
     static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
@@ -139,7 +141,6 @@ public:
 
 private:
     void init_physics();
-    void update_object_gravity();
         
     static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
         ci::Vec3f radius, float res);
@@ -167,8 +168,6 @@ private:
     DebugDraw* debug_draw_;
 
     static std::deque<btTriangleMesh*> mesh_cleanup_;
-
-    ci::params::InterfaceGl interface_;
 
     static ci::ColorA sphere_color_;
     static ci::ColorA container_color_;

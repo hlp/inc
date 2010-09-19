@@ -75,7 +75,7 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Main_Menu", ci::Vec2i(200, 200));
+    interface_ = ci::params::InterfaceGl("Main", ci::Vec2i(300, 200));
 
     std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -85,15 +85,6 @@ void MainMenu::setup() {
         std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
 
     add_widget(save_dxf_button);
-
-    std::tr1::shared_ptr<GenericWidget<bool> > bag_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Make mesh"));
-
-    bag_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::create_bag), this));
-
-    add_widget(bag_button);
 
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
@@ -116,13 +107,6 @@ bool MainMenu::save_dxf(bool) {
     return false;
 }
 
-bool MainMenu::create_bag(bool) {
-    MeshCreator::instance().add_solid_bag(ci::Vec3f(0.0f, 2.0f, 0.0f),
-        1.5f);
-
-    return false;
-}
-
 MainMenu* MainMenu::instance_;
 
 MainMenu& MainMenu::instance() {
@@ -138,7 +122,7 @@ MeshMenu::~MeshMenu() {
 }
 
 void MeshMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Mesh_Menu", ci::Vec2i(200, 200));
+    interface_ = ci::params::InterfaceGl("Mesh", ci::Vec2i(300, 200));
 
     std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -150,12 +134,66 @@ void MeshMenu::setup() {
 
     add_widget(draw_mesh_button);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > bag_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Make circular mesh"));
+
+    bag_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshMenu::create_bag), this));
+
+    add_widget(bag_button);
+
     Menu::setup();
+}
+
+bool MeshMenu::create_bag(bool) {
+    MeshCreator::instance().add_solid_bag(ci::Vec3f(0.0f, 2.0f, 0.0f),
+        1.5f);
+
+    return false;
 }
 
 MeshMenu* MeshMenu::instance_;
 
 MeshMenu& MeshMenu::instance() {
+    return *instance_;
+}
+
+
+
+SolidMenu::SolidMenu() {
+    instance_ = this;
+}
+
+SolidMenu::~SolidMenu() {
+}
+
+void SolidMenu::setup() {
+    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Set world gravity"));
+
+    set_gravity_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::set_gravity), 
+        this));
+
+    add_widget(set_gravity_button);
+    
+    Menu::setup();
+}
+
+bool SolidMenu::set_gravity(float grav) {
+    SolidFactory::instance().set_gravity(grav);
+    SolidFactory::instance().update_object_gravity();
+
+    return false;
+}
+
+SolidMenu* SolidMenu::instance_;
+
+SolidMenu& SolidMenu::instance() {
     return *instance_;
 }
 

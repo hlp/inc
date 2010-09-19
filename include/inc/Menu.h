@@ -48,6 +48,7 @@ protected:
 };
 
 
+// main menu for everything else
 class MainMenu: public Menu {
 public:
     MainMenu();
@@ -56,7 +57,6 @@ public:
     virtual void setup();
 
     bool save_dxf(bool); // called by a button so its passed a bool
-    bool create_bag(bool);
 
     static MainMenu& instance();
 
@@ -65,6 +65,7 @@ private:
 };
 
 
+// used for creating the container meshes
 class MeshMenu : public Menu {
 public:
     MeshMenu();
@@ -72,11 +73,29 @@ public:
 
     virtual void setup();
 
-    MeshMenu& instance();
+    bool create_bag(bool);
+
+    static MeshMenu& instance();
 
 private:
     static MeshMenu* instance_;
 };
 
+
+// used for creating solids (rigid and soft bodies)
+class SolidMenu : public Menu {
+public:
+    SolidMenu();
+    virtual ~SolidMenu();
+
+    virtual void setup();
+
+    bool set_gravity(float);
+
+    static SolidMenu& instance();
+
+private:
+    static SolidMenu* instance_;
+};
 
 }

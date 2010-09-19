@@ -31,36 +31,37 @@
 
 namespace inc {
 
-    class SolidCreator : public Module {
-    public:
-        SolidCreator();
-        virtual ~SolidCreator();
+class SolidCreator : public Module {
+public:
+    SolidCreator();
+    virtual ~SolidCreator();
 
-        void setup();
-        void update();
-        void draw();
+    void setup();
+    void update();
+    void draw();
 
-    private:
-        void create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
-        void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
-        void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
-        void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
-            int w, int h, int d);
-        void create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
-            int w, int h, int d);
-       void create_rigid_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
-            int w, int h, int d);
+    void create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
+    void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
+    void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
+    void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
+        int w, int h, int d);
+    void create_sphere_spring_matrix(ci::Vec3f pos, ci::Vec3f radius,
+        int w, int h, int d);
+    void create_rigid_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
+        int w, int h, int d);
 
-        void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
-        void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
+    void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
+    void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
-        ci::params::InterfaceGl interface_;
+private:
+    ci::params::InterfaceGl interface_;
 
-        bool cb_[6];
-        bool last_cb_[6];
+    bool cb_[6];
+    bool last_cb_[6];
 
-        boost::int32_t r_matrix_w_;
-        boost::int32_t r_matrix_h_;
-        boost::int32_t r_matrix_d_;
-    };
+    boost::int32_t r_matrix_w_;
+    boost::int32_t r_matrix_h_;
+    boost::int32_t r_matrix_d_;
+};
+
 }

@@ -223,10 +223,6 @@ SolidFactory::SolidFactory() {
 
 void SolidFactory::setup() {
     init_physics();
-
-    interface_ = ci::params::InterfaceGl("Solids_Factory", ci::Vec2i(100, 200));
-    interface_.addParam("Gravity", &gravity_, 
-        "min=-20.0 max=20.0 step=0.1 keyIncr=g keyDecr=G");
 }
 
 void SolidFactory::init_physics() {
@@ -916,6 +912,10 @@ void SolidFactory::update_object_gravity() {
 
 float SolidFactory::gravity() {
     return gravity_;
+}
+
+void SolidFactory::set_gravity(float grav) {
+    gravity_ = grav;
 }
 
 std::tr1::shared_ptr<ci::TriMesh> SolidFactory::remove_mesh_duplicates(
