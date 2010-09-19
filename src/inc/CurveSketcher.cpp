@@ -62,21 +62,22 @@ void CurveSketcher::update() {
 }
 
 void CurveSketcher::draw() {
-    if (control_points_.size() < (size_t)degree_)
-        return;
+    if (control_points_.size() > (size_t)degree_) {
+        // draw the b spline
+        ci::gl::color(line_color_);
+        glLineWidth(line_thickness_);
 
-    ci::gl::color(line_color_);
-    glLineWidth(line_thickness_);
+        glBegin(GL_LINE_STRIP);
 
-    glBegin(GL_LINE_STRIP);
+        for (float t = 0.0f; t <= 1.0f; t += rendering_resolution_) {
+            ci::gl::vertex(current_spline_->getPosition(t));
+        }
 
-    for (float t = 0.0f; t <= 1.0f; t += rendering_resolution_) {
-        ci::gl::vertex(current_spline_->getPosition(t));
+        glEnd();
     }
 
-    glEnd();
-
-    draw_control_points();
+    if (!control_points_.empty())
+        draw_control_points();
 }
 
 void CurveSketcher::draw_control_points() {
