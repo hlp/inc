@@ -56,6 +56,8 @@ public:
 
     static CurveSketcher& instance();
 
+    friend class ControlPoint; // so they can regenerate the bspline
+
 private:
     void set_up_sketcher();
     void finish_sketcher();
@@ -83,7 +85,7 @@ private:
 
 class ControlPoint {
 public:
-    ControlPoint(ci::Vec3f pos);
+    ControlPoint(ci::Vec3f pos, CurveSketcher&);
 
     virtual void setup();
     // this draws the billboarded circle
@@ -108,6 +110,8 @@ protected:
     // called when there's been a sucessful drag
     //virtual void move_point(ci::app::MouseEvent evt) = 0;
 
+    CurveSketcher& sketcher_;
+
     ci::Vec3f position_;
     bool active_;
     float arrow_size_;
@@ -119,6 +123,15 @@ protected:
 
     ci::Surface active_image_;
     ci::gl::Texture active_texture_;
+
+    ci::ColorA arrow_color_;
+    float arrow_line_width_;
+    float arrow_base_length_;
+    float arrow_triangle_length_;
+    float arrow_triangle_height_;
+
+private:
+    void draw_arrows();
 };
 
 /*

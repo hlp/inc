@@ -78,13 +78,9 @@ void CurveSketcher::draw() {
 void CurveSketcher::draw_control_points() {
     ci::gl::enableDepthWrite(false);
 
-    glEnable(GL_TEXTURE_2D);
-
     // iterate over all the control points
     std::for_each(control_points_.begin(), control_points_.end(),
         [] (std::tr1::shared_ptr<ControlPoint> point) { point->draw(); } );
-
-    glDisable(GL_TEXTURE_2D);
 }
 
 void CurveSketcher::on_mouse_click(ci::Ray r) {
@@ -112,7 +108,7 @@ void CurveSketcher::on_mouse_click(ci::Ray r) {
     points_.push_back(p);
 
     std::tr1::shared_ptr<ControlPoint> cp = 
-        std::tr1::shared_ptr<ControlPoint>(new ControlPoint(p));
+        std::tr1::shared_ptr<ControlPoint>(new ControlPoint(p, *this));
     cp->setup();
     control_points_.push_back(cp);
 
@@ -162,12 +158,19 @@ CurveSketcher& CurveSketcher::instance() {
 
 
 
-ControlPoint::ControlPoint(ci::Vec3f pos) {
-    position_ = pos;
+ControlPoint::ControlPoint(ci::Vec3f pos, CurveSketcher& sketcher)
+    : position_(pos), sketcher_(sketcher) {
     active_ = false;
     arrow_size_ = 0.5f;
+
     position_image_dim_ = 2.0f;
     position_render_dim_ = position_image_dim_ * 50.0f;
+
+    arrow_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);
+    arrow_line_width_ = 1.25f;
+    arrow_base_length_ = 1.5f;
+    arrow_triangle_length_ = 2.0f;
+    arrow_triangle_height_ = 1.75f;
 }
 
 bool ControlPoint::mouse_pressed(ci::Ray r) {
@@ -202,6 +205,9 @@ bool ControlPoint::mouse_dragged(ci::app::MouseEvent evt) {
         return false;
 
     //move_point(evt);
+
+    // recalc the line
+    sketcher_.generate_spline(false);
 
     return false;
 }
@@ -246,6 +252,11 @@ void ControlPoint::setup() {
 }
 
 void ControlPoint::draw() {
+    if (active_)
+        draw_arrows();
+
+    glEnable(GL_TEXTURE_2D);
+
     ci::Vec3f cam_right, cam_up;
     Camera::instance().cam().getCamera().getBillboardVectors(&cam_right, &cam_up);
 
@@ -270,22 +281,115 @@ void ControlPoint::draw() {
 	ci::Vec3f right = cam_right * w;
 	ci::Vec3f up = cam_up * h;
 			
-	glTexCoord2f( 0, 1 );
+	glTexCoord2f(0, 1);
 	glVertex3f(x + right.x * perLeft + up.x * perLeft,
         y + right.y * perLeft + up.y * perLeft,
         z + right.z * perLeft + up.z * perLeft);
-	glTexCoord2f( 1, 1 );
+	glTexCoord2f(1, 1);
 	glVertex3f(x + right.x * perRight + up.x * perLeft,
         y + right.y * perRight + up.y * perLeft,
         z + right.z * perRight + up.z * perLeft);
-	glTexCoord2f( 1, 0 );
+	glTexCoord2f(1, 0);
 	glVertex3f( x + right.x * perRight + up.x * perRight,
         y + right.y * perRight + up.y * perRight,
         z + right.z * perRight + up.z * perRight);
-	glTexCoord2f( 0, 0 );
+	glTexCoord2f(0, 0);
 	glVertex3f( x + right.x * perLeft + up.x * perRight,
         y + right.y * perLeft + up.y * perRight,
         z + right.z * perLeft + up.z * perRight);
+
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+void ControlPoint::draw_arrows() {
+    ci::gl::color(arrow_color_);
+    glLineWidth(arrow_line_width_);
+
+    glBegin(GL_LINES);
+
+    // X INCREASE
+    ci::gl::vertex(position_ + ci::Vec3f(position_image_dim_, 0.0f, 0.0f));
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        0.0f, 0.0f));
+
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        -arrow_triangle_height_ / 2.0f, 0.0f));
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        arrow_triangle_height_ / 2.0f, 0.0f));
+    
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        arrow_triangle_height_ / 2.0f, 0.0f));
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_ + arrow_triangle_length_, 
+        0.0f, 0.0f));
+
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_ + arrow_triangle_length_, 
+        0.0f, 0.0f));
+    ci::gl::vertex(position_ + ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        -arrow_triangle_height_ / 2.0f, 0.0f));
+
+
+    // X DECREASE
+    ci::gl::vertex(position_ - ci::Vec3f(position_image_dim_, 0.0f, 0.0f));
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        0.0f, 0.0f));
+
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        -arrow_triangle_height_ / 2.0f, 0.0f));
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        arrow_triangle_height_ / 2.0f, 0.0f));
+    
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        arrow_triangle_height_ / 2.0f, 0.0f));
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_ + arrow_triangle_length_, 
+        0.0f, 0.0f));
+
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_ + arrow_triangle_length_, 
+        0.0f, 0.0f));
+    ci::gl::vertex(position_ - ci::Vec3f(arrow_base_length_ + position_image_dim_, 
+        -arrow_triangle_height_ / 2.0f, 0.0f));
+
+
+    // Z INCREASE
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 0.0f, position_image_dim_));
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 0.0f, arrow_base_length_ + position_image_dim_));
+
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f,
+        -arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 
+        arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f,
+        arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 
+        0.0f, arrow_base_length_ + position_image_dim_ + arrow_triangle_length_));
+
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 
+        0.0f, arrow_base_length_ + position_image_dim_ + arrow_triangle_length_));
+    ci::gl::vertex(position_ + ci::Vec3f(0.0f, 
+        -arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+
+
+    // Z DECREASE
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 0.0f, position_image_dim_));
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 0.0f, arrow_base_length_ + position_image_dim_));
+
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f,
+        -arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 
+        arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f,
+        arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 
+        0.0f, arrow_base_length_ + position_image_dim_ + arrow_triangle_length_));
+
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 
+        0.0f, arrow_base_length_ + position_image_dim_ + arrow_triangle_length_));
+    ci::gl::vertex(position_ - ci::Vec3f(0.0f, 
+        -arrow_triangle_height_ / 2.0f, arrow_base_length_ + position_image_dim_));
+
 
     glEnd();
 }
