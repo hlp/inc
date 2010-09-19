@@ -94,6 +94,8 @@ public:
     bool mouse_dragged(ci::app::MouseEvent);
     bool mouse_released(ci::app::MouseEvent);
 
+    void set_active(bool);
+
     // dircetions of the control points
     enum Direction {
         X_INCREASE,
@@ -110,8 +112,8 @@ protected:
     bool active_;
     float arrow_size_;
 
-    float position_image_dim_;
-    float position_render_dim_;
+    float position_image_dim_; // what size to display the image
+    float position_render_dim_; // what size to render the image
     ci::Surface position_image_;
     ci::gl::Texture position_texture_;
 

@@ -77,13 +77,14 @@ void CurveSketcher::draw() {
 
 void CurveSketcher::draw_control_points() {
     ci::gl::enableDepthWrite(false);
+
     glEnable(GL_TEXTURE_2D);
 
     // iterate over all the control points
     std::for_each(control_points_.begin(), control_points_.end(),
         [] (std::tr1::shared_ptr<ControlPoint> point) { point->draw(); } );
 
-    glDisable( GL_TEXTURE_2D );
+    glDisable(GL_TEXTURE_2D);
 }
 
 void CurveSketcher::on_mouse_click(ci::Ray r) {
@@ -179,17 +180,21 @@ bool ControlPoint::mouse_pressed(ci::Ray r) {
 
     ci::Vec3f dst = r.getOrigin() - position_;
     float B = dst.dot(r.getDirection());
-    float C = dst.dot(dst) - arrow_size_ * arrow_size_;
+    float C = dst.dot(dst) - position_image_dim_ * position_image_dim_;
     float D = B * B - C;
 
     if (D <= 0) // not an intersection
         return false;
 
-    active_ = true;
+    set_active(true);
 
     ci::app::console() << "Control Point selected" << std::endl;
 
     return true;
+}
+
+void ControlPoint::set_active(bool a) {
+    active_ = a;
 }
 
 bool ControlPoint::mouse_dragged(ci::app::MouseEvent evt) {
@@ -212,34 +217,32 @@ void ControlPoint::setup() {
     ci::cairo::SurfaceImage base(position_render_dim_, position_render_dim_, true);
 	ci::cairo::Context ctx(base);
 
-    // draw a yellow circles
-	ctx.setSourceRgb( 1.0f, 1.0f, 0.0f );
+    // draw a light gray circle
+    ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 0.75f);
 	ctx.newSubPath();
     // these coords assume a 8.0 x 8.0 canvas, so scale up as necesarry
     float scl = position_render_dim_ / 8.0f;
     ctx.setLineWidth(1.0f * scl);
-    ctx.arc(ci::Vec2f(position_render_dim_ / 2.0f, position_render_dim_ / 2.0f), 
-        2.0f * scl, 0, 2 * M_PI);
+    ctx.circle(ci::Vec2f(position_render_dim_ / 2.0f, position_render_dim_ / 2.0f), 2.0f * scl);
 	ctx.stroke();
 
     position_image_ = base.getSurface();
     position_texture_ = ci::gl::Texture(position_image_);
 
-    /*
-    ci::cairo::SurfaceImage active_base(position_image_dim_, position_image_dim_, true);
-	ci::cairo::Context actx(active_base);
+    base = ci::cairo::SurfaceImage(position_render_dim_, position_render_dim_, true);
+    ctx = ci::cairo::Context(base);
 
-    // draw a solid yellow circles
-	//actx.setSourceRgb( 0.0f, 1.0f, 0.0f );
-	actx.newSubPath();
-    //ctx.setLineWidth(1.5f * scl);
-    actx.circle(ci::Vec2f(position_image_dim_ / 2.0f, position_image_dim_ / 2.0f), 
+    ctx.setSourceRgb( 1.0f, 1.0f, 0.0f );
+    ctx.newSubPath();
+    ctx.setLineWidth(1.0f * scl);
+    ctx.circle(ci::Vec2f(position_render_dim_ / 2.0f, position_render_dim_ / 2.0f), 
         2.0f * scl);
-	actx.stroke();
+	ctx.stroke();
 
-    active_image_ = active_base.getSurface();
+    active_image_ = base.getSurface();
     active_texture_ = ci::gl::Texture(active_image_);
-    */
+
+    set_active(false);
 }
 
 void ControlPoint::draw() {
@@ -248,14 +251,12 @@ void ControlPoint::draw() {
 
     ci::gl::color(ci::Color::white());
 
-    glBegin(GL_QUADS);
-
-    if (active_) {
-        ci::app::console() << "binding active texture" << std::endl;
+    if (active_)
         active_texture_.bind();
-    }
     else
         position_texture_.bind();
+
+    glBegin(GL_QUADS);
 
     float x = position_.x;
 	float y = position_.y;
