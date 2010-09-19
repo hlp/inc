@@ -38,11 +38,12 @@ public:
     virtual void update();
     virtual void draw();
 
-    virtual ci::params::InterfaceGl& interface() = 0;
+    virtual ci::params::InterfaceGl& interface();
 
     void add_widget(WidgetPtr);
 
 protected:
+    ci::params::InterfaceGl interface_;
     std::deque<WidgetPtr> widgets_;
 };
 
@@ -54,17 +55,28 @@ public:
 
     virtual void setup();
 
-    ci::params::InterfaceGl& interface();
-
     bool save_dxf(bool); // called by a button so its passed a bool
     bool create_bag(bool);
 
-    MainMenu& instance();
+    static MainMenu& instance();
 
 private:
     static MainMenu* instance_;
-
-    ci::params::InterfaceGl interface_;
 };
+
+
+class MeshMenu : public Menu {
+public:
+    MeshMenu();
+    virtual ~MeshMenu();
+
+    virtual void setup();
+
+    MeshMenu& instance();
+
+private:
+    static MeshMenu* instance_;
+};
+
 
 }

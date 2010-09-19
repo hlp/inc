@@ -27,6 +27,7 @@
 #include <inc/Solid.h>
 #include <inc/Widget.h>
 #include <inc/MeshCreator.h>
+#include <inc/CurveSketcher.h>
 
 namespace inc {
 
@@ -58,6 +59,10 @@ void Menu::draw() {
 
 void Menu::add_widget(WidgetPtr ptr) {
     widgets_.push_back(ptr);
+}
+
+ci::params::InterfaceGl& Menu::interface() {
+    return interface_;
 }
 
 
@@ -118,14 +123,39 @@ bool MainMenu::create_bag(bool) {
     return false;
 }
 
-ci::params::InterfaceGl& MainMenu::interface() {
-    return interface_;
-}
-
-
 MainMenu* MainMenu::instance_;
 
 MainMenu& MainMenu::instance() {
+    return *instance_;
+}
+
+
+MeshMenu::MeshMenu() {
+    instance_ = this;
+}
+
+MeshMenu::~MeshMenu() {
+}
+
+void MeshMenu::setup() {
+    interface_ = ci::params::InterfaceGl("Mesh_Menu", ci::Vec2i(200, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Draw Mesh Mode"));
+
+    draw_mesh_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::CurveSketcher::activate_button_pressed), 
+        &(CurveSketcher::instance())));
+
+    add_widget(draw_mesh_button);
+
+    Menu::setup();
+}
+
+MeshMenu* MeshMenu::instance_;
+
+MeshMenu& MeshMenu::instance() {
     return *instance_;
 }
 

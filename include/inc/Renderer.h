@@ -26,25 +26,23 @@
 
 namespace inc {
 
-    class Renderer : public Module {
-    public:
-        Renderer();
-        virtual ~Renderer();
+class Renderer : public Module {
+public:
+    Renderer();
+    virtual ~Renderer();
         
-        void setup();
-        void update();
-        void draw();
+    void setup();
+    void update();
+    void draw();
 
-        void draw_init();
+    void draw_init();
 
-    private:
-        void begin3D();
-        void draw_objects();
-        void end3D();
+private:
+    void begin3D();
+    void draw_objects();
+    void end3D();
 
-        ci::ColorA background_color_;
-
-        ci::params::InterfaceGl interface_;
-    };
+    ci::ColorA background_color_;
+};
 
 }

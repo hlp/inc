@@ -54,6 +54,10 @@ void IncApp::setup() {
     manager_->add_module(camera_);
 
     main_menu_ = std::tr1::shared_ptr<inc::MainMenu>(new inc::MainMenu());
+    manager_->add_module(main_menu_);
+
+    mesh_menu_ = std::tr1::shared_ptr<inc::MeshMenu>(new inc::MeshMenu());
+    manager_->add_module(mesh_menu_);
 
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
@@ -65,7 +69,8 @@ void IncApp::setup() {
     manager_->add_module(curve_sketcher_);
 
     // menus must be drawn last
-    manager_->add_module(main_menu_);
+    
+    
 
     manager_->setup_modules();
 }
