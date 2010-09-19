@@ -165,7 +165,8 @@ ControlPoint::ControlPoint(ci::Vec3f pos) {
     position_ = pos;
     active_ = false;
     arrow_size_ = 0.5f;
-    position_image_dim_ = 100.0f;
+    position_image_dim_ = 2.0f;
+    position_render_dim_ = position_image_dim_ * 50.0f;
 }
 
 bool ControlPoint::mouse_pressed(ci::Ray r) {
@@ -208,26 +209,28 @@ bool ControlPoint::mouse_released(ci::app::MouseEvent evt) {
 
 void ControlPoint::setup() {
 	// clear to the background color
-    ci::cairo::SurfaceImage base(position_image_dim_, position_image_dim_, true);
+    ci::cairo::SurfaceImage base(position_render_dim_, position_render_dim_, true);
 	ci::cairo::Context ctx(base);
 
     // draw a yellow circles
 	ctx.setSourceRgb( 1.0f, 1.0f, 0.0f );
 	ctx.newSubPath();
-    float scl = 2.0f;
-    ctx.setLineWidth(1.5f * scl);
-    ctx.arc(ci::Vec2f(position_image_dim_ / 2.0f, position_image_dim_ / 2.0f), 
+    // these coords assume a 8.0 x 8.0 canvas, so scale up as necesarry
+    float scl = position_render_dim_ / 8.0f;
+    ctx.setLineWidth(1.0f * scl);
+    ctx.arc(ci::Vec2f(position_render_dim_ / 2.0f, position_render_dim_ / 2.0f), 
         2.0f * scl, 0, 2 * M_PI);
 	ctx.stroke();
 
     position_image_ = base.getSurface();
     position_texture_ = ci::gl::Texture(position_image_);
 
+    /*
     ci::cairo::SurfaceImage active_base(position_image_dim_, position_image_dim_, true);
 	ci::cairo::Context actx(active_base);
 
     // draw a solid yellow circles
-	actx.setSourceRgb( 0.0f, 1.0f, 0.0f );
+	//actx.setSourceRgb( 0.0f, 1.0f, 0.0f );
 	actx.newSubPath();
     //ctx.setLineWidth(1.5f * scl);
     actx.circle(ci::Vec2f(position_image_dim_ / 2.0f, position_image_dim_ / 2.0f), 
@@ -236,6 +239,7 @@ void ControlPoint::setup() {
 
     active_image_ = active_base.getSurface();
     active_texture_ = ci::gl::Texture(active_image_);
+    */
 }
 
 void ControlPoint::draw() {
@@ -257,8 +261,8 @@ void ControlPoint::draw() {
 	float y = position_.y;
 	float z = position_.z;
 			
-	float w = position_image_dim_ / 10.0f;
-	float h = position_image_dim_ / 10.0f;
+	float w = position_image_dim_;
+	float h = position_image_dim_;
 
     float perLeft = -1.0f;
 	float perRight = 1.0f;

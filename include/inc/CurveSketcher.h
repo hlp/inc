@@ -111,6 +111,7 @@ protected:
     float arrow_size_;
 
     float position_image_dim_;
+    float position_render_dim_;
     ci::Surface position_image_;
     ci::gl::Texture position_texture_;
 
