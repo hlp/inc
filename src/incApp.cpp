@@ -28,6 +28,7 @@
 #include <inc/Module.h>
 #include <inc/SolidCreator.h>
 #include <inc/CurveSketcher.h>
+#include <inc/MeshCreator.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -72,6 +73,10 @@ void IncApp::setup() {
     manager_->add_module(curve_sketcher_);
 
     manager_->setup_modules();
+
+    // other objects
+
+    mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
 }
 
 void IncApp::update() {
@@ -83,6 +88,8 @@ void IncApp::draw() {
 
     manager_->draw_modules();
 
+    inc::MeshCreator::instance().draw();
+
     // Draw the GUI elements of each module
     ci::params::InterfaceGl::draw();
 }
@@ -91,6 +98,8 @@ void IncApp::shutdown() {
 #ifdef TRACE_DTORS
     console() << "IncApp Shutdown" << std::endl;
 #endif
+
+    mesh_creator_.reset();
 
     solid_factory_->delete_constraints();
 

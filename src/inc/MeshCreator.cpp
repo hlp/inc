@@ -119,8 +119,35 @@ void MeshCreator::add_circle_mesh(ci::Vec3f center, float radius) {
     Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
+void MeshCreator::draw() {
+    if (debug_mesh_.get() == NULL)
+        return;
+
+    glBegin(GL_LINES);
+
+    ci::Vec3f v1;
+    ci::Vec3f v2;
+    ci::Vec3f v3;
+
+    for (int i = 0; i < debug_mesh_->getNumTriangles(); ++i) {
+        debug_mesh_->getTriangleVertices(i, &v1, &v2, &v3);
+
+        ci::gl::vertex(v1);
+        ci::gl::vertex(v2);
+
+        ci::gl::vertex(v2);
+        ci::gl::vertex(v3);
+
+        ci::gl::vertex(v1);
+        ci::gl::vertex(v3);
+    }
+
+    glEnd();
+}
+
 void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) {
     std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline);
+    debug_mesh_ = mesh;
 
     Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
@@ -233,12 +260,10 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
     return points;
 }
 
-
-MeshCreator* MeshCreator::instance_;
+MeshCreator* MeshCreator::instance_ = NULL;
 
 MeshCreator& MeshCreator::instance() {
     return *instance_;
 }
-
 
 }

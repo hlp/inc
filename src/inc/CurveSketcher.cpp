@@ -329,6 +329,8 @@ bool ControlPoint::mouse_released(ci::app::MouseEvent evt) {
 // This method generates a memory leak!
 // I don't know how to fix it
 void ControlPoint::setup() {
+
+    /*
 	// clear to the background color
     ci::cairo::SurfaceImage base(position_render_dim_, position_render_dim_, true);
 	ci::cairo::Context ctx(base);
@@ -358,6 +360,8 @@ void ControlPoint::setup() {
     active_image_ = base.getSurface();
     active_texture_ = ci::gl::Texture(active_image_);
 
+    */
+
     set_active(false);
 }
 
@@ -365,12 +369,16 @@ void ControlPoint::draw() {
     if (active_)
         draw_arrows();
 
+    ci::gl::color(ci::Color::white());
+
+    ci::gl::drawCube(position_, ci::Vec3f::one());
+
+    /*
+
     glEnable(GL_TEXTURE_2D);
 
     ci::Vec3f cam_right, cam_up;
     Camera::instance().cam().getCamera().getBillboardVectors(&cam_right, &cam_up);
-
-    ci::gl::color(ci::Color::white());
 
     if (active_)
         active_texture_.bind();
@@ -411,6 +419,8 @@ void ControlPoint::draw() {
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
+
+    */
 }
 
 void ControlPoint::draw_arrows() {

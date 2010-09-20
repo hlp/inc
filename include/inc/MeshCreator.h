@@ -39,12 +39,16 @@ public:
 
     static MeshCreator& instance();
 
+    void draw();
+
 private:
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
         ci::Vec3f center, float radius, int res);
     // join two points with a vertical arc
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_vertical_arc(
         const ci::Vec3f& p1, const ci::Vec3f& p2, int segments);
+
+    std::tr1::shared_ptr<ci::TriMesh> debug_mesh_;
 
     static MeshCreator* instance_;
 };
