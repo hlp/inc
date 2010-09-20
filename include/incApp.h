@@ -28,6 +28,7 @@ namespace inc {
     class Camera;
     class MainMenu;
     class MeshMenu;
+    class SolidMenu;
     class Origin;
     class SolidCreator;
     class CurveSketcher;
@@ -53,6 +54,7 @@ class IncApp : public ci::app::AppBasic {
         std::tr1::shared_ptr<inc::Camera> camera_;
         std::tr1::shared_ptr<inc::MainMenu> main_menu_;
         std::tr1::shared_ptr<inc::MeshMenu> mesh_menu_;
+        std::tr1::shared_ptr<inc::SolidMenu> solid_menu_;
         std::tr1::shared_ptr<inc::Origin> origin_;
         std::tr1::shared_ptr<inc::SolidCreator> solid_creator_;
         std::tr1::shared_ptr<inc::CurveSketcher> curve_sketcher_;

@@ -59,6 +59,9 @@ void IncApp::setup() {
     mesh_menu_ = std::tr1::shared_ptr<inc::MeshMenu>(new inc::MeshMenu());
     manager_->add_module(mesh_menu_);
 
+    solid_menu_ = std::tr1::shared_ptr<inc::SolidMenu>(new inc::SolidMenu());
+    manager_->add_module(solid_menu_);
+
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
 
@@ -67,10 +70,6 @@ void IncApp::setup() {
 
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
-
-    // menus must be drawn last
-    
-    
 
     manager_->setup_modules();
 }
@@ -104,6 +103,8 @@ void IncApp::shutdown() {
     curve_sketcher_.reset();
     solid_creator_.reset();
     origin_.reset();
+    solid_menu_.reset();
+    mesh_menu_.reset();
     main_menu_.reset();
     camera_.reset();
     renderer_.reset();

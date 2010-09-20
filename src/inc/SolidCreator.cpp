@@ -29,15 +29,7 @@
 namespace inc {
 
 SolidCreator::SolidCreator() {
-    for (int i = 0; i < 6; ++i) {
-        cb_[i] = false;
-        last_cb_[i] = false;
-    }
-
-    r_matrix_w_ = 2;
-    r_matrix_h_ = 2;
-    r_matrix_d_ = 2;
-
+    instance_ = this;
 }
 
 SolidCreator::~SolidCreator() {
@@ -47,46 +39,11 @@ SolidCreator::~SolidCreator() {
 }
 
 void SolidCreator::setup() {
-    interface_ = ci::params::InterfaceGl("Solid_Creator", ci::Vec2i(380, 200));
-    interface_.addParam("Create rigid sphere", &cb_[0]);
-    interface_.addParam("Create soft sphere", &cb_[1]);
-    interface_.addParam("Create linked spheres", &cb_[2]);
-    interface_.addParam("Create soft sphere matrix", &cb_[3]);
-    interface_.addParam("Create rigid sphere spring matrix", &cb_[4]);
-    interface_.addParam("Create rigid sphere matrix", &cb_[5]);
-    interface_.addParam("Matrix width", &r_matrix_w_);
-    interface_.addParam("Matrix height", &r_matrix_h_);
-    interface_.addParam("Matrix depth", &r_matrix_d_);
-
+    // nothing here
 }
 
 void SolidCreator::update() {
-    if  (cb_[0] != last_cb_[0]) {
-        create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);
-        last_cb_[0] = cb_[0];
-    } else if (cb_[1] != last_cb_[1]) {
-        create_soft_sphere(ci::Vec3f(0.0f, 75.0f, 0.0f), ci::Vec3f::one() * 3.0f);
-        last_cb_[1] = cb_[1];
-    } else if (cb_[2] != last_cb_[2]) {
-        create_linked_spheres(ci::Vec3f(0.0f, 100.0f, 0.0f), ci::Vec3f::one() * 3.0f);
-        last_cb_[2] = cb_[2];
-    } else if (cb_[3] != last_cb_[3]) {
-        // create matrix
-        create_sphere_matrix(ci::Vec3f(0.0f, 75.0f, 0.0f), ci::Vec3f::one() * 3.0f,
-            r_matrix_w_, r_matrix_h_, r_matrix_d_);
-        last_cb_[3] = cb_[3];
-    } else if (cb_[4] != last_cb_[4]) {
-        create_sphere_spring_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
-            ci::Vec3f::one() * 3.0f,
-            r_matrix_w_, r_matrix_h_, r_matrix_d_);
-        last_cb_[4] = cb_[4];
-    } else if (cb_[5] != last_cb_[5]) {
-        create_rigid_sphere_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
-            ci::Vec3f::one() * 3.0f,
-            r_matrix_w_, r_matrix_h_, r_matrix_d_);
-
-        last_cb_[5] = cb_[5];
-    }
+    // nothing here
 }
 
 void SolidCreator::draw() {
@@ -168,4 +125,12 @@ void SolidCreator::load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale) {
     Manager::instance().solids().push_back(
         SolidFactory::create_rigid_mesh(mesh, pos, scale, 1.0f)); 
 }
+
+SolidCreator* SolidCreator::instance_;
+
+SolidCreator& SolidCreator::instance() {
+    return *instance_;
+}
+
+
 }

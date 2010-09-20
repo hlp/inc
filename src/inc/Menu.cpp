@@ -28,6 +28,7 @@
 #include <inc/Widget.h>
 #include <inc/MeshCreator.h>
 #include <inc/CurveSketcher.h>
+#include <inc/SolidCreator.h>
 
 namespace inc {
 
@@ -163,13 +164,17 @@ MeshMenu& MeshMenu::instance() {
 
 SolidMenu::SolidMenu() {
     instance_ = this;
+
+    matrix_w_ = 2;
+    matrix_h_ = 2;
+    matrix_d_ = 2;
 }
 
 SolidMenu::~SolidMenu() {
 }
 
 void SolidMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(380, 200));
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -180,13 +185,136 @@ void SolidMenu::setup() {
         this));
 
     add_widget(set_gravity_button);
-    
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_sphere_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create rigid sphere"));
+
+    create_rigid_sphere_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_rigid_sphere), 
+        this));
+
+    add_widget(create_rigid_sphere_button);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_soft_sphere_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create soft sphere"));
+
+    create_soft_sphere_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_soft_sphere), 
+        this));
+
+    add_widget(create_soft_sphere_button);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_linked_sphere_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create linked sphere"));
+
+    create_linked_sphere_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_linked_spheres), 
+        this));
+
+    add_widget(create_linked_sphere_button);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_soft_sphere_matrix_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create soft sphere matrix"));
+
+    create_soft_sphere_matrix_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_soft_sphere_matrix), 
+        this));
+
+    add_widget(create_soft_sphere_matrix_button);
+
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_spring_matrix_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create rigid sphere spring matrix"));
+
+    create_spring_matrix_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_rigid_sphere_spring_matrix), 
+        this));
+
+    add_widget(create_spring_matrix_button);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_matrix_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create rigid sphere matrix"));
+
+    create_rigid_matrix_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_rigid_sphere_matrix), 
+        this));
+
+    add_widget(create_rigid_matrix_button);
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_w = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Matrix width", &matrix_w_));
+
+    add_widget(set_w);
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_h = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Matrix height", &matrix_h_));
+
+    add_widget(set_h);
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_d = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Matrix depth", &matrix_d_));
+
+    add_widget(set_d);
+
     Menu::setup();
 }
 
 bool SolidMenu::set_gravity(float grav) {
     SolidFactory::instance().set_gravity(grav);
     SolidFactory::instance().update_object_gravity();
+
+    return false;
+}
+
+bool SolidMenu::create_rigid_sphere(bool) {
+    SolidCreator::instance().create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), 
+        ci::Vec3f::one() * 3.0f);
+
+    return false;
+}
+
+bool SolidMenu::create_soft_sphere(bool) {
+    SolidCreator::instance().create_soft_sphere(ci::Vec3f(0.0f, 75.0f, 0.0f), 
+        ci::Vec3f::one() * 3.0f);
+
+    return false;
+}
+
+bool SolidMenu::create_linked_spheres(bool) {
+    SolidCreator::instance().create_linked_spheres(ci::Vec3f(0.0f, 100.0f, 0.0f),
+        ci::Vec3f::one() * 3.0f);
+
+    return false;
+}
+
+bool SolidMenu::create_soft_sphere_matrix(bool) {
+    SolidCreator::instance().create_sphere_matrix(ci::Vec3f(0.0f, 75.0f, 0.0f), 
+        ci::Vec3f::one() * 3.0f,
+        matrix_w_, matrix_h_, matrix_d_);
+
+    return false;
+}
+
+bool SolidMenu::create_rigid_sphere_matrix(bool) {
+    SolidCreator::instance().create_rigid_sphere_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
+        ci::Vec3f::one() * 3.0f,
+        matrix_w_, matrix_h_, matrix_d_);
+
+    return false;
+}
+
+bool SolidMenu::create_rigid_sphere_spring_matrix(bool) {
+    SolidCreator::instance().create_sphere_spring_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
+        ci::Vec3f::one() * 3.0f, matrix_w_, matrix_h_, matrix_d_);
 
     return false;
 }

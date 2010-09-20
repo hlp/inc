@@ -94,8 +94,19 @@ public:
 
     static SolidMenu& instance();
 
+    bool create_rigid_sphere(bool);
+    bool create_soft_sphere(bool);
+    bool create_linked_spheres(bool);
+    bool create_soft_sphere_matrix(bool);
+    bool create_rigid_sphere_matrix(bool);
+    bool create_rigid_sphere_spring_matrix(bool);
+
 private:
     static SolidMenu* instance_;
+
+    int matrix_w_;
+    int matrix_h_;
+    int matrix_d_;
 };
 
 }

@@ -53,15 +53,11 @@ public:
     void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
     void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
+    static SolidCreator& instance();
+
 private:
-    ci::params::InterfaceGl interface_;
+    static SolidCreator* instance_;
 
-    bool cb_[6];
-    bool last_cb_[6];
-
-    boost::int32_t r_matrix_w_;
-    boost::int32_t r_matrix_h_;
-    boost::int32_t r_matrix_d_;
 };
 
 }
