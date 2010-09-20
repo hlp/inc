@@ -452,9 +452,9 @@ SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mes
     //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
     m.setIdentity();
     // This sets the origin / starting position
-    soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
-    soft_body->transform(btTransform(m, 
-        ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
+    //soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
+    //soft_body->transform(btTransform(m, 
+    //    ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
 
     for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
         soft_body->setMass(i, 1.0f);

@@ -149,11 +149,9 @@ void MeshCreator::draw() {
 
 void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) {
     std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline);
-    debug_mesh_ = mesh;
+    //debug_mesh_ = mesh;
 
-    ci::app::console() << debug_mesh_->getNumTriangles() << std::endl;
-
-    //Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
+    Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
@@ -247,7 +245,8 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
     ci::Vec3f start_point = p1 - center; 
 
     for (int i = 0; i < segments; ++i) {
-        float theta = ci::lmap<float>(i, 0, segments - 1, M_PI, M_PI * 2.0f);
+        //float theta = ci::lmap<float>(i, 0, segments - 1, M_PI, M_PI * 2.0f);
+        float theta = ci::lmap<float>(i, 0, segments - 1, 0, M_PI);
 
         ci::Vec3f v = ci::Quatf(axis, theta) * start_point;
         float stretch = 2.0f;
