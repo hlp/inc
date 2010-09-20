@@ -175,6 +175,7 @@ void SphereGraphicItem::draw() {
     glLineWidth(0.9f);
     ci::gl::enableWireframe();
     ci::gl::drawSphere(ci::Vec3f::zero(), radius_);
+    ci::gl::disableWireframe();
 }
 
 float SphereGraphicItem::bounding_sphere_radius() {
