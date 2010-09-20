@@ -123,6 +123,8 @@ void MeshCreator::draw() {
     if (debug_mesh_.get() == NULL)
         return;
 
+    glLineWidth(1.0f);
+
     glBegin(GL_LINES);
 
     ci::Vec3f v1;
@@ -149,13 +151,15 @@ void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) 
     std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline);
     debug_mesh_ = mesh;
 
-    Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
+    ci::app::console() << debug_mesh_->getNumTriangles() << std::endl;
+
+    //Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
     std::tr1::shared_ptr<ci::BSpline3f> bspline) {
-    int rot_res = 10;
-    int slice_res = 10;
+    int rot_res = 40;
+    int slice_res = 40; // the number of points to sample the bspline
     int num_slices = (slice_res - 2) / 2 + 2;
 
     std::vector<ci::Vec3f> points;
@@ -182,11 +186,9 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
         base_points.push_back(v);
     }
 
-    std::tr1::shared_ptr<std::vector<ci::Vec3f> > start_arc = 
-        make_vertical_arc(start_point, start_point, rot_res);
-
-    std::for_each(start_arc->begin(), start_arc->end(),
-        [&] (ci::Vec3f vec) { points.push_back(vec); } );
+    for (int i = 0; i < rot_res; ++i) {
+        points.push_back(start_point);
+    }
 
     int j = base_points.size() - 1;
     for (int i = 0; i < base_points.size() / 2; ++i) {
@@ -200,11 +202,9 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
         --j;
     }
 
-    std::tr1::shared_ptr<std::vector<ci::Vec3f> > end_arc = 
-        make_vertical_arc(mid_point, mid_point, rot_res);
-
-    std::for_each(end_arc->begin(), end_arc->end(),
-        [&] (ci::Vec3f vec) { points.push_back(vec); } );
+    for (int i = 0; i < rot_res; ++i) {
+        points.push_back(mid_point);
+    }
 
     // stitch all the points together into a mesh
 
@@ -242,6 +242,7 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
         new std::vector<ci::Vec3f>());
 
     ci::Vec3f axis = p2 - p1;
+    axis = axis.cross(ci::Vec3f::yAxis());
 
     ci::Vec3f start_point = p1 - center; 
 

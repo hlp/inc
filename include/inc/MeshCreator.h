@@ -50,6 +50,8 @@ private:
 
     std::tr1::shared_ptr<ci::TriMesh> debug_mesh_;
 
+    std::tr1::shared_ptr<std::vector<ci::Vec3f> > arc_debug_;
+
     static MeshCreator* instance_;
 };
 
