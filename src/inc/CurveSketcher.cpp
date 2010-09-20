@@ -26,13 +26,14 @@
 #include <inc/CurveSketcher.h>
 #include <inc/Camera.h>
 #include <incApp.h>
+#include <inc/MeshCreator.h>
 
 namespace inc {
 
 CurveSketcher::CurveSketcher() {
     instance_ = this;
 
-    active_ = true;
+    active_ = false;
     degree_ = 3;
  
     // TODO: this resolution should change as more points are added
@@ -49,6 +50,10 @@ CurveSketcher::~CurveSketcher() {
     IncApp::instance().unregisterMouseDown(mouse_down_cb_id_);
     IncApp::instance().unregisterMouseDrag(mouse_drag_cb_id_);
     IncApp::instance().unregisterMouseUp(mouse_up_cb_id_);
+
+    active_point_.reset();
+    current_spline_.reset();
+    control_points_.clear();
 }
 
 void CurveSketcher::setup() {
@@ -62,7 +67,12 @@ void CurveSketcher::update() {
 }
 
 void CurveSketcher::draw() {
-    if (control_points_.size() > (size_t)degree_) {
+    // I don't know why this is needed, but it freaks out 
+    // when control_points_ has size zero
+    if (control_points_.empty())
+        return;    
+
+    if ((control_points_.size() - 1) > (size_t)degree_) {
         // draw the b spline
         ci::gl::color(line_color_);
         glLineWidth(line_thickness_);
@@ -76,8 +86,7 @@ void CurveSketcher::draw() {
         glEnd();
     }
 
-    if (!control_points_.empty())
-        draw_control_points();
+    draw_control_points();
 }
 
 void CurveSketcher::draw_control_points() {
@@ -85,11 +94,15 @@ void CurveSketcher::draw_control_points() {
 
     // iterate over all the control points
     std::for_each(control_points_.begin(), control_points_.end(),
-        [] (std::tr1::shared_ptr<ControlPoint> point) { point->draw(); } );
+        [] (std::tr1::shared_ptr<ControlPoint>& point) { point->draw(); } );
+}
+
+bool* CurveSketcher::active_ptr() {
+    return &active_;
 }
 
 bool CurveSketcher::activate_button_pressed(bool) {
-    if (!active_)
+    if (active_) // bool was set by menu
         set_up_sketcher();
     else
         finish_sketcher();
@@ -104,12 +117,30 @@ void CurveSketcher::set_up_sketcher() {
 }
 
 void CurveSketcher::finish_sketcher() {
+    if (invalid_curve())
+        return;
+
     // make a new spline, making sure to close it 
     generate_spline(true);
+
+    // generate a mesh now
+    MeshCreator::instance().add_bspline_mesh(current_spline_);
+}
+
+bool CurveSketcher::invalid_curve() {
+    // I don't know why this is needed, but it freaks out 
+    // when control_points_ has size zero
+    if (control_points_.empty())
+        return true;
+
+    if ((control_points_.size() - 1) < (size_t)degree_)
+        return true;
+
+    return false;
 }
 
 void CurveSketcher::generate_spline(bool close) {
-    if (control_points_.size() < (size_t)degree_)
+    if (invalid_curve())
         return;
 
     std::vector<ci::Vec3f> points;
@@ -250,6 +281,10 @@ ControlPoint::ControlPoint(ci::Vec3f pos, CurveSketcher& sketcher)
     arrow_triangle_height_ = 1.75f;
 }
 
+ControlPoint::~ControlPoint() {
+    // nothing here
+}
+
 bool ControlPoint::mouse_pressed(ci::Ray r) {
     // check if there's been an intersection with the sphere, 
     // if so, activate the object
@@ -279,9 +314,6 @@ bool ControlPoint::mouse_dragged(ci::app::MouseEvent evt) {
 
     //move_point(evt);
 
-    // recalc the line
-    sketcher_.generate_spline(false);
-
     return false;
 }
 
@@ -291,11 +323,16 @@ bool ControlPoint::mouse_released(ci::app::MouseEvent evt) {
     return false;
 }
 
+////////////////////////
+// WARNING !! /////////
+///////////////////////
+// This method generates a memory leak!
+// I don't know how to fix it
 void ControlPoint::setup() {
 	// clear to the background color
     ci::cairo::SurfaceImage base(position_render_dim_, position_render_dim_, true);
 	ci::cairo::Context ctx(base);
-
+    
     // draw a light gray circle
     ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 0.75f);
 	ctx.newSubPath();

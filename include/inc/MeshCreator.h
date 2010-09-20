@@ -28,19 +28,23 @@ class MeshCreator {
 public:
     MeshCreator();
 
-    std::tr1::shared_ptr<ci::TriMesh> generate_bag_mesh(ci::Vec3f center,
+    std::tr1::shared_ptr<ci::TriMesh> generate_circle_mesh(ci::Vec3f center,
         float radius);
+    std::tr1::shared_ptr<ci::TriMesh> generate_bspline_mesh(
+        std::tr1::shared_ptr<ci::BSpline3f> mesh);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
-    void add_solid_bag(ci::Vec3f center, float radius);
-
-    void add_cgal_mesh();
+    void add_circle_mesh(ci::Vec3f center, float radius);
+    void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
 
     static MeshCreator& instance();
 
 private:
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
         ci::Vec3f center, float radius, int res);
+    // join two points with a vertical arc
+    std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_vertical_arc(
+        const ci::Vec3f& p1, const ci::Vec3f& p2, int segments);
 
     static MeshCreator* instance_;
 };

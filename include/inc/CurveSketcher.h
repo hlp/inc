@@ -52,6 +52,7 @@ public:
 
     // callback for the button press
     bool activate_button_pressed(bool);
+    bool* active_ptr(); // used for menu
 
     std::tr1::shared_ptr<ci::BSpline3f> current_spline();
 
@@ -69,7 +70,7 @@ private:
     void create_new_control_point(ci::Ray);
     void deactivate_all_but_active();
     ci::Vec3f get_intersection_with_drawing_plane(ci::Ray);
-
+    bool invalid_curve();
 
     static CurveSketcher* instance_;
     bool active_;
@@ -98,6 +99,7 @@ private:
 class ControlPoint {
 public:
     ControlPoint(ci::Vec3f pos, CurveSketcher&);
+    ~ControlPoint();
 
     virtual void setup();
     // this draws the billboarded circle

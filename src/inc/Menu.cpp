@@ -127,7 +127,8 @@ void MeshMenu::setup() {
 
     std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Draw Mesh Mode"));
+        new GenericWidget<bool>(*this, "Draw Mesh Curve Mode",
+        CurveSketcher::instance().active_ptr()));
 
     draw_mesh_button->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::CurveSketcher::activate_button_pressed), 
@@ -148,7 +149,7 @@ void MeshMenu::setup() {
 }
 
 bool MeshMenu::create_bag(bool) {
-    MeshCreator::instance().add_solid_bag(ci::Vec3f(0.0f, 2.0f, 0.0f),
+    MeshCreator::instance().add_circle_mesh(ci::Vec3f(0.0f, 2.0f, 0.0f),
         1.5f);
 
     return false;
