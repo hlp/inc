@@ -218,7 +218,7 @@ SolidFactory::SolidFactory() {
     gravity_ = -1.1f;//-9.8f;//0.0f;//-9.8f;
     last_gravity_ = gravity_;
     sphere_color_ = ci::ColorA(0.f ,0.4549f, 0.6275f, 0.45f);
-    container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.15f);
+    container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.45f);
 }
 
 void SolidFactory::setup() {
