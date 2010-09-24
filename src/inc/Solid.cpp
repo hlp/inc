@@ -60,6 +60,7 @@ namespace inc {
 Solid::Solid(SolidGraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
     : graphic_item_(item), body_(body), world_(world) {
     selected_ = false;
+    has_force_ = false;
 
     // it is still valid to have a solid without a graphic representation
     if (item != NULL)
@@ -76,6 +77,10 @@ Solid::~Solid() {
     delete body_;
 }
 
+void Solid::update() {
+    // nothing here
+}
+
 void Solid::draw() {
     if (graphic_item_ != NULL)
         graphic_item_->draw();
@@ -83,6 +88,10 @@ void Solid::draw() {
 
 btCollisionObject& Solid::collision_object() {
     return *body_;
+}
+
+void Solid::remove_force() {
+    has_force_ = false;
 }
 
 /* Original code from: http://www.devmaster.net/wiki/Ray-sphere_intersection
@@ -163,6 +172,11 @@ void RigidSolid::set_gravity(float g) {
     body_->activate();
 }
 
+void RigidSolid::set_force(ci::Vec3f) {
+    // nothing here, might want to fold in force_ and has_force_ into
+    // Solid class if this ever gets used
+}
+
 btRigidBody& RigidSolid::rigid_body() {
     return *(btRigidBody::upcast(body_));
 }
@@ -196,6 +210,19 @@ void SoftSolid::set_gravity(float g) {
     body_->activate();
 }
 
+void SoftSolid::set_force(ci::Vec3f vel) {
+    has_force_ = true;
+    force_ = vel;
+}
+
+void SoftSolid::update() {
+    if (!has_force_) 
+        return;
+
+    soft_body().setVelocity(ci::bullet::toBulletVector3(force_));
+    // check the timer, then 
+}
+
 btSoftBody& SoftSolid::soft_body() {
     return *(btSoftBody::upcast(body_));
 }
@@ -206,6 +233,12 @@ btSoftBody* SoftSolid::soft_body_ptr() {
 
 bool SoftSolid::detect_selection(ci::Ray r) {
     return graphic_item_->detect_selection(r);
+}
+
+void SoftSolid::select() {
+    Solid::select();
+
+    set_force(ci::Vec3f(-0.1f, -0.1f, -0.1f));
 }
 
 

@@ -43,9 +43,12 @@ public:
     Solid(SolidGraphicItem*, btCollisionObject*, btDynamicsWorld*);
     virtual ~Solid();
 
+    virtual void update();
     virtual void draw();
     virtual void save(Exporter&) = 0;
     virtual void set_gravity(float) = 0;
+    virtual void set_force(ci::Vec3f) = 0; // a constant force
+    virtual void remove_force();
     virtual btCollisionObject& collision_object();
 
     virtual bool detect_selection(ci::Ray); 
@@ -59,6 +62,9 @@ protected:
     btCollisionObject* body_;
     btDynamicsWorld* world_;
     bool selected_;
+    bool has_force_;
+    ci::Vec3f force_;
+
 };
 
 class RigidSolid : public Solid {
@@ -69,6 +75,7 @@ public:
     virtual void draw();
     virtual void save(Exporter&);
     virtual void set_gravity(float);
+    virtual void set_force(ci::Vec3f);
     virtual btRigidBody& rigid_body();
     virtual btRigidBody* rigid_body_ptr();
 };
@@ -78,11 +85,16 @@ public:
     SoftSolid(SolidGraphicItem*, btSoftBody*, btDynamicsWorld*);
     virtual ~SoftSolid();
 
+    // Override
+    virtual void update();
     virtual void draw();
     virtual void save(Exporter&);
     virtual void set_gravity(float);
+    virtual void set_force(ci::Vec3f);
     virtual btSoftBody& soft_body();
     virtual btSoftBody* soft_body_ptr();
+
+    virtual void select();
 
     // Override
     virtual bool detect_selection(ci::Ray);

@@ -58,7 +58,9 @@ namespace inc {
     }
 
     void Manager::update() {
-        // Nothing here
+        for (SolidList::iterator it = solids_.begin(); it != solids_.end(); ++it) {
+            (*it)->update();
+        }
     }
 
     void Manager::update_modules() {
