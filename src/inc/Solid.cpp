@@ -53,6 +53,7 @@
 #include <inc/Manager.h>
 #include <inc/BunnyMesh.h>
 #include <inc/DxfSaver.h>
+#include <inc/Menu.h>
 
 //#define BULLET_DEBUG_DRAW 1
 
@@ -61,6 +62,7 @@ Solid::Solid(SolidGraphicItem* item, btCollisionObject* body, btDynamicsWorld* w
     : graphic_item_(item), body_(body), world_(world) {
     selected_ = false;
     has_force_ = false;
+    force_ = ci::Vec3f::zero();
 
     // it is still valid to have a solid without a graphic representation
     if (item != NULL)
@@ -124,6 +126,11 @@ bool Solid::detect_selection(ci::Ray r) {
     float D = B * B - C;
 
     return D > 0;
+}
+
+// the force menu hooks into this
+ci::Vec3f* Solid::force_ptr() {
+    return &force_;
 }
 
 void Solid::select() {
@@ -235,10 +242,20 @@ bool SoftSolid::detect_selection(ci::Ray r) {
     return graphic_item_->detect_selection(r);
 }
 
+void SoftSolid::set_selected(bool s) {
+    if (s)
+        select();
+    else
+        Solid::set_selected(s);
+}
+
 void SoftSolid::select() {
     Solid::select();
 
-    set_force(ci::Vec3f(-0.1f, -0.1f, -0.1f));
+    if (selected())
+        ForceMenu::add_menu(*this);
+    else
+        ForceMenu::remove_menu();
 }
 
 

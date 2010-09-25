@@ -49,6 +49,7 @@ public:
     virtual void set_gravity(float) = 0;
     virtual void set_force(ci::Vec3f) = 0; // a constant force
     virtual void remove_force();
+    virtual ci::Vec3f* force_ptr(); // the force menu hooks into this
     virtual btCollisionObject& collision_object();
 
     virtual bool detect_selection(ci::Ray); 
@@ -94,6 +95,9 @@ public:
     virtual btSoftBody& soft_body();
     virtual btSoftBody* soft_body_ptr();
 
+    // Override
+    virtual void set_selected(bool);
+    // Override
     virtual void select();
 
     // Override

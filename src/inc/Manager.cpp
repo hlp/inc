@@ -83,6 +83,15 @@ namespace inc {
         modules_.push_back(module);
     }
 
+    void Manager::remove_module(std::tr1::shared_ptr<Module> module) {
+        for (ModuleList::iterator it = modules_.begin(); it != modules_.end(); ++it) {
+            if (module == *it) {
+                modules_.erase(it, it + 1);
+                break; // erase invalidates the loop
+            }
+        }
+    }
+
     void Manager::add_solid(SolidPtr ptr) {
         solids_.push_back(ptr);
     }
@@ -106,5 +115,17 @@ namespace inc {
 
     SolidList& Manager::get_selectable() {
         return selectable_;
+    }
+
+    void Manager::deselect_other_solids(std::tr1::shared_ptr<Solid> target) {
+        SolidList& others = get_selectable();
+
+        for (SolidList::iterator it = others.begin(); it != others.end(); ++it) {
+            if (*it == target)
+                continue;
+             
+            if ((*it)->selected())
+                (*it)->select();
+        }
     }
 }

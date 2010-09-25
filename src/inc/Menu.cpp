@@ -326,4 +326,59 @@ SolidMenu& SolidMenu::instance() {
     return *instance_;
 }
 
+
+// having a dynamic window box could get a bit hairy, hence these static methods
+void ForceMenu::add_menu(Solid& solid) {
+    // it would be good to change this...
+    IncApp::instance().force_menu_ = 
+        std::tr1::shared_ptr<ForceMenu>(new ForceMenu(solid));
+
+    Manager::instance().add_module(IncApp::instance().force_menu_);
+
+    IncApp::instance().force_menu_->setup();
+}
+
+void ForceMenu::remove_menu() {
+    Manager::instance().remove_module(IncApp::instance().force_menu_);
+    IncApp::instance().force_menu_.reset();
+}
+
+ForceMenu::ForceMenu(Solid& solid) : target_solid_(solid) {
+    instance_ = this;
+}
+
+ForceMenu::~ForceMenu() {
+}
+
+void ForceMenu::setup() {
+    interface_ = ci::params::InterfaceGl("Forces", ci::Vec2i(300, 300));
+
+    std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > change_force_button =
+        std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
+        new GenericWidget<ci::Vec3f>(*this, "Set Object Force", target_solid_.force_ptr()));
+
+    change_force_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::ForceMenu::force_changed), 
+        this));
+
+    add_widget(change_force_button);
+
+    Menu::setup();
+}
+
+// really you're setting a const 
+bool ForceMenu::force_changed(ci::Vec3f vel) {
+    // notify the object this is the menu for
+    target_solid_.set_force(vel);
+
+    return false;
+}
+
+ForceMenu* ForceMenu::instance_;
+
+ForceMenu& ForceMenu::instance() {
+    return *instance_;
+}
+
+
 }

@@ -142,8 +142,10 @@ namespace inc {
 
         std::for_each(selectable.begin(), selectable.end(),
             [&] (std::tr1::shared_ptr<Solid> s_ptr) {
-            if (s_ptr->detect_selection(mouse_ray))
+            if (s_ptr->detect_selection(mouse_ray)) {
+                Manager::instance().deselect_other_solids(s_ptr);
                 s_ptr->select();
+            }
         } );
     }
 

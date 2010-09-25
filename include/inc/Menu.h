@@ -109,4 +109,25 @@ private:
     int matrix_d_;
 };
 
+class Solid;
+
+class ForceMenu : public Menu {
+public:
+    static void add_menu(Solid&);
+    static void remove_menu();
+
+    virtual ~ForceMenu();
+
+    virtual void setup();
+
+    bool force_changed(ci::Vec3f);
+
+    static ForceMenu& instance();
+
+private:
+    ForceMenu(Solid&);
+    static ForceMenu* instance_;
+    Solid& target_solid_;
+};
+
 }

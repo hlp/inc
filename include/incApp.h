@@ -29,6 +29,7 @@ namespace inc {
     class MainMenu;
     class MeshMenu;
     class SolidMenu;
+    class ForceMenu;
     class Origin;
     class SolidCreator;
     class MeshCreator;
@@ -46,6 +47,9 @@ class IncApp : public ci::app::AppBasic {
         void shutdown();
 
         static IncApp& instance();
+
+        // cleaned up (reset) in the shutdown() method
+        std::tr1::shared_ptr<inc::ForceMenu> force_menu_;
 
     private:
         // Access these with T::instance()

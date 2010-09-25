@@ -112,6 +112,7 @@ void IncApp::shutdown() {
     curve_sketcher_.reset();
     solid_creator_.reset();
     origin_.reset();
+    force_menu_.reset();
     solid_menu_.reset();
     mesh_menu_.reset();
     main_menu_.reset();
