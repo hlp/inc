@@ -44,6 +44,8 @@ CurveSketcher::CurveSketcher() {
     line_color_ = ci::ColorA(1.0f, 0.5f, 0.25f, 0.9f);
 
     drawing_plane_ = ci::Ray(ci::Vec3f(0.0f, 0.0f, 0.0f), ci::Vec3f::yAxis());
+
+    refining_curve_ = false;
 }
 
 CurveSketcher::~CurveSketcher() {
@@ -114,6 +116,8 @@ void CurveSketcher::set_up_sketcher() {
     // create bspline
     current_spline_.reset();
     control_points_.clear();
+
+    refining_curve_ = false;
 }
 
 void CurveSketcher::finish_sketcher() {
@@ -125,6 +129,8 @@ void CurveSketcher::finish_sketcher() {
 
     // generate a mesh now
     MeshCreator::instance().add_bspline_mesh(current_spline_);
+
+    refining_curve_ = true;
 }
 
 bool CurveSketcher::invalid_curve() {
@@ -181,7 +187,7 @@ ci::Vec3f CurveSketcher::current_spline_center() {
 // control points, and wait for a drag
 
 bool CurveSketcher::mouse_down(ci::app::MouseEvent evt) {
-    if (!active_)
+    if (!refining_curve_ && !active_)
         return false;
 
     if (!evt.isLeftDown())
@@ -197,6 +203,9 @@ bool CurveSketcher::mouse_down(ci::app::MouseEvent evt) {
         deactivate_all_but_active();
         return false; // wait for drag
     }
+
+    if (refining_curve_)
+        return false;
 
     create_new_control_point(r);
     deactivate_all_but_active();
@@ -253,7 +262,7 @@ void CurveSketcher::deactivate_all_but_active() {
 }
 
 bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
-    if (!active_)
+    if (!refining_curve_ && !active_)
         return false;
 
     if (!evt.isLeftDown())
@@ -262,7 +271,13 @@ bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
     active_point_->position() = get_intersection_with_drawing_plane(
         Camera::instance().get_ray_from_screen_pos(evt.getPos()));
 
-    generate_spline(false);
+    if (!refining_curve_)
+        generate_spline(false);
+    else {
+        generate_spline(true);
+        // regenerate mesh
+        MeshCreator::instance().rebuild_mesh();
+    }
 
     return false;
 }
@@ -287,7 +302,7 @@ ControlPoint::ControlPoint(ci::Vec3f pos, CurveSketcher& sketcher)
     active_ = false;
     arrow_size_ = 0.5f;
 
-    position_image_dim_ = 2.0f;
+    position_image_dim_ = 0.25f;
     position_render_dim_ = position_image_dim_ * 50.0f;
 
     arrow_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);

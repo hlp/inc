@@ -206,6 +206,8 @@ SolidMenu::SolidMenu() {
     matrix_w_ = 2;
     matrix_h_ = 2;
     matrix_d_ = 2;
+
+    sphere_radius_ = 3.0f;
 }
 
 SolidMenu::~SolidMenu() {
@@ -216,7 +218,7 @@ void SolidMenu::setup() {
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Set world gravity",
+        new GenericWidget<float>(*this, "World gravity",
         SolidFactory::instance().gravity_ptr(), "step=0.05"));
 
     set_gravity_button->value_changed().registerCb(
@@ -224,6 +226,13 @@ void SolidMenu::setup() {
         SolidFactory::instance_ptr()));
 
     add_widget(set_gravity_button);
+
+    std::tr1::shared_ptr<GenericWidget<float> > sphere_radius_button = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "New sphere radius",
+        &sphere_radius_, "step=0.1 min=0.1"));
+
+    add_widget(sphere_radius_button);
 
     std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_sphere_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -316,7 +325,7 @@ bool SolidMenu::set_gravity(float grav) {
 
 bool SolidMenu::create_rigid_sphere(bool) {
     SolidCreator::instance().create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), 
-        ci::Vec3f::one() * 3.0f);
+        ci::Vec3f::one() * sphere_radius_);
 
     return false;
 }
@@ -324,21 +333,21 @@ bool SolidMenu::create_rigid_sphere(bool) {
 bool SolidMenu::create_soft_sphere(bool) {
     ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
 
-    SolidCreator::instance().create_soft_sphere(pos, ci::Vec3f::one() * 3.0f);
+    SolidCreator::instance().create_soft_sphere(pos, ci::Vec3f::one() * sphere_radius_);
 
     return false;
 }
 
 bool SolidMenu::create_linked_spheres(bool) {
     SolidCreator::instance().create_linked_spheres(ci::Vec3f(0.0f, 100.0f, 0.0f),
-        ci::Vec3f::one() * 3.0f);
+        ci::Vec3f::one() * sphere_radius_);
 
     return false;
 }
 
 bool SolidMenu::create_soft_sphere_matrix(bool) {
     SolidCreator::instance().create_sphere_matrix(ci::Vec3f(0.0f, 75.0f, 0.0f), 
-        ci::Vec3f::one() * 3.0f,
+        ci::Vec3f::one() * sphere_radius_,
         matrix_w_, matrix_h_, matrix_d_);
 
     return false;
@@ -346,7 +355,7 @@ bool SolidMenu::create_soft_sphere_matrix(bool) {
 
 bool SolidMenu::create_rigid_sphere_matrix(bool) {
     SolidCreator::instance().create_rigid_sphere_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
-        ci::Vec3f::one() * 3.0f,
+        ci::Vec3f::one() * sphere_radius_,
         matrix_w_, matrix_h_, matrix_d_);
 
     return false;
@@ -354,7 +363,7 @@ bool SolidMenu::create_rigid_sphere_matrix(bool) {
 
 bool SolidMenu::create_rigid_sphere_spring_matrix(bool) {
     SolidCreator::instance().create_sphere_spring_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
-        ci::Vec3f::one() * 3.0f, matrix_w_, matrix_h_, matrix_d_);
+        ci::Vec3f::one() * sphere_radius_, matrix_w_, matrix_h_, matrix_d_);
 
     return false;
 }

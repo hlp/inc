@@ -270,6 +270,12 @@ SolidFactory::SolidFactory() {
     last_gravity_ = gravity_;
     sphere_color_ = ci::ColorA(0.f ,0.4549f, 0.6275f, 0.45f);
     container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.45f);
+
+    kDF_ = 1;
+	kDP_ = 2.0f;
+    kDG_ = 2.0f;
+	kPR_ = 0.0f;
+    kMT_ = 0.5f;
 }
 
 void SolidFactory::setup() {
@@ -456,6 +462,12 @@ SolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius)
     return solid;
 }
 
+float SolidFactory::kDF_;
+float SolidFactory::kDP_;
+float SolidFactory::kDG_;
+float SolidFactory::kPR_;
+float SolidFactory::kMT_;
+
 SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh) {
     ci::TriMesh mesh_copy = *in_mesh; // TODO: remove this copy step
 
@@ -490,11 +502,11 @@ SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mes
 
     soft_body->m_materials[0]->m_kLST = 0.1;
     //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
-	soft_body->m_cfg.kDF = 1;
-	soft_body->m_cfg.kDP = 2.0f; // no fun
-    soft_body->m_cfg.kDG = 2.0f; // no fun
-	soft_body->m_cfg.kPR = 0.0f;
-    soft_body->m_cfg.kMT = 0.5f; // pose rigiditiy
+	soft_body->m_cfg.kDF = kDF_;
+	soft_body->m_cfg.kDP = kDP_; // no fun
+    soft_body->m_cfg.kDG = kDG_; // no fun
+	soft_body->m_cfg.kPR = kPR_;
+    soft_body->m_cfg.kMT = kMT_; // pose rigiditiy
 
     soft_body->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
         

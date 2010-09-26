@@ -199,6 +199,12 @@ private:
     float gravity_;
     float last_gravity_;
 
+    static float kDF_;
+    static float kDP_;
+    static float kDG_;
+    static float kPR_;
+    static float kMT_;
+
     static SolidFactory* instance_;
 };
 

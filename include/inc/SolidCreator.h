@@ -57,7 +57,6 @@ public:
 
 private:
     static SolidCreator* instance_;
-
 };
 
 }

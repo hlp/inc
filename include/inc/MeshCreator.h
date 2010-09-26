@@ -55,8 +55,10 @@ public:
 
     bool is_pointed_up();
 
-private:
     void rebuild_mesh();
+
+private:
+    
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
         ci::Vec3f center, float radius, int res);
     // join two points with a vertical arc

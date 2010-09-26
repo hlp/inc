@@ -79,6 +79,8 @@ private:
     bool active_;
     std::tr1::shared_ptr<ci::BSpline3f> current_spline_;
 
+    bool refining_curve_;
+
     // specified by position and normal
     ci::Ray drawing_plane_;
     int degree_;

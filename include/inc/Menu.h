@@ -107,6 +107,8 @@ private:
     int matrix_w_;
     int matrix_h_;
     int matrix_d_;
+
+    float sphere_radius_;
 };
 
 class Solid;
