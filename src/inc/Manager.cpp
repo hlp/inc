@@ -123,7 +123,7 @@ namespace inc {
         for (SolidList::iterator it = others.begin(); it != others.end(); ++it) {
             if (*it == target)
                 continue;
-             
+            
             if ((*it)->selected())
                 (*it)->select();
         }

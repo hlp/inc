@@ -50,7 +50,11 @@ typedef std::tr1::shared_ptr<Widget> WidgetPtr;
 template<typename T>
 class GenericWidget : public Widget {
 public:
-    GenericWidget(Menu&, std::string label, T* monitor = NULL);
+    // Yes, yes, I know, this is really stupid, you shouldn't require
+    // the user to input a monitor arg just to use the args, but 
+    // I don't feel like changing the code.
+    GenericWidget(Menu&, std::string label, T* monitor = NULL, 
+        std::string args = "");
     virtual ~GenericWidget();
 
     virtual void add();
@@ -68,6 +72,8 @@ private:
     bool owner_;
     T* monitor_;
     T last_val_;
+
+    std::string args_;
 };
 
 }

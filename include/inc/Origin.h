@@ -29,7 +29,7 @@ namespace inc {
 
     class Origin : public Module {
     public:
-        Origin() { }
+        Origin() { create_ground_plane_ = false; }
         virtual ~Origin();
 
         void setup();
@@ -39,5 +39,7 @@ namespace inc {
     private:
         OriginGraphicItem* origin_graphic_item_;
         //ci::params::InterfaceGl interface_;
+
+        bool create_ground_plane_;
     };
 }

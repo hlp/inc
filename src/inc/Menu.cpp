@@ -145,6 +145,17 @@ void MeshMenu::setup() {
 
     add_widget(bag_button);
 
+    std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh height",
+        MeshCreator::instance().mesh_scale_ptr(), "step=0.1"));
+
+    mesh_height->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_mesh_scale), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(mesh_height);
+
     Menu::setup();
 }
 
@@ -284,8 +295,9 @@ bool SolidMenu::create_rigid_sphere(bool) {
 }
 
 bool SolidMenu::create_soft_sphere(bool) {
-    SolidCreator::instance().create_soft_sphere(ci::Vec3f(0.0f, 75.0f, 0.0f), 
-        ci::Vec3f::one() * 3.0f);
+    ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
+
+    SolidCreator::instance().create_soft_sphere(pos, ci::Vec3f::one() * 3.0f);
 
     return false;
 }

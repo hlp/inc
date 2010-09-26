@@ -72,11 +72,10 @@ void IncApp::setup() {
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
 
-    manager_->setup_modules();
-
     // other objects
-
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
+
+    manager_->setup_modules();
 }
 
 void IncApp::update() {

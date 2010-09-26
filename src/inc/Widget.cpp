@@ -33,8 +33,8 @@ Widget::~Widget() {
 
 
 template<typename T>
-GenericWidget<T>::GenericWidget(Menu& menu, std::string label, T* monitor) 
-    : Widget(menu, label) {
+GenericWidget<T>::GenericWidget(Menu& menu, std::string label, T* monitor,
+    std::string args) : Widget(menu, label), args_(args) {
 
     if (monitor == NULL) {
         owner_ = true;
@@ -61,7 +61,7 @@ ci::CallbackMgr<bool (T)>& GenericWidget<T>::value_changed() {
 
 template<typename T>
 void GenericWidget<T>::add() {
-    menu_.interface().addParam(label_, monitor_);
+    menu_.interface().addParam(label_, monitor_, args_);
 }
 
 template<typename T>

@@ -44,11 +44,12 @@ namespace inc {
         interface_.addParam("Grid Plane Intervals",
             origin_graphic_item_->grid_plane_intervals_ptr(), "");
         */
-
-        Manager::instance().solids().push_back(
-            SolidFactory::create_static_solid_box(
-            ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
-            ci::Vec3f().zero()));
+        if (create_ground_plane_) {
+            Manager::instance().solids().push_back(
+                SolidFactory::create_static_solid_box(
+                ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
+                ci::Vec3f().zero()));
+        }
         /*
         Manager::instance().solids().push_back(
             SolidFactory::create_soft_sphere_container());

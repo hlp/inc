@@ -31,13 +31,18 @@ public:
     std::tr1::shared_ptr<ci::TriMesh> generate_circle_mesh(ci::Vec3f center,
         float radius);
     std::tr1::shared_ptr<ci::TriMesh> generate_bspline_mesh(
-        std::tr1::shared_ptr<ci::BSpline3f> mesh);
+        std::tr1::shared_ptr<ci::BSpline3f> mesh, float height);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_circle_mesh(ci::Vec3f center, float radius);
     void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
 
+    // the mesh menu hooks into these
+    bool adjust_mesh_scale(float);
+    float* mesh_scale_ptr();
+
     static MeshCreator& instance();
+    static MeshCreator* instance_ptr(); // used for the menu to hook into
 
     void draw();
 
@@ -46,11 +51,13 @@ private:
         ci::Vec3f center, float radius, int res);
     // join two points with a vertical arc
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_vertical_arc(
-        const ci::Vec3f& p1, const ci::Vec3f& p2, int segments);
+        const ci::Vec3f& p1, const ci::Vec3f& p2, int segments, float stretch);
 
     std::tr1::shared_ptr<ci::TriMesh> debug_mesh_;
 
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > arc_debug_;
+
+    float mesh_scale_;
 
     static MeshCreator* instance_;
 };

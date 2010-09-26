@@ -55,6 +55,7 @@ public:
     bool* active_ptr(); // used for menu
 
     std::tr1::shared_ptr<ci::BSpline3f> current_spline();
+    ci::Vec3f current_spline_center();
 
     static CurveSketcher& instance();
 
@@ -150,6 +151,20 @@ protected:
 private:
     void draw_arrows();
 };
+
+/*
+class HeightAdjuster : public ControlPoint {
+public:
+    HeightAdjuster();
+    virtual ~HeightAdjuster();
+
+    virtual void draw();
+
+private:
+    void draw_height_arrows();
+};
+
+*/
 
 
 }

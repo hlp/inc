@@ -24,11 +24,13 @@
 #include <inc/MeshCreator.h>
 #include <inc/Manager.h>
 #include <inc/Solid.h>
+#include <inc/CurveSketcher.h>
 
 namespace inc {
 
 MeshCreator::MeshCreator() {
     instance_ = this;
+    mesh_scale_ = 1.0f;
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_circle_mesh(
@@ -148,16 +150,17 @@ void MeshCreator::draw() {
 }
 
 void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) {
-    std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline);
+    std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline, 
+        mesh_scale_);
     //debug_mesh_ = mesh;
 
     Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
-    std::tr1::shared_ptr<ci::BSpline3f> bspline) {
-    int rot_res = 40;
-    int slice_res = 40; // the number of points to sample the bspline
+    std::tr1::shared_ptr<ci::BSpline3f> bspline, float height) {
+    int rot_res = 50;
+    int slice_res = 50; // the number of points to sample the bspline
     int num_slices = (slice_res - 2) / 2 + 2;
 
     std::vector<ci::Vec3f> points;
@@ -192,7 +195,7 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
     for (int i = 0; i < base_points.size() / 2; ++i) {
         std::tr1::shared_ptr<std::vector<ci::Vec3f> > temp_arc = 
             make_vertical_arc(base_points[i], base_points[j],
-            rot_res);
+            rot_res, height);
 
         std::for_each(temp_arc->begin(), temp_arc->end(),
             [&] (ci::Vec3f vec) { points.push_back(vec); } );
@@ -232,7 +235,7 @@ std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
 }
 
 std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
-    const ci::Vec3f& p1, const ci::Vec3f& p2, int segments) {
+    const ci::Vec3f& p1, const ci::Vec3f& p2, int segments, float stretch) {
     ci::Vec3f center = (p1 + p2) / 2.0f;
 
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > points = 
@@ -249,7 +252,7 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
         float theta = ci::lmap<float>(i, 0, segments - 1, 0, M_PI);
 
         ci::Vec3f v = ci::Quatf(axis, theta) * start_point;
-        float stretch = 2.0f;
+        // adjust the height depending on user params
         v = ci::Vec3f(v.x, v.y * stretch, v.z);
 
         v += center;
@@ -260,10 +263,24 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
     return points;
 }
 
+bool MeshCreator::adjust_mesh_scale(float scale) {
+    mesh_scale_ = scale;
+
+    return false;
+}
+
+float* MeshCreator::mesh_scale_ptr() {
+    return &mesh_scale_;
+}
+
 MeshCreator* MeshCreator::instance_ = NULL;
 
 MeshCreator& MeshCreator::instance() {
     return *instance_;
+}
+
+MeshCreator* MeshCreator::instance_ptr() {
+    return instance_;
 }
 
 }

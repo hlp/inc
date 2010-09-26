@@ -160,6 +160,22 @@ std::tr1::shared_ptr<ci::BSpline3f> CurveSketcher::current_spline() {
     return current_spline_;
 }
 
+// this is used for the starting position for soft body creation
+ci::Vec3f CurveSketcher::current_spline_center() {
+    if (invalid_curve())
+        return ci::Vec3f::zero();
+
+    int count = 0;
+    ci::Vec3f sum = ci::Vec3f::zero();
+
+    for (float t = 0.0f; t <= 1.0f; t += 0.01) {
+        sum += current_spline_->getPosition(t);
+        ++count;
+    }
+
+    return sum / count;
+}
+
 // on first press check for intersection, if so, do nothing and wait for a drag
 // if no intersection, make a new control point, deactivate any other active
 // control points, and wait for a drag
