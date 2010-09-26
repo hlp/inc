@@ -121,8 +121,12 @@ public:
     btDynamicsWorld* dynamics_world();
     btSoftRigidDynamicsWorld* soft_dynamics_world();
     float gravity();
-    void set_gravity(float);
-    void update_object_gravity();
+
+    // menu hooks
+    bool set_gravity(float);
+    float* gravity_ptr();
+
+    void update_object_gravity(); // this applies any gravity changes to all objects
         
     static SolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
     static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
@@ -150,6 +154,7 @@ public:
         ci::Vec3f scale, float mass);
 
     static SolidFactory& instance();
+    static SolidFactory* instance_ptr();
 
     btSoftBodyWorldInfo& soft_body_world_info();
 

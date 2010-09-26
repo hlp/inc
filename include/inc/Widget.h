@@ -51,8 +51,8 @@ template<typename T>
 class GenericWidget : public Widget {
 public:
     // Yes, yes, I know, this is really stupid, you shouldn't require
-    // the user to input a monitor arg just to use the args, but 
-    // I don't feel like changing the code.
+    // the user to input a monitor pointer just to use the args, but 
+    // I don't feel like changing the code atm.
     GenericWidget(Menu&, std::string label, T* monitor = NULL, 
         std::string args = "");
     virtual ~GenericWidget();

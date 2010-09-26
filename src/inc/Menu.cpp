@@ -193,11 +193,12 @@ void SolidMenu::setup() {
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Set world gravity"));
+        new GenericWidget<float>(*this, "Set world gravity",
+        SolidFactory::instance().gravity_ptr(), "step=0.05"));
 
     set_gravity_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::SolidMenu::set_gravity), 
-        this));
+        std::bind1st(std::mem_fun(&inc::SolidFactory::set_gravity), 
+        SolidFactory::instance_ptr()));
 
     add_widget(set_gravity_button);
 
