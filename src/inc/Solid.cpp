@@ -1082,6 +1082,36 @@ std::tr1::shared_ptr<std::vector<int> > SolidFactory::get_top_vertices(
     return indices;
 }
 
+bool SolidFactory::adjust_kDF(float) {
+    return physics_param_changed();
+}
+
+bool SolidFactory::adjust_kDP(float) {
+    return physics_param_changed();
+}
+
+bool SolidFactory::adjust_kDG(float) {
+    return physics_param_changed();
+}
+
+bool SolidFactory::adjust_kPR(float) {
+    return physics_param_changed();
+}
+
+bool SolidFactory::adjust_kMT(float) {
+    return physics_param_changed();
+}
+
+bool SolidFactory::physics_param_changed() {
+    MeshCreator::instance().rebuild_mesh();
+
+    return false;
+}
+
+
+
+///////////////////////////////
+// DebugDraw
 
 DebugDraw::DebugDraw() : mode_(DBG_NoDebug) {
 }

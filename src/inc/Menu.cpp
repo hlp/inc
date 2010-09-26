@@ -180,6 +180,61 @@ void MeshMenu::setup() {
         MeshCreator::instance_ptr()));
 
     add_widget(slice_res);
+
+    std::tr1::shared_ptr<GenericWidget<float> > kDF = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Dynamic friction coefficient",
+        SolidFactory::instance().kDF_ptr(), "step=0.01 min=0 max=1"));
+
+    kDF->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidFactory::adjust_kDF), 
+        SolidFactory::instance_ptr()));
+
+    add_widget(kDF);
+
+    std::tr1::shared_ptr<GenericWidget<float> > kDP = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Damping coefficient",
+        SolidFactory::instance().kDP_ptr(), "step=0.01 min=0 max=1"));
+
+    kDP->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidFactory::adjust_kDP), 
+        SolidFactory::instance_ptr()));
+
+    add_widget(kDP);
+
+    std::tr1::shared_ptr<GenericWidget<float> > kDG =
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Drag coefficient",
+        SolidFactory::instance().kDG_ptr(), "step=0.1 min=0"));
+
+    kDG->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidFactory::adjust_kDG), 
+        SolidFactory::instance_ptr()));
+
+    add_widget(kDG);
+
+    std::tr1::shared_ptr<GenericWidget<float> > kPR = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Pressure coefficient",
+        SolidFactory::instance().kPR_ptr(), "step=0.01"));
+
+    kPR->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidFactory::adjust_kPR), 
+        SolidFactory::instance_ptr()));
+
+    add_widget(kPR);
+
+    std::tr1::shared_ptr<GenericWidget<float> > kMT = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Pose matching coefficient",
+        SolidFactory::instance().kMT_ptr(), "step=0.01 min=0 max=1"));
+
+    kMT->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidFactory::adjust_kMT), 
+        SolidFactory::instance_ptr()));
+
+    add_widget(kMT);
     
 
     Menu::setup();
@@ -214,7 +269,7 @@ SolidMenu::~SolidMenu() {
 }
 
 void SolidMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(380, 200));
+    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(380, 250));
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(

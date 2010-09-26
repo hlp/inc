@@ -160,8 +160,23 @@ public:
 
     void delete_constraints();
 
+
+    // menu hooks
+    bool adjust_kDF(float);
+    bool adjust_kDP(float);
+    bool adjust_kDG(float);
+    bool adjust_kPR(float);
+    bool adjust_kMT(float);
+
+    float* kDF_ptr() { return &kDF_; }
+    float* kDP_ptr() { return &kDP_; }
+    float* kDG_ptr() { return &kDG_; }
+    float* kPR_ptr() { return &kPR_; }
+    float* kMT_ptr() { return &kMT_; }
+
 private:
     void init_physics();
+    bool physics_param_changed();
         
     static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
         ci::Vec3f radius, float res);
