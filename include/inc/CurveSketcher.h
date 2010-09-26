@@ -57,6 +57,8 @@ public:
     std::tr1::shared_ptr<ci::BSpline3f> current_spline();
     ci::Vec3f current_spline_center();
 
+    bool invalid_curve();
+
     static CurveSketcher& instance();
 
     friend class ControlPoint; // so they can regenerate the bspline
@@ -71,7 +73,7 @@ private:
     void create_new_control_point(ci::Ray);
     void deactivate_all_but_active();
     ci::Vec3f get_intersection_with_drawing_plane(ci::Ray);
-    bool invalid_curve();
+    
 
     static CurveSketcher* instance_;
     bool active_;

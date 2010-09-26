@@ -43,7 +43,7 @@ CurveSketcher::CurveSketcher() {
     line_thickness_ = 3.0f;
     line_color_ = ci::ColorA(1.0f, 0.5f, 0.25f, 0.9f);
 
-    drawing_plane_ = ci::Ray(ci::Vec3f(0.0f, 50.0f, 0.0f), ci::Vec3f::yAxis());
+    drawing_plane_ = ci::Ray(ci::Vec3f(0.0f, 0.0f, 0.0f), ci::Vec3f::yAxis());
 }
 
 CurveSketcher::~CurveSketcher() {

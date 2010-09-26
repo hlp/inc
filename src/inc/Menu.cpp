@@ -147,17 +147,40 @@ void MeshMenu::setup() {
 
     add_widget(bag_button);
     */
-
+    
     std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
         std::tr1::shared_ptr<GenericWidget<float> >(
         new GenericWidget<float>(*this, "Mesh height",
-        MeshCreator::instance().mesh_scale_ptr(), "step=0.1"));
+        MeshCreator::instance().mesh_scale_ptr(), "step=0.1 min=0.1"));
 
     mesh_height->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_mesh_scale), 
         MeshCreator::instance_ptr()));
 
     add_widget(mesh_height);
+
+    std::tr1::shared_ptr<GenericWidget<int> > arch_res = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Mesh arch resolution",
+        MeshCreator::instance().arch_resolution_ptr(), "step=1 min=4"));
+
+    arch_res->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_arch_resolution), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(arch_res);
+
+        std::tr1::shared_ptr<GenericWidget<int> > slice_res = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Mesh slice resolution",
+        MeshCreator::instance().slice_resolution_ptr(), "step=1 min=4"));
+
+    slice_res->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_slice_resolution), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(slice_res);
+    
 
     Menu::setup();
 }

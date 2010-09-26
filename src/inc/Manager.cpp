@@ -92,6 +92,15 @@ namespace inc {
         }
     }
 
+    void Manager::remove_solid(SolidPtr ptr) {
+        for (SolidList::iterator it = solids_.begin(); it != solids_.end(); ++it) {
+            if (ptr == *it) {
+                solids_.erase(it, it + 1);
+                break; // erase invalidates the loop
+            }
+        }
+    }
+
     void Manager::add_solid(SolidPtr ptr) {
         solids_.push_back(ptr);
     }

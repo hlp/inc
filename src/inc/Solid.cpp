@@ -54,6 +54,7 @@
 #include <inc/BunnyMesh.h>
 #include <inc/DxfSaver.h>
 #include <inc/Menu.h>
+#include <inc/MeshCreator.h>
 
 //#define BULLET_DEBUG_DRAW 1
 
@@ -1052,9 +1053,16 @@ std::tr1::shared_ptr<std::vector<int> > SolidFactory::get_top_vertices(
     std::tr1::shared_ptr<std::vector<int> > indices = 
         std::tr1::shared_ptr<std::vector<int> >(new std::vector<int>());
 
+    float ref_height;
+
+    if (MeshCreator::instance().is_pointed_up()) 
+        ref_height = bottom_height;
+    else
+        ref_height = top_height;
+
     for (int i = 0; i < vertices.size(); ++i) {
-        if (vertices[i].y < (top_height + spread) &&
-            vertices[i].y > (top_height - spread)) {
+        if (vertices[i].y < (ref_height + spread) &&
+            vertices[i].y > (ref_height - spread)) {
             indices->push_back(i);
         }
     }

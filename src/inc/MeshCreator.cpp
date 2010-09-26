@@ -31,6 +31,11 @@ namespace inc {
 MeshCreator::MeshCreator() {
     instance_ = this;
     mesh_scale_ = 1.0f;
+    is_pointed_up_ = true;
+    arch_resolution_ = 50;
+    slice_resolution_ = 50;
+
+    current_mesh_ = std::tr1::shared_ptr<Solid>();
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_circle_mesh(
@@ -149,18 +154,20 @@ void MeshCreator::draw() {
     glEnd();
 }
 
+// there's a problem with this method.
 void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) {
     std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline, 
         mesh_scale_);
-    //debug_mesh_ = mesh;
 
-    Manager::instance().add_solid(SolidFactory::create_soft_mesh(mesh));
+    current_mesh_ = SolidFactory::create_soft_mesh(mesh);
+
+    Manager::instance().add_solid(current_mesh_);
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
     std::tr1::shared_ptr<ci::BSpline3f> bspline, float height) {
-    int rot_res = 50;
-    int slice_res = 50; // the number of points to sample the bspline
+    int rot_res = arch_resolution_;
+    int slice_res = slice_resolution_; // the number of points to sample the bspline
     int num_slices = (slice_res - 2) / 2 + 2;
 
     std::vector<ci::Vec3f> points;
@@ -248,8 +255,12 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
     ci::Vec3f start_point = p1 - center; 
 
     for (int i = 0; i < segments; ++i) {
-        //float theta = ci::lmap<float>(i, 0, segments - 1, M_PI, M_PI * 2.0f);
-        float theta = ci::lmap<float>(i, 0, segments - 1, 0, M_PI);
+        float theta;
+
+        if (is_pointed_up_)
+            theta = ci::lmap<float>(i, 0, segments - 1, M_PI, M_PI * 2.0f);
+        else
+            theta = ci::lmap<float>(i, 0, segments - 1, 0, M_PI);
 
         ci::Vec3f v = ci::Quatf(axis, theta) * start_point;
         // adjust the height depending on user params
@@ -266,11 +277,51 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
 bool MeshCreator::adjust_mesh_scale(float scale) {
     mesh_scale_ = scale;
 
+    rebuild_mesh();
+
     return false;
+}
+
+void MeshCreator::rebuild_mesh() {
+    if (CurveSketcher::instance().invalid_curve())
+        return;
+
+    // delete old mesh, if it exists, and add a new mesh
+    Manager::instance().remove_solid(current_mesh_);
+    // this should really be rethought ...
+    add_bspline_mesh(CurveSketcher::instance().current_spline());
 }
 
 float* MeshCreator::mesh_scale_ptr() {
     return &mesh_scale_;
+}
+
+bool MeshCreator::adjust_arch_resolution(int res) {
+    arch_resolution_ = res;
+
+    rebuild_mesh();
+
+    return false;
+}
+
+int* MeshCreator::arch_resolution_ptr() {
+    return &arch_resolution_;
+}
+
+bool MeshCreator::adjust_slice_resolution(int res) {
+    slice_resolution_ = res;
+
+    rebuild_mesh();
+
+    return false;
+}
+
+int* MeshCreator::slice_resolution_ptr() {
+    return &slice_resolution_;
+}
+
+bool MeshCreator::is_pointed_up() {
+    return is_pointed_up_;
 }
 
 MeshCreator* MeshCreator::instance_ = NULL;

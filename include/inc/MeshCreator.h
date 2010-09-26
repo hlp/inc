@@ -24,6 +24,8 @@
 
 namespace inc {
 
+class Solid;
+
 class MeshCreator {
 public:
     MeshCreator();
@@ -41,23 +43,36 @@ public:
     bool adjust_mesh_scale(float);
     float* mesh_scale_ptr();
 
+    bool adjust_arch_resolution(int);
+    int* arch_resolution_ptr();
+    bool adjust_slice_resolution(int);
+    int* slice_resolution_ptr();
+
     static MeshCreator& instance();
     static MeshCreator* instance_ptr(); // used for the menu to hook into
 
     void draw();
 
+    bool is_pointed_up();
+
 private:
+    void rebuild_mesh();
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
         ci::Vec3f center, float radius, int res);
     // join two points with a vertical arc
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_vertical_arc(
         const ci::Vec3f& p1, const ci::Vec3f& p2, int segments, float stretch);
 
+    std::tr1::shared_ptr<Solid> current_mesh_;
+
     std::tr1::shared_ptr<ci::TriMesh> debug_mesh_;
 
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > arc_debug_;
 
     float mesh_scale_;
+    int arch_resolution_;
+    int slice_resolution_;
+    bool is_pointed_up_; // a dome vs a basket
 
     static MeshCreator* instance_;
 };
