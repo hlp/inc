@@ -136,6 +136,8 @@ void MeshMenu::setup() {
 
     add_widget(draw_mesh_button);
 
+    // TODO: decide if I want to keep this method. If not, remove it
+    /*
     std::tr1::shared_ptr<GenericWidget<bool> > bag_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Make circular mesh"));
@@ -144,6 +146,7 @@ void MeshMenu::setup() {
         std::bind1st(std::mem_fun(&inc::MeshMenu::create_bag), this));
 
     add_widget(bag_button);
+    */
 
     std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
         std::tr1::shared_ptr<GenericWidget<float> >(
