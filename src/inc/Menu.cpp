@@ -76,7 +76,7 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Main", ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl("Main", ci::Vec2i(300, 50));
 
     std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -504,7 +504,7 @@ ForceMenu::~ForceMenu() {
 }
 
 void ForceMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Forces", ci::Vec2i(300, 300));
+    interface_ = ci::params::InterfaceGl("Forces", ci::Vec2i(300, 175));
 
     std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > change_force_button =
         std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
