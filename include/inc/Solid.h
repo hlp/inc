@@ -174,6 +174,13 @@ public:
     float* kPR_ptr() { return &kPR_; }
     float* kMT_ptr() { return &kMT_; }
 
+    float* sphere_kLST_ptr() { return &sphere_kLST_; }
+    float* sphere_kVST_ptr() { return &sphere_kVST_; }
+    float* sphere_kDF_ptr() { return &sphere_kDF_; }
+    float* sphere_kDP_ptr() { return &sphere_kDP_; }
+    float* sphere_kPR_ptr() { return &sphere_kPR_; }
+    float* sphere_total_mass_ptr() { return &sphere_total_mass_; }
+
 private:
     void init_physics();
     bool physics_param_changed();
@@ -219,6 +226,13 @@ private:
     static float kDG_;
     static float kPR_;
     static float kMT_;
+
+    static float sphere_kLST_;
+    static float sphere_kVST_;
+    static float sphere_kDF_;
+    static float sphere_kDP_;
+    static float sphere_kPR_;
+    static float sphere_total_mass_;
 
     static SolidFactory* instance_;
 };

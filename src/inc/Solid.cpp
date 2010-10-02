@@ -272,10 +272,17 @@ SolidFactory::SolidFactory() {
     container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.45f);
 
     kDF_ = 1;
-	kDP_ = 2.0f;
-    kDG_ = 2.0f;
+	kDP_ = 1.0f;
+    kDG_ = 1.0f;
 	kPR_ = 0.0f;
-    kMT_ = 0.5f;
+    kMT_ = 0.75f;
+
+    sphere_kLST_ = 0.1;
+    sphere_kVST_ = 0.1;
+    sphere_kDF_ = 1;
+    sphere_kDP_ = 0.001;
+    sphere_kPR_ = 2500;
+    sphere_total_mass_ = 1000.0f;
 }
 
 void SolidFactory::setup() {
@@ -468,6 +475,13 @@ float SolidFactory::kDG_;
 float SolidFactory::kPR_;
 float SolidFactory::kMT_;
 
+float SolidFactory::sphere_kLST_;
+float SolidFactory::sphere_kVST_;
+float SolidFactory::sphere_kDF_;
+float SolidFactory::sphere_kDP_;
+float SolidFactory::sphere_kPR_;
+float SolidFactory::sphere_total_mass_;
+
 SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh) {
     ci::TriMesh mesh_copy = *in_mesh; // TODO: remove this copy step
 
@@ -606,6 +620,12 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
     ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
     int resolution = 50;
 
+    
+    if (MeshCreator::instance().is_pointed_up()) {
+        ygap *= -1.0f;
+        ydiam *= -1.0f;
+    }
+
     std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
         std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
 
@@ -625,6 +645,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
         }
     }
 
+    /*
     for (int i = 0; i < w; ++i) {
         for (int j = 0; j < h; ++j) {
             for (int k = 0; k < d; ++k) {
@@ -654,6 +675,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
             }
         }
     }
+    */
 
     return d_ptr;
 }
@@ -873,12 +895,13 @@ btSoftBody* SolidFactory::create_bullet_soft_sphere(ci::Vec3f position,
     */
 
     // pressure based simulation
-    soft_body->m_materials[0]->m_kLST = 0.1;
-	soft_body->m_cfg.kDF = 1;
-	soft_body->m_cfg.kDP = 0.001; // fun factor...
-	soft_body->m_cfg.kPR = 2500;
+    soft_body->m_materials[0]->m_kLST = sphere_kLST_;
+    soft_body->m_materials[0]->m_kVST = sphere_kVST_;
+	soft_body->m_cfg.kDF = sphere_kDF_;
+	soft_body->m_cfg.kDP = sphere_kDP_; // fun factor...
+	soft_body->m_cfg.kPR = sphere_kPR_;
 
-    soft_body->setTotalMass(1000.0f);
+    soft_body->setTotalMass(sphere_total_mass_);
 
     soft_body->generateClusters(20);
 

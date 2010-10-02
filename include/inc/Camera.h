@@ -38,7 +38,7 @@ public:
 
     void set_matrices();
 
-    virtual bool resize(int, int);
+    virtual bool resize(ci::app::ResizeEvent);
     virtual bool mouse_down(ci::app::MouseEvent);
     virtual bool mouse_drag(ci::app::MouseEvent);
     virtual bool mouse_up(ci::app::MouseEvent);
@@ -67,6 +67,7 @@ private:
     bool was_dragged_;
     ci::Vec2i down_pos_;
 
+    ci::CallbackId resize_cb_id_;
     ci::CallbackId mouse_down_cb_id_;
     ci::CallbackId mouse_drag_cb_id_;
     ci::CallbackId mouse_up_cb_id_;

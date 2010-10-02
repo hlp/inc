@@ -40,6 +40,7 @@ namespace inc {
         ci::app::console() << "Deleting Camera" << std::endl;
 #endif
 
+        IncApp::instance().unregisterResize(resize_cb_id_);
         IncApp::instance().unregisterMouseDown(mouse_down_cb_id_);
         IncApp::instance().unregisterMouseDrag(mouse_drag_cb_id_);
         IncApp::instance().unregisterMouseWheel(mouse_wheel_cb_id_);
@@ -48,6 +49,7 @@ namespace inc {
     }
 
     void Camera::setup() {
+        resize_cb_id_ = IncApp::instance().registerResize(this, &Camera::resize);
         mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, &Camera::mouse_down);
         mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, &Camera::mouse_drag);
         mouse_wheel_cb_id_ = IncApp::instance().registerMouseWheel(this, &Camera::mouse_wheel);
@@ -83,7 +85,7 @@ namespace inc {
         ci::gl::setMatrices(cam_->getCamera());
     }
 
-    bool Camera::resize(int, int) {
+    bool Camera::resize(ci::app::ResizeEvent) {
         create_camera();
         return false;
     }

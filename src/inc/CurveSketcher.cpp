@@ -302,14 +302,15 @@ ControlPoint::ControlPoint(ci::Vec3f pos, CurveSketcher& sketcher)
     active_ = false;
     arrow_size_ = 0.5f;
 
-    position_image_dim_ = 0.25f;
+    position_image_dim_ = 0.5f;
     position_render_dim_ = position_image_dim_ * 50.0f;
+    arrow_size_ = position_image_dim_;
 
     arrow_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);
-    arrow_line_width_ = 1.25f;
-    arrow_base_length_ = 1.5f;
-    arrow_triangle_length_ = 2.0f;
-    arrow_triangle_height_ = 1.75f;
+    arrow_line_width_ = 1.25f * arrow_size_;
+    arrow_base_length_ = 1.5f * arrow_size_;
+    arrow_triangle_length_ = 2.0f * arrow_size_;
+    arrow_triangle_height_ = 1.75f * arrow_size_;
 }
 
 ControlPoint::~ControlPoint() {
@@ -402,7 +403,7 @@ void ControlPoint::draw() {
 
     ci::gl::color(ci::Color::white());
 
-    ci::gl::drawCube(position_, ci::Vec3f::one());
+    ci::gl::drawCube(position_, ci::Vec3f::one() * position_image_dim_);
 
     /*
 
