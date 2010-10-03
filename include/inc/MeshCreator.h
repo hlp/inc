@@ -39,6 +39,11 @@ public:
     void add_circle_mesh(ci::Vec3f center, float radius);
     void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
 
+    void add_obj_mesh(const std::string& file_name,
+        ci::Vec3f scl = ci::Vec3f::one());
+    void add_tripod_mesh();
+    void add_anemone_mesh();
+
     // the mesh menu hooks into these
     bool adjust_mesh_scale(float);
     float* mesh_scale_ptr();
@@ -47,6 +52,13 @@ public:
     int* arch_resolution_ptr();
     bool adjust_slice_resolution(int);
     int* slice_resolution_ptr();
+
+    int* tripod_legs_ptr() { return &tripod_legs_; }
+    int* anemone_legs_ptr() { return &anemone_legs_; }
+    bool adjust_tripod_mesh_scale(float);
+    float* tripod_mesh_scale_ptr() { return &tripod_mesh_scale_; }
+    bool adjust_anemone_mesh_scale(float);
+    float* anemone_mesh_scale_ptr() { return &anemone_mesh_scale_; }
 
     static MeshCreator& instance();
     static MeshCreator* instance_ptr(); // used for the menu to hook into
@@ -75,6 +87,11 @@ private:
     int arch_resolution_;
     int slice_resolution_;
     bool is_pointed_up_; // a dome vs a basket
+
+    int tripod_legs_;
+    int anemone_legs_;
+    float tripod_mesh_scale_;
+    float anemone_mesh_scale_;
 
     static MeshCreator* instance_;
 };

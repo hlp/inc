@@ -20,6 +20,7 @@
 #include <cinder/gl/gl.h>
 #include <cinder/CinderMath.h>
 #include <cinder/app/App.h>
+#include <cinder/ObjLoader.h>
 
 #include <inc/MeshCreator.h>
 #include <inc/Manager.h>
@@ -34,6 +35,11 @@ MeshCreator::MeshCreator() {
     is_pointed_up_ = true;
     arch_resolution_ = 50;
     slice_resolution_ = 50;
+
+    tripod_legs_ = 3;
+    anemone_legs_ = 3;
+    tripod_mesh_scale_ = 1.0f;
+    anemone_mesh_scale_ = 1.0f;
 
     current_mesh_ = std::tr1::shared_ptr<Solid>();
 }
@@ -322,6 +328,92 @@ int* MeshCreator::slice_resolution_ptr() {
 
 bool MeshCreator::is_pointed_up() {
     return is_pointed_up_;
+}
+
+bool MeshCreator::adjust_tripod_mesh_scale(float scl) {
+    tripod_mesh_scale_ = scl;
+
+    add_tripod_mesh();
+
+    return false;
+}
+
+bool MeshCreator::adjust_anemone_mesh_scale(float scl) {
+    anemone_mesh_scale_ = scl;
+
+    add_anemone_mesh();
+
+    return false;
+}
+
+void MeshCreator::add_obj_mesh(const std::string& file_name,
+    ci::Vec3f scl) {
+    Manager::instance().remove_solid(current_mesh_);
+
+    ci::ObjLoader loader(ci::loadFileStream(file_name));
+    ci::TriMesh mesh;
+    loader.load(&mesh, true);
+
+    std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
+        std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh(mesh));
+
+    current_mesh_ = SolidFactory::create_soft_mesh(mesh_ptr, scl);
+
+    Manager::instance().add_solid(current_mesh_);
+}
+
+void MeshCreator::add_tripod_mesh() {
+    std::string file_name;
+
+    switch (tripod_legs_) {
+    case 1:
+        file_name = "tripod-1.obj";
+        break;
+    case 2:
+        file_name = "tripod-2.obj";
+        break;
+    case 3:
+        file_name = "tripod-3.obj";
+        break;
+    case 4:
+        file_name = "tripod-4.obj";
+        break;
+    case 5:
+    default:
+        file_name = "tripod-5.obj";
+        break;
+    }
+
+    file_name = "data/" + file_name;
+
+    add_obj_mesh(file_name, ci::Vec3f::one() * tripod_mesh_scale_);
+}
+
+void MeshCreator::add_anemone_mesh() {
+    std::string file_name;
+
+    switch (tripod_legs_) {
+    case 1:
+        file_name = "anemone-1.obj";
+        break;
+    case 2:
+        file_name = "anemone-2.obj";
+        break;
+    case 3:
+        file_name = "anemone-3.obj";
+        break;
+    case 4:
+        file_name = "anemone-4.obj";
+        break;
+    case 5:
+    default:
+        file_name = "anemone-5.obj";
+        break;
+    }
+
+    file_name = "data/" + file_name;
+
+    add_obj_mesh(file_name, ci::Vec3f::one() * anemone_mesh_scale_);
 }
 
 MeshCreator* MeshCreator::instance_ = NULL;

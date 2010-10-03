@@ -155,6 +155,8 @@ class TripodMeshMenu : public Menu {
 public:
     virtual void setup();
 
+    bool create_mesh(bool);
+
     std::string name() { return "TripodMesh"; }
 };
 

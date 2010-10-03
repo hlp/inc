@@ -555,7 +555,30 @@ void DrawMeshMenu::setup() {
 void TripodMeshMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
+    std::tr1::shared_ptr<GenericWidget<bool> > create_mesh = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create Tripod Mesh"));
+
+    create_mesh->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&TripodMeshMenu::create_mesh), 
+        this));
+
+    add_widget(create_mesh);
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_legs = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Number of legs", 
+        MeshCreator::instance().tripod_legs_ptr(), "min=1 max=5"));
+
+    add_widget(set_legs);
+
     Menu::setup();
+}
+
+bool TripodMeshMenu::create_mesh(bool) {
+    MeshCreator::instance().add_tripod_mesh();
+
+    return false;
 }
 
 
@@ -565,6 +588,13 @@ void TripodMeshMenu::setup() {
 
 void AnemoneMeshMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_legs = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Number of arms", 
+        MeshCreator::instance().anemone_legs_ptr(), "min=1 max=5"));
+
+    add_widget(set_legs);
 
     Menu::setup();
 }

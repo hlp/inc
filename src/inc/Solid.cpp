@@ -482,7 +482,9 @@ float SolidFactory::sphere_kDP_;
 float SolidFactory::sphere_kPR_;
 float SolidFactory::sphere_total_mass_;
 
-SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh) {
+// NOTE: this not only loads the mesh, it locks the bottom vertices
+SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh,
+    ci::Vec3f scl) {
     ci::TriMesh mesh_copy = *in_mesh; // TODO: remove this copy step
 
     std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
@@ -529,7 +531,7 @@ SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mes
     //m.setEulerZYX(-M_PI / 2.0f, 0.0, 0.0);
     m.setIdentity();
     // This sets the origin / starting position
-    //soft_body->scale(ci::bullet::toBulletVector3(ci::Vec3f(1.0f, 1.0f, 1.0f)*7.0f));
+    soft_body->scale(ci::bullet::toBulletVector3(scl));
     //soft_body->transform(btTransform(m, 
     //    ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
 
