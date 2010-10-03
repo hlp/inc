@@ -568,8 +568,6 @@ MenuManager::MenuManager() {
     x_spacing_ = 75;
     y_spacing_ = 28; // the height
 
-    menu_pos_ = ci::Vec2f(10.0f, 10.0f);
-
     hovering_over_menu_ = false;
 }
 
@@ -601,8 +599,15 @@ void MenuManager::setup() {
         submenu_rects_.push_back(temp_rect);
     }
 
+    menu_pos_ = 
+        ci::Vec2f(IncApp::instance().getWindowWidth() - menu_rect_.getWidth(),
+        10.0f);
+
     // create the create the tab menu
     create_menu_texture();
+
+    hide_all_menus();
+    show_menu(selected_menu_);
 }
 
 void MenuManager::create_menus() {
@@ -703,8 +708,11 @@ bool MenuManager::mouse_moved(ci::app::MouseEvent evt) {
 
     SelectedMenu current_hover = get_hover_menu(evt.getPos());
 
-    if (current_hover != selected_menu_)
+    if (current_hover != selected_menu_) {
         selected_menu_ = current_hover;
+        hide_all_menus();
+        show_menu(selected_menu_);
+    }
     
     return false;
 }
@@ -728,10 +736,15 @@ MenuManager::SelectedMenu MenuManager::get_hover_menu(ci::Vec2i pos) {
 
 void MenuManager::hide_all_menus() {
     // iterate over the menu containter, and hide all the menu
+    std::for_each(menus_.begin(), menus_.end(), 
+        [=] (std::tr1::shared_ptr<Menu> menu) {
+            menu->interface().hide();
+    } );
 }
 
 void MenuManager::show_menu(SelectedMenu selected) {
     // access container at selected position, and show
+    menus_[selected_menu_]->interface().show();
 }
 
 MenuManager* MenuManager::instance_;
