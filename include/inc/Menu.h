@@ -161,6 +161,9 @@ public:
     virtual void update();
     virtual void draw();
 
+    void delayed_draw();
+
+    virtual bool resize(ci::app::ResizeEvent);
     virtual bool mouse_moved(ci::app::MouseEvent);
 
     static MenuManager& instance();
@@ -181,6 +184,7 @@ private:
     void show_menu(SelectedMenu);
     bool is_inside_menu(ci::Vec2i pos);
     SelectedMenu get_hover_menu(ci::Vec2i pos);
+    void position_menu();
 
     int x_origin_;
     int y_origin_;
@@ -208,6 +212,7 @@ private:
     SelectedMenu selected_menu_;
 
     ci::CallbackId mouse_moved_cb_id_;
+    ci::CallbackId resize_cb_id_;
 };
 
 }

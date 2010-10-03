@@ -572,6 +572,7 @@ MenuManager::MenuManager() {
 }
 
 MenuManager::~MenuManager() {
+    IncApp::instance().unregisterResize(resize_cb_id_);
     IncApp::instance().unregisterMouseMove(mouse_moved_cb_id_);
 
     solid_menu_.reset();
@@ -580,11 +581,12 @@ MenuManager::~MenuManager() {
 }
 
 void MenuManager::setup() {
+    resize_cb_id_ = IncApp::instance().registerResize(this,
+        &MenuManager::resize);
     mouse_moved_cb_id_ = IncApp::instance().registerMouseMove(this, 
         &MenuManager::mouse_moved);
 
     create_menus();
-
     setup_menus();
 
     menu_rect_ = ci::Rectf(ci::Vec2f::zero(),
@@ -599,15 +601,17 @@ void MenuManager::setup() {
         submenu_rects_.push_back(temp_rect);
     }
 
-    menu_pos_ = 
-        ci::Vec2f(IncApp::instance().getWindowWidth() - menu_rect_.getWidth(),
-        10.0f);
-
     // create the create the tab menu
     create_menu_texture();
 
     hide_all_menus();
     show_menu(selected_menu_);
+}
+
+void MenuManager::position_menu() {
+    menu_pos_ = 
+        ci::Vec2f(IncApp::instance().getWindowWidth() - menu_rect_.getWidth(),
+        10.0f);
 }
 
 void MenuManager::create_menus() {
@@ -676,10 +680,20 @@ void MenuManager::create_menu_texture() {
 }
 
 void MenuManager::update() {
-    // nothing here
+    std::for_each(menus_.begin(), menus_.end(),
+        [=] (std::tr1::shared_ptr<Menu> menu) {
+            menu->update();
+    } );
 }
 
 void MenuManager::draw() {
+    std::for_each(menus_.begin(), menus_.end(),
+        [=] (std::tr1::shared_ptr<Menu> menu) {
+            menu->draw();
+    } );
+}
+
+void MenuManager::delayed_draw() {
     // draw the tabs
     draw_menu_texture();
 }
@@ -694,6 +708,12 @@ void MenuManager::draw_menu_texture() {
         ci::gl::draw(rollover_textures_[selected_menu_], menu_pos_);
     else
         ci::gl::draw(tabs_texture_, menu_pos_);
+}
+
+bool MenuManager::resize(ci::app::ResizeEvent) {
+    position_menu();
+
+    return false;
 }
 
 bool MenuManager::mouse_moved(ci::app::MouseEvent evt) {

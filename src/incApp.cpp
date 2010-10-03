@@ -55,6 +55,7 @@ void IncApp::setup() {
     manager_->add_module(camera_);
 
     menu_manager_ = std::tr1::shared_ptr<inc::MenuManager>(new inc::MenuManager());
+    manager_->add_module(menu_manager_);
 
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
@@ -64,9 +65,6 @@ void IncApp::setup() {
 
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
-
-    // the MenuManager draws on top of all these other modules
-    manager_->add_module(menu_manager_);
 
     // other objects
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
@@ -87,6 +85,8 @@ void IncApp::draw() {
 
     // Draw the GUI elements of each module
     ci::params::InterfaceGl::draw();
+
+    menu_manager_->delayed_draw();
 }
 
 void IncApp::shutdown() {
