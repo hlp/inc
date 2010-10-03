@@ -20,7 +20,10 @@
 #pragma once
 
 #include <deque>
+#include <string>
 
+#include <cinder/gl/gl.h>
+#include <cinder/gl/Texture.h>
 #include <cinder/app/KeyEvent.h>
 #include <cinder/app/App.h>
 
@@ -42,6 +45,9 @@ public:
 
     void add_widget(WidgetPtr);
 
+    // NOTE: this name CANNOT HAVE SPACES!! (can I enforce this somehow?)
+    virtual std::string name() = 0;
+
 protected:
     ci::params::InterfaceGl interface_;
     std::deque<WidgetPtr> widgets_;
@@ -60,6 +66,9 @@ public:
 
     static MainMenu& instance();
 
+    // Override
+    std::string name();
+
 private:
     static MainMenu* instance_;
 };
@@ -76,6 +85,9 @@ public:
     bool create_bag(bool);
 
     static MeshMenu& instance();
+
+    // Override
+    std::string name();
 
 private:
     static MeshMenu* instance_;
@@ -100,6 +112,9 @@ public:
     bool create_soft_sphere_matrix(bool);
     bool create_rigid_sphere_matrix(bool);
     bool create_rigid_sphere_spring_matrix(bool);
+
+    // Override
+    std::string name();
 
 private:
     static SolidMenu* instance_;
@@ -126,10 +141,73 @@ public:
 
     static ForceMenu& instance();
 
+    // Override
+    std::string name();
+
 private:
     ForceMenu(Solid&);
     static ForceMenu* instance_;
     Solid& target_solid_;
+};
+
+
+// draws the top menu tabs
+class MenuManager : public Module {
+public:
+    MenuManager();
+    virtual ~MenuManager();
+
+    virtual void setup();
+    virtual void update();
+    virtual void draw();
+
+    virtual bool mouse_moved(ci::app::MouseEvent);
+
+    static MenuManager& instance();
+
+    enum SelectedMenu {
+        MAIN = 0,
+        MESH = 1,
+        SOLID = 2,
+        FORCE = 3
+    };
+
+private:
+    void create_menus();
+    void setup_menus();
+    void create_menu_texture();
+    void draw_menu_texture();
+    void hide_all_menus();
+    void show_menu(SelectedMenu);
+    bool is_inside_menu(ci::Vec2i pos);
+    SelectedMenu get_hover_menu(ci::Vec2i pos);
+
+    int x_origin_;
+    int y_origin_;
+    int x_spacing_;
+    int y_spacing_;
+    ci::Vec2f menu_pos_;
+
+    std::vector<std::tr1::shared_ptr<Menu> > menus_;
+
+    bool hovering_over_menu_;
+
+    std::tr1::shared_ptr<Menu> main_menu_;
+    std::tr1::shared_ptr<Menu> mesh_menu_;
+    std::tr1::shared_ptr<Menu> solid_menu_;
+    std::tr1::shared_ptr<Menu> force_menu_;
+
+    ci::Rectf menu_rect_;
+    std::vector<ci::Rectf> submenu_rects_;
+
+    ci::gl::Texture tabs_texture_;
+    std::vector<ci::gl::Texture> rollover_textures_;
+
+    static MenuManager* instance_;
+
+    SelectedMenu selected_menu_;
+
+    ci::CallbackId mouse_moved_cb_id_;
 };
 
 }

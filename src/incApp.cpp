@@ -54,14 +54,7 @@ void IncApp::setup() {
     camera_ = std::tr1::shared_ptr<inc::Camera>(new inc::Camera());
     manager_->add_module(camera_);
 
-    main_menu_ = std::tr1::shared_ptr<inc::MainMenu>(new inc::MainMenu());
-    manager_->add_module(main_menu_);
-
-    mesh_menu_ = std::tr1::shared_ptr<inc::MeshMenu>(new inc::MeshMenu());
-    manager_->add_module(mesh_menu_);
-
-    solid_menu_ = std::tr1::shared_ptr<inc::SolidMenu>(new inc::SolidMenu());
-    manager_->add_module(solid_menu_);
+    menu_manager_ = std::tr1::shared_ptr<inc::MenuManager>(new inc::MenuManager());
 
     origin_ = std::tr1::shared_ptr<inc::Origin>(new inc::Origin());
     manager_->add_module(origin_);
@@ -71,6 +64,9 @@ void IncApp::setup() {
 
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
+
+    // the MenuManager draws on top of all these other modules
+    manager_->add_module(menu_manager_);
 
     // other objects
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
@@ -108,13 +104,11 @@ void IncApp::shutdown() {
     // remove other shared_ptr refs to modules
     manager_->clear_module_list();
 
+    menu_manager_.reset();
     curve_sketcher_.reset();
     solid_creator_.reset();
     origin_.reset();
     force_menu_.reset();
-    solid_menu_.reset();
-    mesh_menu_.reset();
-    main_menu_.reset();
     camera_.reset();
     renderer_.reset();
     solid_factory_.reset();

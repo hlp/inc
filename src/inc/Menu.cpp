@@ -19,6 +19,10 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
+#include <cinder/cairo/Cairo.h>
+#include <cinder/gl/Texture.h>
+#include <cinder/Surface.h>
+#include <cinder/app/MouseEvent.h>
 
 #include <inc/Menu.h>
 #include <incApp.h>
@@ -75,8 +79,12 @@ MainMenu::MainMenu() {
 MainMenu::~MainMenu() {
 }
 
+std::string MainMenu::name() {
+    return "Main";
+}
+
 void MainMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Main", ci::Vec2i(300, 50));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 50));
 
     std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -122,8 +130,12 @@ MeshMenu::MeshMenu() {
 MeshMenu::~MeshMenu() {
 }
 
+std::string MeshMenu::name() {
+    return "Mesh";
+}
+
 void MeshMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Mesh", ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
     std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -268,8 +280,12 @@ SolidMenu::SolidMenu() {
 SolidMenu::~SolidMenu() {
 }
 
+std::string SolidMenu::name() {
+    return "Solids";
+}
+
 void SolidMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Solids", ci::Vec2i(380, 250));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 250));
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -503,8 +519,12 @@ ForceMenu::ForceMenu(Solid& solid) : target_solid_(solid) {
 ForceMenu::~ForceMenu() {
 }
 
+std::string ForceMenu::name() {
+    return "Forces";
+}
+
 void ForceMenu::setup() {
-    interface_ = ci::params::InterfaceGl("Forces", ci::Vec2i(300, 175));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 175));
 
     std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > change_force_button =
         std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
@@ -533,5 +553,191 @@ ForceMenu& ForceMenu::instance() {
     return *instance_;
 }
 
+
+
+/////////////////////////////////////
+// MenuManager
+
+MenuManager::MenuManager() {
+    instance_ = this;
+
+    selected_menu_ = MAIN;
+
+    x_origin_ = 7;
+    y_origin_ = 20;
+    x_spacing_ = 75;
+    y_spacing_ = 28; // the height
+
+    menu_pos_ = ci::Vec2f(10.0f, 10.0f);
+
+    hovering_over_menu_ = false;
+}
+
+MenuManager::~MenuManager() {
+    IncApp::instance().unregisterMouseMove(mouse_moved_cb_id_);
+
+    solid_menu_.reset();
+    mesh_menu_.reset();
+    main_menu_.reset();
+}
+
+void MenuManager::setup() {
+    mouse_moved_cb_id_ = IncApp::instance().registerMouseMove(this, 
+        &MenuManager::mouse_moved);
+
+    create_menus();
+
+    setup_menus();
+
+    menu_rect_ = ci::Rectf(ci::Vec2f::zero(),
+        ci::Vec2f((x_origin_ + x_spacing_) * menus_.size(),
+        y_spacing_));
+
+    for (int i = 0; i < menus_.size(); ++i) {
+        ci::Rectf temp_rect = 
+            ci::Rectf(ci::Vec2f((x_origin_ + x_spacing_) * i, 0.0f),
+            ci::Vec2f((x_origin_ + x_spacing_) * (i + 1), y_spacing_));
+
+        submenu_rects_.push_back(temp_rect);
+    }
+
+    // create the create the tab menu
+    create_menu_texture();
+}
+
+void MenuManager::create_menus() {
+    main_menu_ = std::tr1::shared_ptr<Menu>(new MainMenu());
+    menus_.push_back(main_menu_);
+
+    mesh_menu_ = std::tr1::shared_ptr<Menu>(new MeshMenu());
+    menus_.push_back(mesh_menu_);
+
+    solid_menu_ = std::tr1::shared_ptr<Menu>(new SolidMenu());
+    menus_.push_back(solid_menu_);
+}
+
+void MenuManager::setup_menus() {
+    std::for_each(menus_.begin(), menus_.end(), 
+        [=] (std::tr1::shared_ptr<Menu> menu) {
+            menu->setup();
+    } );
+}
+
+void MenuManager::create_menu_texture() {
+    int x_origin = x_origin_;
+    int y_origin = y_origin_;
+    int x_spacing = x_spacing_;
+    int y_spacing = y_spacing_; // the height
+
+    ci::cairo::SurfaceImage base((x_origin + x_spacing) * menus_.size(), 
+        y_spacing, true);
+    ci::cairo::Context ctx(base);
+
+    ci::Font font("Arial", 16);
+    ctx.setFont(font);
+    ctx.setFontSize(16);
+    ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
+
+    for (int i = 0; i < menus_.size(); ++i) {
+        ctx.moveTo((x_origin + x_spacing) * i + x_origin, y_origin);
+        ctx.showText(menus_[i]->name());
+    }
+
+    ci::Surface tabs_surface = base.getSurface();
+    tabs_texture_ = ci::gl::Texture(tabs_surface);
+
+    for (int i = 0; i < menus_.size(); ++i) {
+        ci::cairo::SurfaceImage roll_base((x_origin + x_spacing) * menus_.size(), 
+        y_spacing, true);
+        ci::cairo::Context roll_ctx(roll_base);
+
+        roll_ctx.setSourceRgba(0.3f, 0.3f, 0.3f, 1.0f);
+
+        roll_ctx.rectangle(submenu_rects_[i]);
+        roll_ctx.fill();
+
+        ci::Font font("Arial", 16);
+        roll_ctx.setFont(font);
+        roll_ctx.setFontSize(16);
+        roll_ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
+
+        for (int j = 0; j < menus_.size(); ++j) {
+            roll_ctx.moveTo((x_origin + x_spacing) * j + x_origin, y_origin);
+            roll_ctx.showText(menus_[j]->name());
+        }
+
+        rollover_textures_.push_back(ci::gl::Texture(roll_base.getSurface()));
+    }
+}
+
+void MenuManager::update() {
+    // nothing here
+}
+
+void MenuManager::draw() {
+    // draw the tabs
+    draw_menu_texture();
+}
+
+void MenuManager::draw_menu_texture() {
+    // reset matrix for 2D drawing
+    ci::gl::setMatricesWindow(IncApp::instance().getWindowSize());
+
+    ci::gl::color(ci::Color::white());
+
+    if (hovering_over_menu_)
+        ci::gl::draw(rollover_textures_[selected_menu_], menu_pos_);
+    else
+        ci::gl::draw(tabs_texture_, menu_pos_);
+}
+
+bool MenuManager::mouse_moved(ci::app::MouseEvent evt) {
+    // check if the cursor is in a menu != selected_menu_
+    // if so, show that menu, and hide all others
+    if (!is_inside_menu(evt.getPos())) {
+        hovering_over_menu_ = false;
+        return false;
+    }
+
+    hovering_over_menu_ = true;
+
+    SelectedMenu current_hover = get_hover_menu(evt.getPos());
+
+    if (current_hover != selected_menu_)
+        selected_menu_ = current_hover;
+    
+    return false;
+}
+
+bool MenuManager::is_inside_menu(ci::Vec2i pos) {
+    ci::Rectf temp_rect(menu_rect_);
+    temp_rect.offset(menu_pos_);
+    return temp_rect.contains(pos);
+}
+
+MenuManager::SelectedMenu MenuManager::get_hover_menu(ci::Vec2i pos) {
+    for (int i = 0; i < menus_.size(); ++i) {
+        ci::Rectf temp_rect(submenu_rects_[i]);
+        temp_rect.offset(menu_pos_);
+        if (temp_rect.contains(pos))
+            return (SelectedMenu)i;
+    }
+
+    return MAIN;
+}
+
+void MenuManager::hide_all_menus() {
+    // iterate over the menu containter, and hide all the menu
+}
+
+void MenuManager::show_menu(SelectedMenu selected) {
+    // access container at selected position, and show
+}
+
+MenuManager* MenuManager::instance_;
+
+MenuManager& MenuManager::instance() {
+    return *instance_;
+}
 
 }
