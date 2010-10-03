@@ -392,7 +392,7 @@ void MeshCreator::add_tripod_mesh() {
 void MeshCreator::add_anemone_mesh() {
     std::string file_name;
 
-    switch (tripod_legs_) {
+    switch (anemone_legs_) {
     case 1:
         file_name = "anemone-1.obj";
         break;
