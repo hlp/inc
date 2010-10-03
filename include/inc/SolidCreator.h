@@ -31,6 +31,8 @@
 
 namespace inc {
 
+class ControlPoint;
+
 class SolidCreator : public Module {
 public:
     SolidCreator();
@@ -39,6 +41,10 @@ public:
     void setup();
     void update();
     void draw();
+
+    bool mouse_down(ci::app::MouseEvent);
+    bool mouse_drag(ci::app::MouseEvent);
+    bool mouse_up(ci::app::MouseEvent);
 
     void create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
     void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
@@ -53,10 +59,18 @@ public:
     void create_solid_box(ci::Vec3f pos, ci::Vec3f size);
     void load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale);
 
+    ci::Vec3f creation_point();
+
     static SolidCreator& instance();
 
 private:
     static SolidCreator* instance_;
+
+    std::tr1::shared_ptr<ControlPoint> creation_point_;
+
+    ci::CallbackId mouse_down_cb_id_;
+    ci::CallbackId mouse_drag_cb_id_;
+    ci::CallbackId mouse_up_cb_id_;
 };
 
 }

@@ -22,14 +22,20 @@
 #include <cinder/ObjLoader.h>
 #include <cinder/TriMesh.h>
 
+#include <incApp.h>
 #include <inc/SolidCreator.h>
 #include <inc/Solid.h>
 #include <inc/Manager.h>
+#include <inc/CurveSketcher.h> // for ControlPoint
+#include <inc/Camera.h>
 
 namespace inc {
 
 SolidCreator::SolidCreator() {
     instance_ = this;
+
+    creation_point_ = std::tr1::shared_ptr<ControlPoint>(
+        new ControlPoint(ci::Vec3f::zero(), ci::Color(1.0f, 0.0f, 1.0f)));
 }
 
 SolidCreator::~SolidCreator() {
@@ -39,7 +45,14 @@ SolidCreator::~SolidCreator() {
 }
 
 void SolidCreator::setup() {
-    // nothing here
+    creation_point_->setup();
+
+    mouse_down_cb_id_ = IncApp::instance().registerMouseDown(this, 
+        &SolidCreator::mouse_down);
+    mouse_drag_cb_id_ = IncApp::instance().registerMouseDrag(this, 
+        &SolidCreator::mouse_drag);
+    mouse_up_cb_id_ = IncApp::instance().registerMouseUp(this, 
+        &SolidCreator::mouse_up);
 }
 
 void SolidCreator::update() {
@@ -47,7 +60,7 @@ void SolidCreator::update() {
 }
 
 void SolidCreator::draw() {
-    // Nothing here
+    creation_point_->draw();
 }
 
 void SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
@@ -124,6 +137,43 @@ void SolidCreator::load_obj_as_rigid(ci::Vec3f pos, ci::Vec3f scale) {
 
     Manager::instance().solids().push_back(
         SolidFactory::create_rigid_mesh(mesh, pos, scale, 1.0f)); 
+}
+
+ci::Vec3f SolidCreator::creation_point() {
+    return creation_point_->position();
+}
+
+bool SolidCreator::mouse_down(ci::app::MouseEvent evt) {
+    if (!evt.isLeftDown())
+        return false;
+
+    ci::Ray r = Camera::instance().get_ray_from_screen_pos(evt.getPos());
+
+    if (creation_point_->mouse_pressed(r))
+        creation_point_->set_active(true);
+
+    return false;
+}
+
+// TODO: refactor this!! 
+// Move get_intersection_with_drawing_plane into somewhere sensible!
+
+bool SolidCreator::mouse_drag(ci::app::MouseEvent evt) {
+   if (!evt.isLeftDown())
+        return false;
+
+    if (creation_point_->active())
+        creation_point_->position() = 
+        CurveSketcher::instance().get_intersection_with_drawing_plane(
+        Camera::instance().get_ray_from_screen_pos(evt.getPos()));
+
+    return false;
+}
+
+bool SolidCreator::mouse_up(ci::app::MouseEvent evt) {
+    creation_point_->set_active(false);
+
+    return false;
 }
 
 SolidCreator* SolidCreator::instance_;

@@ -29,6 +29,7 @@
 #include <cinder/app/MouseEvent.h>
 #include <cinder/Surface.h>
 #include <cinder/app/App.h>
+#include <cinder/Color.h>
 
 #include <inc/Module.h>
 
@@ -63,6 +64,8 @@ public:
 
     friend class ControlPoint; // so they can regenerate the bspline
 
+    ci::Vec3f get_intersection_with_drawing_plane(ci::Ray);
+
 private:
     void set_up_sketcher();
     void finish_sketcher();
@@ -72,9 +75,7 @@ private:
         std::tr1::shared_ptr<ControlPoint>&);
     void create_new_control_point(ci::Ray);
     void deactivate_all_but_active();
-    ci::Vec3f get_intersection_with_drawing_plane(ci::Ray);
     
-
     static CurveSketcher* instance_;
     bool active_;
     std::tr1::shared_ptr<ci::BSpline3f> current_spline_;
@@ -103,7 +104,7 @@ private:
 
 class ControlPoint {
 public:
-    ControlPoint(ci::Vec3f pos, CurveSketcher&);
+    ControlPoint(ci::Vec3f pos, ci::Color col = ci::Color::white());
     ~ControlPoint();
 
     virtual void setup();
@@ -115,6 +116,7 @@ public:
     bool mouse_dragged(ci::app::MouseEvent);
     bool mouse_released(ci::app::MouseEvent);
 
+    bool active();
     void set_active(bool);
 
     // dircetions of the control points
@@ -132,9 +134,8 @@ protected:
     // called when there's been a sucessful drag
     //virtual void move_point(ci::app::MouseEvent evt) = 0;
 
-    CurveSketcher& sketcher_;
-
     ci::Vec3f position_;
+    ci::Color color_;
     bool active_;
     float arrow_size_;
 

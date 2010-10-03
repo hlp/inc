@@ -233,7 +233,7 @@ bool CurveSketcher::check_control_point_intersection(ci::Ray r,
 void CurveSketcher::create_new_control_point(ci::Ray r) {
     std::tr1::shared_ptr<ControlPoint> cp = 
         std::tr1::shared_ptr<ControlPoint>(
-        new ControlPoint(get_intersection_with_drawing_plane(r), *this));
+        new ControlPoint(get_intersection_with_drawing_plane(r)));
     cp->setup();
     control_points_.push_back(cp);
 
@@ -297,8 +297,8 @@ CurveSketcher& CurveSketcher::instance() {
 
 
 
-ControlPoint::ControlPoint(ci::Vec3f pos, CurveSketcher& sketcher)
-    : position_(pos), sketcher_(sketcher) {
+ControlPoint::ControlPoint(ci::Vec3f pos, ci::Color col)
+    : position_(pos), color_(col) {
     active_ = false;
     arrow_size_ = 0.5f;
 
@@ -334,6 +334,10 @@ bool ControlPoint::mouse_pressed(ci::Ray r) {
         return false;
 
     return true;
+}
+
+bool ControlPoint::active() {
+    return active_;
 }
 
 void ControlPoint::set_active(bool a) {
@@ -401,7 +405,7 @@ void ControlPoint::draw() {
     if (active_)
         draw_arrows();
 
-    ci::gl::color(ci::Color::white());
+    ci::gl::color(color_);
 
     ci::gl::drawCube(position_, ci::Vec3f::one() * position_image_dim_);
 
