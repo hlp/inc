@@ -67,7 +67,7 @@ public:
     static MainMenu& instance();
 
     // Override
-    std::string name();
+    std::string name() { return "Main"; }
 
 private:
     static MainMenu* instance_;
@@ -87,7 +87,7 @@ public:
     static MeshMenu& instance();
 
     // Override
-    std::string name();
+    std::string name() { return "MeshCoefficients"; }
 
 private:
     static MeshMenu* instance_;
@@ -114,7 +114,7 @@ public:
     bool create_rigid_sphere_spring_matrix(bool);
 
     // Override
-    std::string name();
+    std::string name() { return "Solids"; }
 
 private:
     static SolidMenu* instance_;
@@ -142,13 +142,37 @@ public:
     static ForceMenu& instance();
 
     // Override
-    std::string name();
+    std::string name() { return "Forces"; }
 
 private:
     ForceMenu(Solid&);
     static ForceMenu* instance_;
     Solid& target_solid_;
 };
+
+class TripodMeshMenu : public Menu {
+public:
+    //virtual void setup();
+
+    std::string name() { return "TripodMesh"; }
+};
+
+class AnemoneMeshMenu : public Menu {
+public:
+
+    std::string name() { return "AnemoneMesh"; }
+
+};
+
+class DrawMeshMenu : public Menu {
+public:
+    virtual void setup();
+
+    std::string name() { return "DrawMesh"; }
+};
+
+
+
 
 
 // draws the top menu tabs
@@ -168,11 +192,14 @@ public:
 
     static MenuManager& instance();
 
+    // NOTE: (1) FORCE must be last
+    // (2) this order must reflect the oder in menus_
     enum SelectedMenu {
         MAIN = 0,
         MESH = 1,
-        SOLID = 2,
-        FORCE = 3
+        DRAW_MESH = 2,
+        SOLID = 3,
+        FORCE = 4
     };
 
 private:
@@ -196,9 +223,6 @@ private:
 
     bool hovering_over_menu_;
 
-    std::tr1::shared_ptr<Menu> main_menu_;
-    std::tr1::shared_ptr<Menu> mesh_menu_;
-    std::tr1::shared_ptr<Menu> solid_menu_;
     std::tr1::shared_ptr<Menu> force_menu_;
 
     ci::Rectf menu_rect_;

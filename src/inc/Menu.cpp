@@ -79,10 +79,6 @@ MainMenu::MainMenu() {
 MainMenu::~MainMenu() {
 }
 
-std::string MainMenu::name() {
-    return "Main";
-}
-
 void MainMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 50));
 
@@ -130,23 +126,8 @@ MeshMenu::MeshMenu() {
 MeshMenu::~MeshMenu() {
 }
 
-std::string MeshMenu::name() {
-    return "Mesh";
-}
-
 void MeshMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
-
-    std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Draw Mesh Curve Mode",
-        CurveSketcher::instance().active_ptr()));
-
-    draw_mesh_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::CurveSketcher::activate_button_pressed), 
-        &(CurveSketcher::instance())));
-
-    add_widget(draw_mesh_button);
 
     // TODO: decide if I want to keep this method. If not, remove it
     /*
@@ -159,39 +140,6 @@ void MeshMenu::setup() {
 
     add_widget(bag_button);
     */
-    
-    std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
-        std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Mesh height",
-        MeshCreator::instance().mesh_scale_ptr(), "step=0.1 min=0.1"));
-
-    mesh_height->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_mesh_scale), 
-        MeshCreator::instance_ptr()));
-
-    add_widget(mesh_height);
-
-    std::tr1::shared_ptr<GenericWidget<int> > arch_res = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Mesh arch resolution",
-        MeshCreator::instance().arch_resolution_ptr(), "step=1 min=4"));
-
-    arch_res->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_arch_resolution), 
-        MeshCreator::instance_ptr()));
-
-    add_widget(arch_res);
-
-        std::tr1::shared_ptr<GenericWidget<int> > slice_res = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Mesh slice resolution",
-        MeshCreator::instance().slice_resolution_ptr(), "step=1 min=4"));
-
-    slice_res->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_slice_resolution), 
-        MeshCreator::instance_ptr()));
-
-    add_widget(slice_res);
 
     std::tr1::shared_ptr<GenericWidget<float> > kDF = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -278,10 +226,6 @@ SolidMenu::SolidMenu() {
 }
 
 SolidMenu::~SolidMenu() {
-}
-
-std::string SolidMenu::name() {
-    return "Solids";
 }
 
 void SolidMenu::setup() {
@@ -519,10 +463,6 @@ ForceMenu::ForceMenu(Solid& solid) : target_solid_(solid) {
 ForceMenu::~ForceMenu() {
 }
 
-std::string ForceMenu::name() {
-    return "Forces";
-}
-
 void ForceMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 175));
 
@@ -554,6 +494,63 @@ ForceMenu& ForceMenu::instance() {
 }
 
 
+//////////////////////
+// DrawMesh
+
+void DrawMeshMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > draw_mesh_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Draw Mesh Curve Mode",
+        CurveSketcher::instance().active_ptr()));
+
+    draw_mesh_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::CurveSketcher::activate_button_pressed), 
+        &(CurveSketcher::instance())));
+
+    add_widget(draw_mesh_button);
+
+    std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh height",
+        MeshCreator::instance().mesh_scale_ptr(), "step=0.1 min=0.1"));
+
+    mesh_height->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_mesh_scale), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(mesh_height);
+
+    std::tr1::shared_ptr<GenericWidget<int> > arch_res = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Mesh arch resolution",
+        MeshCreator::instance().arch_resolution_ptr(), "step=1 min=4"));
+
+    arch_res->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_arch_resolution), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(arch_res);
+
+    std::tr1::shared_ptr<GenericWidget<int> > slice_res = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Mesh slice resolution",
+        MeshCreator::instance().slice_resolution_ptr(), "step=1 min=4"));
+
+    slice_res->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_slice_resolution), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(slice_res);
+
+    Menu::setup();
+}
+
+
+
+
+
 
 /////////////////////////////////////
 // MenuManager
@@ -565,7 +562,7 @@ MenuManager::MenuManager() {
 
     x_origin_ = 7;
     y_origin_ = 20;
-    x_spacing_ = 75;
+    x_spacing_ = 135;
     y_spacing_ = 28; // the height
 
     hovering_over_menu_ = false;
@@ -575,9 +572,7 @@ MenuManager::~MenuManager() {
     IncApp::instance().unregisterResize(resize_cb_id_);
     IncApp::instance().unregisterMouseMove(mouse_moved_cb_id_);
 
-    solid_menu_.reset();
-    mesh_menu_.reset();
-    main_menu_.reset();
+    menus_.clear();
 }
 
 void MenuManager::setup() {
@@ -590,13 +585,13 @@ void MenuManager::setup() {
     setup_menus();
 
     menu_rect_ = ci::Rectf(ci::Vec2f::zero(),
-        ci::Vec2f((x_origin_ + x_spacing_) * menus_.size(),
-        y_spacing_));
+        ci::Vec2f(x_origin_ + x_spacing_, 
+        y_spacing_ * menus_.size()));
 
     for (int i = 0; i < menus_.size(); ++i) {
         ci::Rectf temp_rect = 
-            ci::Rectf(ci::Vec2f((x_origin_ + x_spacing_) * i, 0.0f),
-            ci::Vec2f((x_origin_ + x_spacing_) * (i + 1), y_spacing_));
+            ci::Rectf(ci::Vec2f(0.0f, y_spacing_ * i),
+            ci::Vec2f(x_origin_ + x_spacing_, y_spacing_ * (i+1)));
 
         submenu_rects_.push_back(temp_rect);
     }
@@ -615,14 +610,10 @@ void MenuManager::position_menu() {
 }
 
 void MenuManager::create_menus() {
-    main_menu_ = std::tr1::shared_ptr<Menu>(new MainMenu());
-    menus_.push_back(main_menu_);
-
-    mesh_menu_ = std::tr1::shared_ptr<Menu>(new MeshMenu());
-    menus_.push_back(mesh_menu_);
-
-    solid_menu_ = std::tr1::shared_ptr<Menu>(new SolidMenu());
-    menus_.push_back(solid_menu_);
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new MainMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new MeshMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new DrawMeshMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
 }
 
 void MenuManager::setup_menus() {
@@ -638,8 +629,8 @@ void MenuManager::create_menu_texture() {
     int x_spacing = x_spacing_;
     int y_spacing = y_spacing_; // the height
 
-    ci::cairo::SurfaceImage base((x_origin + x_spacing) * menus_.size(), 
-        y_spacing, true);
+    ci::cairo::SurfaceImage base(x_origin + x_spacing, 
+        y_spacing * menus_.size(), true);
     ci::cairo::Context ctx(base);
 
     ci::Font font("Arial", 16);
@@ -648,7 +639,7 @@ void MenuManager::create_menu_texture() {
     ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
 
     for (int i = 0; i < menus_.size(); ++i) {
-        ctx.moveTo((x_origin + x_spacing) * i + x_origin, y_origin);
+        ctx.moveTo(x_origin, y_spacing * i + y_origin);
         ctx.showText(menus_[i]->name());
     }
 
@@ -656,8 +647,8 @@ void MenuManager::create_menu_texture() {
     tabs_texture_ = ci::gl::Texture(tabs_surface);
 
     for (int i = 0; i < menus_.size(); ++i) {
-        ci::cairo::SurfaceImage roll_base((x_origin + x_spacing) * menus_.size(), 
-        y_spacing, true);
+        ci::cairo::SurfaceImage roll_base(x_origin + x_spacing, 
+        y_spacing * menus_.size(), true);
         ci::cairo::Context roll_ctx(roll_base);
 
         roll_ctx.setSourceRgba(0.3f, 0.3f, 0.3f, 1.0f);
@@ -671,7 +662,7 @@ void MenuManager::create_menu_texture() {
         roll_ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
 
         for (int j = 0; j < menus_.size(); ++j) {
-            roll_ctx.moveTo((x_origin + x_spacing) * j + x_origin, y_origin);
+            roll_ctx.moveTo(x_origin, y_spacing * j + y_origin);
             roll_ctx.showText(menus_[j]->name());
         }
 
