@@ -572,6 +572,17 @@ void TripodMeshMenu::setup() {
 
     add_widget(set_legs);
 
+    std::tr1::shared_ptr<GenericWidget<float> > mesh_scale = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh scale",
+        MeshCreator::instance().tripod_mesh_scale_ptr(), "step=0.1 min=0.1"));
+
+    mesh_scale->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_tripod_mesh_scale), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(mesh_scale);
+
     Menu::setup();
 }
 
@@ -589,16 +600,42 @@ bool TripodMeshMenu::create_mesh(bool) {
 void AnemoneMeshMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
-    std::tr1::shared_ptr<GenericWidget<int> > set_legs = 
+    std::tr1::shared_ptr<GenericWidget<bool> > create_mesh = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create Anemone Mesh"));
+
+    create_mesh->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&AnemoneMeshMenu::create_mesh), 
+        this));
+
+    add_widget(create_mesh);
+
+    std::tr1::shared_ptr<GenericWidget<int> > set_arms = 
         std::tr1::shared_ptr<GenericWidget<int> >(
         new GenericWidget<int>(*this, "Number of arms", 
         MeshCreator::instance().anemone_legs_ptr(), "min=1 max=5"));
 
-    add_widget(set_legs);
+    add_widget(set_arms);
+
+    std::tr1::shared_ptr<GenericWidget<float> > mesh_scale = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh scale",
+        MeshCreator::instance().anemone_mesh_scale_ptr(), "step=0.1 min=0.1"));
+
+    mesh_scale->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MeshCreator::adjust_anemone_mesh_scale), 
+        MeshCreator::instance_ptr()));
+
+    add_widget(mesh_scale);
 
     Menu::setup();
 }
 
+bool AnemoneMeshMenu::create_mesh(bool) {
+    MeshCreator::instance().add_anemone_mesh();
+
+    return false;
+}
 
 
 /////////////////////////////////////

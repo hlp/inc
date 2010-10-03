@@ -38,8 +38,8 @@ MeshCreator::MeshCreator() {
 
     tripod_legs_ = 3;
     anemone_legs_ = 3;
-    tripod_mesh_scale_ = 1.0f;
-    anemone_mesh_scale_ = 1.0f;
+    tripod_mesh_scale_ = 10.0f;
+    anemone_mesh_scale_ = 10.0f;
 
     current_mesh_ = std::tr1::shared_ptr<Solid>();
 }
