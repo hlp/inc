@@ -549,6 +549,25 @@ void DrawMeshMenu::setup() {
 
 
 
+/////////////////////////////////////
+// TripodMeshMenu
+
+void TripodMeshMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    Menu::setup();
+}
+
+
+
+///////////////////////////////////////
+// AnemoneMeshMenu
+
+void AnemoneMeshMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    Menu::setup();
+}
 
 
 
@@ -613,6 +632,8 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new MainMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new MeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DrawMeshMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new TripodMeshMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new AnemoneMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
 }
 

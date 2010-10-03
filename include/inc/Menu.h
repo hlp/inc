@@ -150,19 +150,23 @@ private:
     Solid& target_solid_;
 };
 
+
 class TripodMeshMenu : public Menu {
 public:
-    //virtual void setup();
+    virtual void setup();
 
     std::string name() { return "TripodMesh"; }
 };
 
+
 class AnemoneMeshMenu : public Menu {
 public:
+    virtual void setup();
 
     std::string name() { return "AnemoneMesh"; }
 
 };
+
 
 class DrawMeshMenu : public Menu {
 public:
@@ -198,8 +202,10 @@ public:
         MAIN = 0,
         MESH = 1,
         DRAW_MESH = 2,
-        SOLID = 3,
-        FORCE = 4
+        TRIPOD_MESH = 3,
+        ANEMONE_MESH = 4,
+        SOLID = 5,
+        FORCE = 6
     };
 
 private:
