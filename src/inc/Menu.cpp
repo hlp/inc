@@ -395,7 +395,8 @@ bool SolidMenu::create_rigid_sphere(bool) {
 }
 
 bool SolidMenu::create_soft_sphere(bool) {
-    ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
+    //ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
+    ci::Vec3f pos = SolidCreator::instance().creation_point();
 
     SolidCreator::instance().create_soft_sphere(pos, ci::Vec3f::one() * sphere_radius_);
 
@@ -410,7 +411,8 @@ bool SolidMenu::create_linked_spheres(bool) {
 }
 
 bool SolidMenu::create_soft_sphere_matrix(bool) {
-    ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
+    //ci::Vec3f pos = CurveSketcher::instance().current_spline_center();
+    ci::Vec3f pos = SolidCreator::instance().creation_point();
 
     SolidCreator::instance().create_sphere_matrix(pos, ci::Vec3f::one() * sphere_radius_,
         matrix_w_, matrix_h_, matrix_d_);
