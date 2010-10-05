@@ -35,7 +35,7 @@
 #include <inc/CurveSketcher.h>
 #include <inc/SolidCreator.h>
 #include <inc/Renderer.h>
-
+#include <inc/Origin.h>
 
 namespace inc {
 
@@ -725,6 +725,13 @@ void DisplayMenu::setup() {
 
     add_widget(solids_thickness);
     */
+
+    std::tr1::shared_ptr<GenericWidget<bool> > grid = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Draw origin and grid",
+        Origin::instance().draw_grid_ptr()));
+
+    add_widget(grid);
 
     Menu::setup();
 }

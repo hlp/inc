@@ -240,6 +240,9 @@ void SoftBodyGraphicItem::draw() {
 
     float vert_height;
 
+    float curr_min_y = get_vertex_height(0, 0);
+    float curr_max_y = get_vertex_height(0, 0);
+
     for (int i = 0; i < num_faces; ++i) {
         vert_height = get_vertex_height(i, 0);
         glColor4f(
@@ -268,12 +271,15 @@ void SoftBodyGraphicItem::draw() {
 
         make_gl_vertex(i, 2);
 
-        if (vert_height > last_max_y_)
-            last_max_y_ = vert_height;
+        if (vert_height >= curr_max_y)
+            curr_max_y = vert_height;
 
-        if (vert_height < last_min_y_)
-            last_min_y_ = vert_height;
+        if (vert_height <= curr_min_y)
+            curr_min_y = vert_height;
     }
+
+    last_max_y_ = curr_max_y;
+    last_min_y_ = curr_min_y;
 
     glEnd();
 }

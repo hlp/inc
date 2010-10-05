@@ -24,22 +24,30 @@
 #include <inc/Module.h>
 
 namespace inc {
-    class OriginGraphicItem;
-    class Solid;
+class OriginGraphicItem;
+class Solid;
 
-    class Origin : public Module {
-    public:
-        Origin() { create_ground_plane_ = false; }
-        virtual ~Origin();
+class Origin : public Module {
+public:
+    Origin();
+    virtual ~Origin();
 
-        void setup();
-        void update();
-        void draw();
+    void setup();
+    void update();
+    void draw();
 
-    private:
-        OriginGraphicItem* origin_graphic_item_;
-        //ci::params::InterfaceGl interface_;
+    bool* draw_grid_ptr() { return &draw_grid_; }
 
-        bool create_ground_plane_;
-    };
+    static Origin& instance() { return *instance_; }
+
+private:
+    OriginGraphicItem* origin_graphic_item_;
+    //ci::params::InterfaceGl interface_;
+
+    static Origin* instance_;
+
+    bool create_ground_plane_;
+
+    bool draw_grid_;
+};
 }

@@ -26,41 +26,54 @@
 
 namespace inc {
 
-    Origin::~Origin() {
+Origin::Origin() {
+    instance_ = this;
+
+    create_ground_plane_ = false;
+    draw_grid_ = false;
+}
+
+Origin::~Origin() {
 #ifdef TRACE_DTORS
-        ci::app::console() << "Deleting Origin" << std::endl;
+    ci::app::console() << "Deleting Origin" << std::endl;
 #endif
 
-        delete origin_graphic_item_;
-    }
+    delete origin_graphic_item_;
+}
 
-    void Origin::setup() {
-        origin_graphic_item_ = new OriginGraphicItem();
+void Origin::setup() {
+    origin_graphic_item_ = new OriginGraphicItem();
 
-        /*
-        interface_ = ci::params::InterfaceGl("Origin", ci::Vec2i(100, 200));
-        interface_.addParam("Grid Plane Size", 
-            origin_graphic_item_->grid_plane_size_ptr(), "");
-        interface_.addParam("Grid Plane Intervals",
-            origin_graphic_item_->grid_plane_intervals_ptr(), "");
-        */
-        if (create_ground_plane_) {
-            Manager::instance().solids().push_back(
-                SolidFactory::create_static_solid_box(
-                ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
-                ci::Vec3f().zero()));
-        }
-        /*
+    /*
+    interface_ = ci::params::InterfaceGl("Origin", ci::Vec2i(100, 200));
+    interface_.addParam("Grid Plane Size", 
+        origin_graphic_item_->grid_plane_size_ptr(), "");
+    interface_.addParam("Grid Plane Intervals",
+        origin_graphic_item_->grid_plane_intervals_ptr(), "");
+    */
+    /*
+    if (create_ground_plane_) {
         Manager::instance().solids().push_back(
-            SolidFactory::create_soft_sphere_container());
-            */
+            SolidFactory::create_static_solid_box(
+            ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
+            ci::Vec3f().zero()));
     }
+    */
+    /*
+    Manager::instance().solids().push_back(
+        SolidFactory::create_soft_sphere_container());
+        */
+}
 
-    void Origin::update() {
-        // Nothing here
-    }
+void Origin::update() {
+    // Nothing here
+}
 
-    void Origin::draw() {
+void Origin::draw() {
+    if (draw_grid_)
         origin_graphic_item_->draw();
-    }
+}
+
+Origin* Origin::instance_;
+
 }

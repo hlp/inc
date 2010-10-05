@@ -35,10 +35,10 @@ Renderer::Renderer() {
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
-    base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 0.6f);
-    top_color_ = ci::ColorA(0.0f, 1.0f, 0.0f, 0.6f);
-    line_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
-    line_thickness_ = 0.75f;
+    base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 0.85f);
+    top_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 0.85f);
+    line_color_ = ci::ColorA(0.0f, 0.0f, 0.0f, 0.4f);
+    line_thickness_ = 0.15f;
 
     solids_base_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
     solids_top_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
