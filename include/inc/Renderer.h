@@ -58,6 +58,10 @@ public:
     ci::ColorA& solids_line_color() { return solids_line_color_; }
     float& solids_line_thickness() { return solids_line_thickness_; }
 
+    bool* enable_alpha_blending_ptr() { return &enable_alpha_blending_; }
+    bool* enable_depth_read_ptr() { return &enable_depth_read_; }
+    bool* enable_depth_write_ptr() { return &enable_depth_write_; }
+
     static Renderer& instance() { return *instance_; }
 
 private:
@@ -76,6 +80,10 @@ private:
     float solids_line_thickness_;
 
     static Renderer* instance_;
+
+    bool enable_alpha_blending_;
+    bool enable_depth_read_;
+    bool enable_depth_write_;
 
     ci::ColorA background_color_;
 };

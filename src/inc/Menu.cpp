@@ -647,6 +647,27 @@ bool AnemoneMeshMenu::create_mesh(bool) {
 void DisplayMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
+    std::tr1::shared_ptr<GenericWidget<bool> > alpha_blending = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "OpenGL enable alpha blending",
+        Renderer::instance().enable_alpha_blending_ptr()));
+
+    add_widget(alpha_blending);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > depth_read = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "OpenGL enable depth read",
+        Renderer::instance().enable_depth_read_ptr()));
+
+    add_widget(depth_read);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > depth_write = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "OpenGL enable depth write",
+        Renderer::instance().enable_depth_write_ptr()));
+
+    add_widget(depth_write);
+
     std::tr1::shared_ptr<GenericWidget<ci::ColorA> > base_color = 
         std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
         new GenericWidget<ci::ColorA>(*this, "Mesh base gradient color",

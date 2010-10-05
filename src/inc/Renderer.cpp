@@ -29,6 +29,10 @@ namespace inc {
 Renderer::Renderer() {
     instance_ = this;
 
+    enable_alpha_blending_ = true;
+    enable_depth_read_ = true;
+    enable_depth_write_ = true;
+
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
     base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 0.6f);
@@ -60,9 +64,11 @@ void Renderer::draw_init() {
     glClearColor(background_color_.r, background_color_.g,
         background_color_.b, background_color_.a);
 	
-    ci::gl::enableAlphaBlending();
-    ci::gl::enableDepthRead(true);
-    ci::gl::enableDepthWrite(true);
+    if (enable_alpha_blending_)
+        ci::gl::enableAlphaBlending();
+    ci::gl::enableDepthRead(enable_depth_read_);
+    ci::gl::enableDepthWrite(enable_depth_write_);
+
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
