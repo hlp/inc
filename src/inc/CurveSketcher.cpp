@@ -204,7 +204,7 @@ bool CurveSketcher::mouse_down(ci::app::MouseEvent evt) {
         return false; // wait for drag
     }
 
-    if (refining_curve_)
+    if (refining_curve_ || !active_)
         return false;
 
     create_new_control_point(r);
@@ -268,6 +268,9 @@ bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
     if (!evt.isLeftDown())
         return false;
 
+    if (active_point_.get() == NULL)
+        return false;
+
     active_point_->position() = get_intersection_with_drawing_plane(
         Camera::instance().get_ray_from_screen_pos(evt.getPos()));
 
@@ -285,6 +288,8 @@ bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
 bool CurveSketcher::mouse_up(ci::app::MouseEvent evt) {
     std::for_each(control_points_.begin(), control_points_.end(),
         [=] (std::tr1::shared_ptr<ControlPoint> cp) { cp->set_active(false); } );
+
+    active_point_.reset();
 
     return false;
 }
