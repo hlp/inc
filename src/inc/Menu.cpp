@@ -648,7 +648,7 @@ MenuManager::MenuManager() {
 
     selected_menu_ = MAIN;
 
-    x_origin_ = 7;
+    x_origin_ = 10;
     y_origin_ = 20;
     x_spacing_ = 135;
     y_spacing_ = 28; // the height
@@ -694,7 +694,7 @@ void MenuManager::setup() {
 void MenuManager::position_menu() {
     menu_pos_ = 
         ci::Vec2f(IncApp::instance().getWindowWidth() - menu_rect_.getWidth(),
-        10.0f);
+        0.0f);
 }
 
 void MenuManager::create_menus() {
@@ -714,6 +714,9 @@ void MenuManager::setup_menus() {
 }
 
 void MenuManager::create_menu_texture() {
+    std::string font_name = "Lucida Console";
+    int font_size = 12;
+
     int x_origin = x_origin_;
     int y_origin = y_origin_;
     int x_spacing = x_spacing_;
@@ -723,9 +726,13 @@ void MenuManager::create_menu_texture() {
         y_spacing * menus_.size(), true);
     ci::cairo::Context ctx(base);
 
-    ci::Font font("Arial", 16);
+    ci::Font font(font_name, font_size);
+    ctx.setSourceRgba(0.0f, 0.0f, 0.0f, 0.8f);
+    ctx.rectangle(0.0, 0.0, x_origin + x_spacing, y_spacing * menus_.size());
+    ctx.fill();
+    ctx.setAntiAlias(ci::cairo::ANTIALIAS_NONE);
     ctx.setFont(font);
-    ctx.setFontSize(16);
+    ctx.setFontSize(font_size);
     ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
 
     for (int i = 0; i < menus_.size(); ++i) {
@@ -741,14 +748,18 @@ void MenuManager::create_menu_texture() {
         y_spacing * menus_.size(), true);
         ci::cairo::Context roll_ctx(roll_base);
 
+        roll_ctx.setSourceRgba(0.0f, 0.0f, 0.0f, 0.8f);
+        roll_ctx.rectangle(0.0, 0.0, x_origin + x_spacing, y_spacing * menus_.size());
+        roll_ctx.fill();
         roll_ctx.setSourceRgba(0.3f, 0.3f, 0.3f, 1.0f);
 
         roll_ctx.rectangle(submenu_rects_[i]);
         roll_ctx.fill();
 
-        ci::Font font("Arial", 16);
+        ci::Font font(font_name, font_size);
+        roll_ctx.setAntiAlias(ci::cairo::ANTIALIAS_NONE);
         roll_ctx.setFont(font);
-        roll_ctx.setFontSize(16);
+        roll_ctx.setFontSize(font_size);
         roll_ctx.setSourceRgba(1.0f, 1.0f, 1.0f, 1.0f);
 
         for (int j = 0; j < menus_.size(); ++j) {
