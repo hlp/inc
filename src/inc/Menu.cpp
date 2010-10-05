@@ -727,7 +727,7 @@ void MenuManager::create_menu_texture() {
     ci::cairo::Context ctx(base);
 
     ci::Font font(font_name, font_size);
-    ctx.setSourceRgba(0.0f, 0.0f, 0.0f, 0.8f);
+    ctx.setSourceRgba(0.1f, 0.1f, 0.1f, 0.8f);
     ctx.rectangle(0.0, 0.0, x_origin + x_spacing, y_spacing * menus_.size());
     ctx.fill();
     ctx.setAntiAlias(ci::cairo::ANTIALIAS_NONE);
@@ -748,7 +748,7 @@ void MenuManager::create_menu_texture() {
         y_spacing * menus_.size(), true);
         ci::cairo::Context roll_ctx(roll_base);
 
-        roll_ctx.setSourceRgba(0.0f, 0.0f, 0.0f, 0.8f);
+        roll_ctx.setSourceRgba(0.1f, 0.1f, 0.1f, 0.8f);
         roll_ctx.rectangle(0.0, 0.0, x_origin + x_spacing, y_spacing * menus_.size());
         roll_ctx.fill();
         roll_ctx.setSourceRgba(0.3f, 0.3f, 0.3f, 1.0f);

@@ -39,6 +39,7 @@ void IncApp::prepareSettings(Settings* settings) {
 	settings->setFrameRate(60.0f);
 	settings->setResizable(true);
 	settings->setFullScreen(false);
+    settings->setTitle("MOS Ball");
 }
 
 void IncApp::setup() {
