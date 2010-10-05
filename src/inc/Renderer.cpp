@@ -27,7 +27,19 @@
 namespace inc {
 
 Renderer::Renderer() {
+    instance_ = this;
+
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
+
+    base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 0.6f);
+    top_color_ = ci::ColorA(0.0f, 1.0f, 0.0f, 0.6f);
+    line_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+    line_thickness_ = 0.75f;
+
+    solids_base_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+    solids_top_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+    solids_line_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+    solids_line_thickness_ = 1.0f;
 }
 
 Renderer::~Renderer() {
@@ -82,5 +94,7 @@ void Renderer::draw_objects() {
 void Renderer::end3D() {
     // Nothing here
 }
+
+Renderer* Renderer::instance_;
 
 }

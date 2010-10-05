@@ -83,7 +83,7 @@ void IncApp::draw() {
     manager_->draw_modules();
 
     inc::MeshCreator::instance().draw();
-
+    
     // Draw the GUI elements of each module
     ci::params::InterfaceGl::draw();
 

@@ -67,7 +67,7 @@ public:
     static MainMenu& instance();
 
     // Override
-    std::string name() { return "Main"; }
+    std::string name() { return "MAIN"; }
 
 private:
     static MainMenu* instance_;
@@ -87,7 +87,7 @@ public:
     static MeshMenu& instance();
 
     // Override
-    std::string name() { return "MeshCoefficients"; }
+    std::string name() { return "MESH"; }
 
 private:
     static MeshMenu* instance_;
@@ -114,7 +114,7 @@ public:
     bool create_rigid_sphere_spring_matrix(bool);
 
     // Override
-    std::string name() { return "Solids"; }
+    std::string name() { return "SOLIDS"; }
 
 private:
     static SolidMenu* instance_;
@@ -142,7 +142,7 @@ public:
     static ForceMenu& instance();
 
     // Override
-    std::string name() { return "Forces"; }
+    std::string name() { return "FORCES"; }
 
 private:
     ForceMenu(Solid&);
@@ -157,7 +157,7 @@ public:
 
     bool create_mesh(bool);
 
-    std::string name() { return "TripodMesh"; }
+    std::string name() { return "TRIPOD"; }
 };
 
 
@@ -167,7 +167,7 @@ public:
 
     bool create_mesh(bool);
 
-    std::string name() { return "AnemoneMesh"; }
+    std::string name() { return "ANEMONE"; }
 
 };
 
@@ -176,11 +176,31 @@ class DrawMeshMenu : public Menu {
 public:
     virtual void setup();
 
-    std::string name() { return "DrawMesh"; }
+    std::string name() { return "DRAW"; }
+};
+
+class DisplayMenu : public Menu {
+public:
+    virtual void setup();
+
+    std::string name() { return "DISPLAY"; }
 };
 
 
+class FileMenu : public Menu {
+public:
+    FileMenu();
 
+    virtual void setup();
+
+    bool save_image(bool);
+
+    std::string name() { return "FILE"; }
+
+private:
+    int image_counter_;
+    std::string file_name_;
+};
 
 
 // draws the top menu tabs
@@ -209,7 +229,9 @@ public:
         TRIPOD_MESH = 3,
         ANEMONE_MESH = 4,
         SOLID = 5,
-        FORCE = 6
+        DISPLAY = 6,
+        FILE = 7,
+        FORCE = 8
     };
 
 private:

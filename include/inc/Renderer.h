@@ -20,6 +20,7 @@
 #pragma once
 
 #include <cinder/params/Params.h>
+#include <cinder/Color.h>
 
 #include <inc/Module.h>
 #include <incApp.h>
@@ -37,10 +38,44 @@ public:
 
     void draw_init();
 
+    ci::ColorA* base_color_ptr() { return &base_color_; }
+    ci::ColorA* top_color_ptr() { return &top_color_; }
+    ci::ColorA* line_color_ptr() { return &line_color_; }
+    float* line_thickness_ptr() { return &line_thickness_; }
+
+    ci::ColorA& base_color() { return base_color_; }
+    ci::ColorA& top_color() { return top_color_; }
+    ci::ColorA& line_color() { return line_color_; }
+    float& line_thickness() { return line_thickness_; }
+
+    ci::ColorA* solids_base_color_ptr() { return &solids_base_color_; }
+    ci::ColorA* solids_top_color_ptr() { return &solids_top_color_; }
+    ci::ColorA* solids_line_color_ptr() { return &solids_line_color_; }
+    float* solids_line_thickness_ptr() { return &solids_line_thickness_; }
+
+    ci::ColorA& solids_base_color() { return solids_base_color_; }
+    ci::ColorA& solids_top_color() { return solids_top_color_; }
+    ci::ColorA& solids_line_color() { return solids_line_color_; }
+    float& solids_line_thickness() { return solids_line_thickness_; }
+
+    static Renderer& instance() { return *instance_; }
+
 private:
     void begin3D();
     void draw_objects();
     void end3D();
+
+    ci::ColorA base_color_;
+    ci::ColorA top_color_;
+    ci::ColorA line_color_;
+    float line_thickness_;
+
+    ci::ColorA solids_base_color_;
+    ci::ColorA solids_top_color_;
+    ci::ColorA solids_line_color_;
+    float solids_line_thickness_;
+
+    static Renderer* instance_;
 
     ci::ColorA background_color_;
 };

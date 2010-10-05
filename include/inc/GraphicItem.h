@@ -137,10 +137,22 @@ public:
     virtual bool detect_selection(ci::Ray);
 
 private:
-    void make_gl_vertex(int face, int node);
+    void make_gl_vertex(int face, int node) {
+        glVertex3f(
+            soft_body_->m_faces[face].m_n[node]->m_x.x(),
+            soft_body_->m_faces[face].m_n[node]->m_x.y(),
+            soft_body_->m_faces[face].m_n[node]->m_x.z());
+    }
 
     btSoftBody* soft_body_;
     ci::ColorA color_;
+
+    float get_vertex_height(int face, int node) { 
+        return soft_body_->m_faces[face].m_n[node]->m_x.y(); 
+    }
+
+    float last_min_y_;
+    float last_max_y_;
 };
 
 }

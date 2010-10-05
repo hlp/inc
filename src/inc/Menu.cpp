@@ -23,6 +23,7 @@
 #include <cinder/gl/Texture.h>
 #include <cinder/Surface.h>
 #include <cinder/app/MouseEvent.h>
+#include <cinder/ImageIo.h>
 
 #include <inc/Menu.h>
 #include <incApp.h>
@@ -33,6 +34,8 @@
 #include <inc/MeshCreator.h>
 #include <inc/CurveSketcher.h>
 #include <inc/SolidCreator.h>
+#include <inc/Renderer.h>
+
 
 namespace inc {
 
@@ -640,6 +643,111 @@ bool AnemoneMeshMenu::create_mesh(bool) {
 }
 
 
+
+void DisplayMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > base_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Mesh base gradient color",
+        Renderer::instance().base_color_ptr()));
+
+    add_widget(base_color);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > top_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Mesh top gradient color",
+        Renderer::instance().top_color_ptr()));
+
+    add_widget(top_color);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > line_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Mesh line color",
+        Renderer::instance().line_color_ptr()));
+
+    add_widget(line_color);
+
+    std::tr1::shared_ptr<GenericWidget<float> > thickness = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh line thickness",
+        Renderer::instance().line_thickness_ptr(), "min=0.0 step=0.01"));
+
+    add_widget(thickness);
+
+    /*
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_base_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Solids base gradient color",
+        Renderer::instance().solids_base_color_ptr()));
+
+    add_widget(solids_base_color);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_top_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Solids top gradient color",
+        Renderer::instance().solids_top_color_ptr()));
+
+    add_widget(solids_top_color);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_line_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Solids line color",
+        Renderer::instance().solids_line_color_ptr()));
+
+    add_widget(solids_line_color);
+
+    std::tr1::shared_ptr<GenericWidget<float> > solids_thickness = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Solids line thickness",
+        Renderer::instance().solids_line_thickness_ptr()));
+
+    add_widget(solids_thickness);
+    */
+
+    Menu::setup();
+}
+
+
+
+
+FileMenu::FileMenu() {
+    image_counter_ = 0;
+    file_name_ = "mosball_";
+}
+
+void FileMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > save = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Save image"));
+
+    save->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::FileMenu::save_image), this));
+
+    add_widget(save);
+
+    std::tr1::shared_ptr<GenericWidget<std::string> > name = 
+        std::tr1::shared_ptr<GenericWidget<std::string> >(
+        new GenericWidget<std::string>(*this, "Image name", &file_name_));
+
+    add_widget(name);
+
+    Menu::setup();
+}
+
+bool FileMenu::save_image(bool) {
+    std::ostringstream ss;
+
+    ss << image_counter_;
+
+    ci::writeImage(file_name_ + ss.str() + ".png", IncApp::instance().copyWindowSurface());
+    ++image_counter_;
+
+    return true;
+}
+
 /////////////////////////////////////
 // MenuManager
 
@@ -649,9 +757,9 @@ MenuManager::MenuManager() {
     selected_menu_ = MAIN;
 
     x_origin_ = 10;
-    y_origin_ = 20;
-    x_spacing_ = 135;
-    y_spacing_ = 28; // the height
+    y_origin_ = 17;
+    x_spacing_ = 67;
+    y_spacing_ = 22; // the height
 
     hovering_over_menu_ = false;
 }
@@ -704,6 +812,8 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new TripodMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new AnemoneMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new DisplayMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new FileMenu()));
 }
 
 void MenuManager::setup_menus() {

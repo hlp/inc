@@ -22,9 +22,11 @@
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
 #include <cinder/app/App.h>
+#include <cinder/CinderMath.h>
 
 #include <inc/GraphicItem.h>
 #include <inc/Solid.h>
+#include <inc/Renderer.h>
 
 namespace inc {
 
@@ -185,6 +187,9 @@ float SphereGraphicItem::bounding_sphere_radius() {
 
 SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body,
     ci::ColorA color) : soft_body_(soft_body), color_(color) {
+
+    last_min_y_ = get_vertex_height(0, 0);
+    last_max_y_ = get_vertex_height(0, 0);
 }
 
 SoftBodyGraphicItem::~SoftBodyGraphicItem() {
@@ -195,9 +200,9 @@ void SoftBodyGraphicItem::draw() {
     if (solid().selected())
         glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
     else
-        ci::gl::color(color_);
+        ci::gl::color(Renderer::instance().line_color());
 
-    glLineWidth(0.9f);
+    glLineWidth(Renderer::instance().line_thickness());
 
     glBegin(GL_LINES);
 
@@ -215,13 +220,62 @@ void SoftBodyGraphicItem::draw() {
     }
 
     glEnd();
-}
 
-void SoftBodyGraphicItem::make_gl_vertex(int face, int node) {
-    glVertex3f(
-        soft_body_->m_faces[face].m_n[node]->m_x.x(),
-        soft_body_->m_faces[face].m_n[node]->m_x.y(),
-        soft_body_->m_faces[face].m_n[node]->m_x.z());
+    ci::gl::color(Renderer::instance().base_color());
+
+    glBegin(GL_TRIANGLES);
+
+    float num_verts = num_faces * 3;
+    float v = 0.0f;
+
+    float r1 = Renderer::instance().base_color().r;
+    float g1 = Renderer::instance().base_color().g;
+    float b1 = Renderer::instance().base_color().b;
+    float a1 = Renderer::instance().base_color().a;
+
+    float r2 = Renderer::instance().top_color().r;
+    float g2 = Renderer::instance().top_color().g;
+    float b2 = Renderer::instance().top_color().b;
+    float a2 = Renderer::instance().top_color().a;
+
+    float vert_height;
+
+    for (int i = 0; i < num_faces; ++i) {
+        vert_height = get_vertex_height(i, 0);
+        glColor4f(
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        make_gl_vertex(i, 0);
+
+        vert_height = get_vertex_height(i, 1);
+        glColor4f(
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        make_gl_vertex(i, 1);
+
+        vert_height = get_vertex_height(i, 2);
+        glColor4f(
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        make_gl_vertex(i, 2);
+
+        if (vert_height > last_max_y_)
+            last_max_y_ = vert_height;
+
+        if (vert_height < last_min_y_)
+            last_min_y_ = vert_height;
+    }
+
+    glEnd();
 }
 
 bool SoftBodyGraphicItem::detect_selection(ci::Ray r) {
