@@ -283,6 +283,9 @@ bool CurveSketcher::mouse_drag(ci::app::MouseEvent evt) {
 }
 
 bool CurveSketcher::mouse_up(ci::app::MouseEvent evt) {
+    std::for_each(control_points_.begin(), control_points_.end(),
+        [=] (std::tr1::shared_ptr<ControlPoint> cp) { cp->set_active(false); } );
+
     return false;
 }
 
