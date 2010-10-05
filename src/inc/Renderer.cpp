@@ -19,10 +19,13 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/params/Params.h>
+#include <cinder/gl/TileRender.h>
+#include <cinder/ImageIo.h>
 
 #include <inc/Renderer.h>
 #include <inc/Manager.h>
 #include <inc/Solid.h>
+#include <inc/Camera.h>
 
 namespace inc {
 
@@ -102,5 +105,25 @@ void Renderer::end3D() {
 }
 
 Renderer* Renderer::instance_;
+
+void Renderer::save_image(int width, std::string name) {
+    // changing the render matrix (ie drawing the interface) messes up the 
+    // tile renderer
+    IncApp::instance().set_draw_interface(false);
+
+    ci::gl::TileRender tr(width, 
+        (float)width / (float)(IncApp::instance().getWindowWidth()) * 
+        (float)(IncApp::instance().getWindowHeight()));
+
+	tr.setMatrices(Camera::instance().cam().getCamera());
+
+    while(tr.nextTile()) {
+        IncApp::instance().draw();
+    }
+
+    ci::writeImage(name, tr.getSurface());
+
+    IncApp::instance().set_draw_interface(true);
+}
 
 }

@@ -49,6 +49,8 @@ class IncApp : public ci::app::AppBasic {
         // cleaned up (reset) in the shutdown() method
         std::tr1::shared_ptr<inc::ForceMenu> force_menu_;
 
+        void set_draw_interface(bool);
+
     private:
         // Access these with T::instance()
         std::tr1::shared_ptr<inc::SolidFactory> solid_factory_;
@@ -60,6 +62,8 @@ class IncApp : public ci::app::AppBasic {
         std::tr1::shared_ptr<inc::SolidCreator> solid_creator_;
         std::tr1::shared_ptr<inc::MeshCreator> mesh_creator_;
         std::tr1::shared_ptr<inc::CurveSketcher> curve_sketcher_;
+
+        bool draw_interface_;
 
         static IncApp* instance_;
 };

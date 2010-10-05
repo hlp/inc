@@ -194,11 +194,14 @@ public:
     virtual void setup();
 
     bool save_image(bool);
+    bool save_high_res(bool);
 
     std::string name() { return "FILE"; }
 
 private:
     int image_counter_;
+    int high_res_image_width_;
+
     std::string file_name_;
 };
 

@@ -64,6 +64,9 @@ public:
 
     static Renderer& instance() { return *instance_; }
 
+    // used for saving a higher resolution image
+    void save_image(int width, std::string name);
+
 private:
     void begin3D();
     void draw_objects();

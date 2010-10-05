@@ -32,6 +32,8 @@
 
 IncApp::IncApp() {
     instance_ = this;
+
+    draw_interface_ = true;
 }
 
 void IncApp::prepareSettings(Settings* settings) {
@@ -84,10 +86,10 @@ void IncApp::draw() {
 
     inc::MeshCreator::instance().draw();
     
-    // Draw the GUI elements of each module
-    ci::params::InterfaceGl::draw();
-
-    menu_manager_->delayed_draw();
+    if (draw_interface_) {
+        ci::params::InterfaceGl::draw();
+        menu_manager_->delayed_draw();
+    }
 }
 
 void IncApp::shutdown() {
@@ -114,6 +116,10 @@ void IncApp::shutdown() {
     renderer_.reset();
     solid_factory_.reset();
     manager_.reset();
+}
+
+void IncApp::set_draw_interface(bool di) {
+    draw_interface_ = di;
 }
 
 IncApp* IncApp::instance_;

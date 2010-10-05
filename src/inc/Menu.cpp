@@ -741,6 +741,7 @@ void DisplayMenu::setup() {
 
 FileMenu::FileMenu() {
     image_counter_ = 0;
+    high_res_image_width_ = 5000;
     file_name_ = "mosball_";
 }
 
@@ -749,12 +750,28 @@ void FileMenu::setup() {
 
     std::tr1::shared_ptr<GenericWidget<bool> > save = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Save image"));
+        new GenericWidget<bool>(*this, "Save screen"));
 
     save->value_changed().registerCb(
         std::bind1st(std::mem_fun(&inc::FileMenu::save_image), this));
 
     add_widget(save);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > save_high_res = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Save high res image"));
+
+    save_high_res->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::FileMenu::save_high_res), this));
+
+    add_widget(save_high_res);
+
+    std::tr1::shared_ptr<GenericWidget<int> > high_res_width = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "High res image width", 
+        &high_res_image_width_, "min=2 step=1"));
+
+    add_widget(high_res_width);
 
     std::tr1::shared_ptr<GenericWidget<std::string> > name = 
         std::tr1::shared_ptr<GenericWidget<std::string> >(
@@ -767,10 +784,20 @@ void FileMenu::setup() {
 
 bool FileMenu::save_image(bool) {
     std::ostringstream ss;
-
     ss << image_counter_;
 
     ci::writeImage(file_name_ + ss.str() + ".png", IncApp::instance().copyWindowSurface());
+    ++image_counter_;
+
+    return true;
+}
+
+bool FileMenu::save_high_res(bool) {
+    std::ostringstream ss;
+    ss << image_counter_;
+
+    Renderer::instance().save_image(high_res_image_width_, 
+        file_name_ + ss.str() + ".png");
     ++image_counter_;
 
     return true;
