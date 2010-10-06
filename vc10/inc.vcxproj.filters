@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\csg">
+      <UniqueIdentifier>{9258a1c8-5c29-4504-bf5a-62d05a16c750}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\csg">
+      <UniqueIdentifier>{f2dc75fc-eae4-48b6-8924-c6f92aea4e6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\incApp.cpp">
@@ -56,6 +62,201 @@
     </ClCompile>
     <ClCompile Include="..\src\inc\CurveSketcher.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\BooleanModeller.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Bound.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ColorSet.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Face.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\FaceSet.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_Color.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_Intersection.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_Model.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_ModelLibrary.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_ModelUtil.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_RenderingLine.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_RenderingPoint.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_RenderingTriangle.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_Scene.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_TextureArchive.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_TextureLoader.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_TransformUtility.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\GX_Viewport2D.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\IntSet.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Line.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Circle.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Disc.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_HermiteCurveCalculator.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_HermiteCurveRenderer.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Line.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Maths.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Matrix.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Quaternion.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Sphere.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Transform.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_TransformTest.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Triangle.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\ML_Vector.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Object3D.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Segment.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Solid.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\UT_Functions.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\UT_Intersection.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\UT_String.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\VectorSet.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\Vertex.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\VertexSet.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\DiagnosticEvent.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\DiagnosticTool.cpp">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_window.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_videoresize.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_teapot.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_structure.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_stroke_roman.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_stroke_mono_roman.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_state.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_overlay.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_misc.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_menu.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_main.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_joystick.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_init.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_geometry.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_gamemode.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_font_data.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_font.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_ext.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_display.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_cursor.c">
+      <Filter>Source Files\csg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\og_callbacks.c">
+      <Filter>Source Files\csg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +310,147 @@
     </ClInclude>
     <ClInclude Include="..\include\inc\CurveSketcher.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\BooleanModeller.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Bound.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ColorSet.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Face.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\FaceSet.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_Color.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_Intersection.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_Model.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_ModelLibrary.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_ModelUtil.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_RenderingLine.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_RenderingPoint.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_RenderingTriangle.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_Scene.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_TextureArchive.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_TextureLoader.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_TransformUtility.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\GX_Viewport2D.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\IntSet.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Line.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Circle.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Disc.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_HermiteCurveCalculator.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_HermiteCurvePoint.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_HermiteCurveRenderer.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Line.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Maths.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Matrix.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Quaternion.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Sphere.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Transform.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_TransformTest.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Triangle.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Types.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\ML_Vector.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Object3D.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Segment.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Solid.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\UT_Functions.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\UT_Intersection.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\UT_String.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\VectorSet.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\Vertex.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\VertexSet.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\DiagnosticEvent.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\csg\DiagnosticTool.h">
+      <Filter>Header Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\csg\og_internal.h">
+      <Filter>Source Files\csg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

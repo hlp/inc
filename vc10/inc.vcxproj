@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;TRACE_DTORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UndefinePreprocessorDefinitions>
@@ -93,6 +93,74 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\csg\BooleanModeller.cpp" />
+    <ClCompile Include="..\src\csg\Bound.cpp" />
+    <ClCompile Include="..\src\csg\ColorSet.cpp" />
+    <ClCompile Include="..\src\csg\DiagnosticEvent.cpp" />
+    <ClCompile Include="..\src\csg\DiagnosticTool.cpp" />
+    <ClCompile Include="..\src\csg\Face.cpp" />
+    <ClCompile Include="..\src\csg\FaceSet.cpp" />
+    <ClCompile Include="..\src\csg\GX_Color.cpp" />
+    <ClCompile Include="..\src\csg\GX_Intersection.cpp" />
+    <ClCompile Include="..\src\csg\GX_Model.cpp" />
+    <ClCompile Include="..\src\csg\GX_ModelLibrary.cpp" />
+    <ClCompile Include="..\src\csg\GX_ModelUtil.cpp" />
+    <ClCompile Include="..\src\csg\GX_RenderingLine.cpp" />
+    <ClCompile Include="..\src\csg\GX_RenderingPoint.cpp" />
+    <ClCompile Include="..\src\csg\GX_RenderingTriangle.cpp" />
+    <ClCompile Include="..\src\csg\GX_Scene.cpp" />
+    <ClCompile Include="..\src\csg\GX_TextureArchive.cpp" />
+    <ClCompile Include="..\src\csg\GX_TextureLoader.cpp" />
+    <ClCompile Include="..\src\csg\GX_TransformUtility.cpp" />
+    <ClCompile Include="..\src\csg\GX_Viewport2D.cpp" />
+    <ClCompile Include="..\src\csg\IntSet.cpp" />
+    <ClCompile Include="..\src\csg\Line.cpp" />
+    <ClCompile Include="..\src\csg\ML_Circle.cpp" />
+    <ClCompile Include="..\src\csg\ML_Disc.cpp" />
+    <ClCompile Include="..\src\csg\ML_HermiteCurveCalculator.cpp" />
+    <ClCompile Include="..\src\csg\ML_HermiteCurveRenderer.cpp" />
+    <ClCompile Include="..\src\csg\ML_Line.cpp" />
+    <ClCompile Include="..\src\csg\ML_Maths.cpp" />
+    <ClCompile Include="..\src\csg\ML_Matrix.cpp" />
+    <ClCompile Include="..\src\csg\ML_Quaternion.cpp" />
+    <ClCompile Include="..\src\csg\ML_Sphere.cpp" />
+    <ClCompile Include="..\src\csg\ML_Transform.cpp" />
+    <ClCompile Include="..\src\csg\ML_TransformTest.cpp" />
+    <ClCompile Include="..\src\csg\ML_Triangle.cpp" />
+    <ClCompile Include="..\src\csg\ML_Vector.cpp" />
+    <ClCompile Include="..\src\csg\Object3D.cpp" />
+    <ClCompile Include="..\src\csg\og_callbacks.c" />
+    <ClCompile Include="..\src\csg\og_cursor.c" />
+    <ClCompile Include="..\src\csg\og_display.c" />
+    <ClCompile Include="..\src\csg\og_ext.c" />
+    <ClCompile Include="..\src\csg\og_font.c" />
+    <ClCompile Include="..\src\csg\og_font_data.c" />
+    <ClCompile Include="..\src\csg\og_gamemode.c" />
+    <ClCompile Include="..\src\csg\og_geometry.c" />
+    <ClCompile Include="..\src\csg\og_init.c" />
+    <ClCompile Include="..\src\csg\og_joystick.c" />
+    <ClCompile Include="..\src\csg\og_main.c" />
+    <ClCompile Include="..\src\csg\og_menu.c" />
+    <ClCompile Include="..\src\csg\og_misc.c" />
+    <ClCompile Include="..\src\csg\og_overlay.c" />
+    <ClCompile Include="..\src\csg\og_state.c" />
+    <ClCompile Include="..\src\csg\og_stroke_mono_roman.c" />
+    <ClCompile Include="..\src\csg\og_stroke_roman.c" />
+    <ClCompile Include="..\src\csg\og_structure.c" />
+    <ClCompile Include="..\src\csg\og_teapot.c" />
+    <ClCompile Include="..\src\csg\og_videoresize.c" />
+    <ClCompile Include="..\src\csg\og_window.c" />
+    <ClCompile Include="..\src\csg\Segment.cpp" />
+    <ClCompile Include="..\src\csg\Solid.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)\csgSolid.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\csgSolid.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\src\csg\UT_Functions.cpp" />
+    <ClCompile Include="..\src\csg\UT_Intersection.cpp" />
+    <ClCompile Include="..\src\csg\UT_String.cpp" />
+    <ClCompile Include="..\src\csg\VectorSet.cpp" />
+    <ClCompile Include="..\src\csg\Vertex.cpp" />
+    <ClCompile Include="..\src\csg\VertexSet.cpp" />
     <ClCompile Include="..\src\incApp.cpp" />
     <ClCompile Include="..\src\inc\Button.cpp" />
     <ClCompile Include="..\src\inc\Camera.cpp" />
@@ -109,6 +177,52 @@
     <ClCompile Include="..\src\inc\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\csg\BooleanModeller.h" />
+    <ClInclude Include="..\include\csg\Bound.h" />
+    <ClInclude Include="..\include\csg\ColorSet.h" />
+    <ClInclude Include="..\include\csg\DiagnosticEvent.h" />
+    <ClInclude Include="..\include\csg\DiagnosticTool.h" />
+    <ClInclude Include="..\include\csg\Face.h" />
+    <ClInclude Include="..\include\csg\FaceSet.h" />
+    <ClInclude Include="..\include\csg\GX_Color.h" />
+    <ClInclude Include="..\include\csg\GX_Intersection.h" />
+    <ClInclude Include="..\include\csg\GX_Model.h" />
+    <ClInclude Include="..\include\csg\GX_ModelLibrary.h" />
+    <ClInclude Include="..\include\csg\GX_ModelUtil.h" />
+    <ClInclude Include="..\include\csg\GX_RenderingLine.h" />
+    <ClInclude Include="..\include\csg\GX_RenderingPoint.h" />
+    <ClInclude Include="..\include\csg\GX_RenderingTriangle.h" />
+    <ClInclude Include="..\include\csg\GX_Scene.h" />
+    <ClInclude Include="..\include\csg\GX_TextureArchive.h" />
+    <ClInclude Include="..\include\csg\GX_TextureLoader.h" />
+    <ClInclude Include="..\include\csg\GX_TransformUtility.h" />
+    <ClInclude Include="..\include\csg\GX_Viewport2D.h" />
+    <ClInclude Include="..\include\csg\IntSet.h" />
+    <ClInclude Include="..\include\csg\Line.h" />
+    <ClInclude Include="..\include\csg\ML_Circle.h" />
+    <ClInclude Include="..\include\csg\ML_Disc.h" />
+    <ClInclude Include="..\include\csg\ML_HermiteCurveCalculator.h" />
+    <ClInclude Include="..\include\csg\ML_HermiteCurvePoint.h" />
+    <ClInclude Include="..\include\csg\ML_HermiteCurveRenderer.h" />
+    <ClInclude Include="..\include\csg\ML_Line.h" />
+    <ClInclude Include="..\include\csg\ML_Maths.h" />
+    <ClInclude Include="..\include\csg\ML_Matrix.h" />
+    <ClInclude Include="..\include\csg\ML_Quaternion.h" />
+    <ClInclude Include="..\include\csg\ML_Sphere.h" />
+    <ClInclude Include="..\include\csg\ML_Transform.h" />
+    <ClInclude Include="..\include\csg\ML_TransformTest.h" />
+    <ClInclude Include="..\include\csg\ML_Triangle.h" />
+    <ClInclude Include="..\include\csg\ML_Types.h" />
+    <ClInclude Include="..\include\csg\ML_Vector.h" />
+    <ClInclude Include="..\include\csg\Object3D.h" />
+    <ClInclude Include="..\include\csg\Segment.h" />
+    <ClInclude Include="..\include\csg\Solid.h" />
+    <ClInclude Include="..\include\csg\UT_Functions.h" />
+    <ClInclude Include="..\include\csg\UT_Intersection.h" />
+    <ClInclude Include="..\include\csg\UT_String.h" />
+    <ClInclude Include="..\include\csg\VectorSet.h" />
+    <ClInclude Include="..\include\csg\Vertex.h" />
+    <ClInclude Include="..\include\csg\VertexSet.h" />
     <ClInclude Include="..\include\incApp.h" />
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
     <ClInclude Include="..\include\inc\Button.h" />
@@ -126,6 +240,7 @@
     <ClInclude Include="..\include\inc\SolidCreator.h" />
     <ClInclude Include="..\include\inc\Units.h" />
     <ClInclude Include="..\include\inc\Widget.h" />
+    <ClInclude Include="..\src\csg\og_internal.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TODO.txt" />
