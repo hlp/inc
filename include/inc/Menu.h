@@ -186,6 +186,14 @@ public:
     std::string name() { return "DISPLAY"; }
 };
 
+class MeshNetworkMenu : public Menu {
+public:
+    virtual void setup();
+
+    bool create_network(bool);
+
+    std::string name() { return "NETWORK"; }
+};
 
 class FileMenu : public Menu {
 public:
@@ -231,10 +239,11 @@ public:
         DRAW_MESH = 2,
         TRIPOD_MESH = 3,
         ANEMONE_MESH = 4,
-        SOLID = 5,
-        DISPLAY = 6,
-        FILE = 7,
-        FORCE = 8
+        MESH_NETWORK = 5,
+        SOLID = 6,
+        DISPLAY = 7,
+        FILE = 8,
+        FORCE = 9
     };
 
 private:

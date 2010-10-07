@@ -258,6 +258,9 @@
     <ClCompile Include="..\src\csg\og_callbacks.c">
       <Filter>Source Files\csg</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\incApp.h">
@@ -451,6 +454,9 @@
     </ClInclude>
     <ClInclude Include="..\src\csg\og_internal.h">
       <Filter>Source Files\csg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_MeshNetwork.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

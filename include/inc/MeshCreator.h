@@ -25,10 +25,14 @@
 namespace inc {
 
 class Solid;
+class MeshNetwork;
 
 class MeshCreator {
 public:
     MeshCreator();
+    ~MeshCreator();
+
+    void setup();
 
     std::tr1::shared_ptr<ci::TriMesh> generate_circle_mesh(ci::Vec3f center,
         float radius);
@@ -69,6 +73,8 @@ public:
 
     void rebuild_mesh();
 
+    std::tr1::shared_ptr<MeshNetwork> mesh_network();
+
 private:
     
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
@@ -82,6 +88,8 @@ private:
     std::tr1::shared_ptr<ci::TriMesh> debug_mesh_;
 
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > arc_debug_;
+
+    std::tr1::shared_ptr<MeshNetwork> mesh_network_;
 
     float mesh_scale_;
     int arch_resolution_;

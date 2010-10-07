@@ -36,6 +36,7 @@
 #include <inc/SolidCreator.h>
 #include <inc/Renderer.h>
 #include <inc/Origin.h>
+#include <inc/inc_MeshNetwork.h>
 
 namespace inc {
 
@@ -643,6 +644,28 @@ bool AnemoneMeshMenu::create_mesh(bool) {
 }
 
 
+void MeshNetworkMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > create_mesh = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create mesh network"));
+
+    create_mesh->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&MeshNetworkMenu::create_network), 
+        this));
+
+    add_widget(create_mesh);
+
+    Menu::setup();
+}
+
+bool MeshNetworkMenu::create_network(bool) {
+    MeshCreator::instance().mesh_network()->create_tube_union();
+
+    return false;
+}
+
 
 void DisplayMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
@@ -866,6 +889,7 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DrawMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new TripodMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new AnemoneMeshMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new MeshNetworkMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DisplayMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new FileMenu()));

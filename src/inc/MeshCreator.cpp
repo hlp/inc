@@ -26,6 +26,7 @@
 #include <inc/Manager.h>
 #include <inc/Solid.h>
 #include <inc/CurveSketcher.h>
+#include <inc/inc_MeshNetwork.h>
 
 namespace inc {
 
@@ -42,6 +43,14 @@ MeshCreator::MeshCreator() {
     anemone_mesh_scale_ = 10.0f;
 
     current_mesh_ = std::tr1::shared_ptr<Solid>();
+}
+
+MeshCreator::~MeshCreator() {
+    mesh_network_.reset();
+}
+
+void MeshCreator::setup() {
+    mesh_network_ = std::tr1::shared_ptr<MeshNetwork>(new MeshNetwork());
 }
 
 std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_circle_mesh(
@@ -414,6 +423,10 @@ void MeshCreator::add_anemone_mesh() {
     file_name = "data/" + file_name;
 
     add_obj_mesh(file_name, ci::Vec3f::one() * anemone_mesh_scale_);
+}
+
+std::tr1::shared_ptr<MeshNetwork> MeshCreator::mesh_network() {
+    return mesh_network_;
 }
 
 MeshCreator* MeshCreator::instance_ = NULL;

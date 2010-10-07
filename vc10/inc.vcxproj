@@ -167,6 +167,7 @@
     <ClCompile Include="..\src\inc\CurveSketcher.cpp" />
     <ClCompile Include="..\src\inc\DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\GraphicItem.cpp" />
+    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp" />
     <ClCompile Include="..\src\inc\Manager.cpp" />
     <ClCompile Include="..\src\inc\Menu.cpp" />
     <ClCompile Include="..\src\inc\MeshCreator.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="..\include\inc\CurveSketcher.h" />
     <ClInclude Include="..\include\inc\DxfSaver.h" />
     <ClInclude Include="..\include\inc\GraphicItem.h" />
+    <ClInclude Include="..\include\inc\inc_MeshNetwork.h" />
     <ClInclude Include="..\include\inc\Manager.h" />
     <ClInclude Include="..\include\inc\Menu.h" />
     <ClInclude Include="..\include\inc\MeshCreator.h" />
