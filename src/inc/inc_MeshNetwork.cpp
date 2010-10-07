@@ -19,6 +19,7 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/TriMesh.h>
+#include <cinder/ObjLoader.h>
 
 #include <csg/Solid.h>
 #include <csg/BooleanModeller.h>
@@ -26,6 +27,8 @@
 #include <inc/inc_MeshNetwork.h>
 #include <inc/Solid.h>
 #include <inc/Manager.h>
+#include <inc/inc_CSG.h>
+#include <inc/MeshCreator.h>
 
 namespace inc {
 
@@ -38,53 +41,37 @@ MeshNetwork::~MeshNetwork() {
 }
 
 void MeshNetwork::create_tube_union() {
+    ci::ObjLoader loader(ci::loadFileStream("data/tripod-1.obj"));
+    ci::TriMesh tube_mesh;
+    loader.load(&tube_mesh, true);
+
+    std::tr1::shared_ptr<ci::TriMesh> tube_mesh_ptr = 
+        std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh(tube_mesh));
+
     // create two tubes (indice / vertice)
-    csg::gxColor color(100, 100, 100);
-    csg::Solid tube_1("data/csg/cylinder.txt", color, 100, 100, 100);
-    csg::Solid tube_2("data/csg/cylinder.txt", color, 100, 100, 100);
+    std::tr1::shared_ptr<csg::Solid> tube_1 = 
+        CSG::tri_mesh_to_csg_solid(tube_mesh_ptr);
 
-    tube_1.Scale(csg::mlVector3D(10.0f, 10.0f, 10.0f));
-    tube_2.Scale(csg::mlVector3D(10.0f, 10.0f, 10.0f));
+    std::tr1::shared_ptr<csg::Solid> tube_2 = 
+        CSG::tri_mesh_to_csg_solid(tube_mesh_ptr);
 
-    tube_1.Translate(csg::mlVector3D(6.0f, 3.0f, 0.0f));
+    tube_1->Scale(csg::mlVector3D(10.0f, 10.0f, 10.0f));
+    tube_2->Scale(csg::mlVector3D(10.0f, 10.0f, 10.0f));
 
-    csg::BooleanModeller bm(&tube_1, &tube_2);
+    tube_1->Translate(csg::mlVector3D(6.0f, 3.0f, 0.0f));
 
-    csg::Solid* tube_union = bm.getUnion();
+    csg::BooleanModeller bm(tube_1.get(), tube_2.get());
 
-    csg::VectorSet* vertices = tube_union->getVertices();
-    csg::IntSet* indices = tube_union->getIndices();
-
-    //csg::VectorSet* vertices = tube_2.getVertices();
-    //csg::IntSet* indices = tube_2.getIndices();
-
-    ci::TriMesh mesh;
-
-    for (int i = 0; i < vertices->GetSize(); ++i) {
-        csg::mlVector3D v = vertices->GetVector(i);
-
-        mesh.appendVertex(ci::Vec3f(v.x, v.y, v.z));
-    }
-
-    for (int i = 0; i < indices->GetSize();) {
-        mesh.appendTriangle(indices->GetInt(i),
-            indices->GetInt(i+1), indices->GetInt(i+2));
-
-        i += 3;
-    }
-
-    std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
-        std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh(mesh));
+    std::tr1::shared_ptr<csg::Solid> tube_union = 
+        std::tr1::shared_ptr<csg::Solid>(bm.getDifference());
 
     ci::Vec3f scl(1.0f, 1.0f, 1.0f);
 
-    SolidPtr union_solid = SolidFactory::create_soft_mesh(mesh_ptr, scl);
+    SolidPtr union_solid = SolidFactory::create_soft_mesh(
+        CSG::csg_solid_to_tri_mesh(tube_union), scl);
 
     Manager::instance().add_solid(union_solid);
-
-    delete indices;
-    delete vertices;
-    delete tube_union;
+    MeshCreator::instance().set_current_mesh(union_solid);
 }
 
 MeshNetwork* MeshNetwork::instance_;

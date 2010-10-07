@@ -75,6 +75,9 @@ public:
 
     std::tr1::shared_ptr<MeshNetwork> mesh_network();
 
+    // this assumes that the object has been added to the manager
+    void set_current_mesh(std::tr1::shared_ptr<Solid> mesh);
+
 private:
     
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(

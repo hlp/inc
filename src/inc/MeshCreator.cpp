@@ -307,6 +307,12 @@ void MeshCreator::rebuild_mesh() {
     add_bspline_mesh(CurveSketcher::instance().current_spline());
 }
 
+void MeshCreator::set_current_mesh(std::tr1::shared_ptr<Solid> mesh) {
+    Manager::instance().remove_solid(current_mesh_);
+
+    current_mesh_ = mesh;
+}
+
 float* MeshCreator::mesh_scale_ptr() {
     return &mesh_scale_;
 }
