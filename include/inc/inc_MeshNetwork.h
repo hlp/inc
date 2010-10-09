@@ -30,9 +30,17 @@ public:
 
     static MeshNetwork& instance();
 
+    // min = 1: Face::INSIDE --- max = 5: Face::OPPOSITE  
+    int* face_status_1_ptr() { return &face_status_1_; }
+    int* face_status_2_ptr() { return &face_status_2_; }
+    int* face_status_3_ptr() { return &face_status_3_; }
+
 private:
     static MeshNetwork* instance_;
 
+    int face_status_1_;
+    int face_status_2_;
+    int face_status_3_;
 };
 
 

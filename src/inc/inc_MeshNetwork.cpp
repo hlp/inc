@@ -34,6 +34,10 @@ namespace inc {
 
 MeshNetwork::MeshNetwork() {
     instance_ = this;
+
+    face_status_1_ = 1;
+    face_status_2_ = 1;
+    face_status_3_ = 1;
 }
 
 MeshNetwork::~MeshNetwork() {
@@ -63,7 +67,7 @@ void MeshNetwork::create_tube_union() {
     csg::BooleanModeller bm(tube_1.get(), tube_2.get());
 
     std::tr1::shared_ptr<csg::Solid> tube_union = 
-        std::tr1::shared_ptr<csg::Solid>(bm.getDifference());
+        std::tr1::shared_ptr<csg::Solid>(bm.getUnion());
 
     ci::Vec3f scl(1.0f, 1.0f, 1.0f);
 

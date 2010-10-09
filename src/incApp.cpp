@@ -71,10 +71,11 @@ void IncApp::setup() {
 
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
+    mesh_creator_->setup();
 
     manager_->setup_modules();
 
-    mesh_creator_->setup();
+    
 }
 
 void IncApp::update() {

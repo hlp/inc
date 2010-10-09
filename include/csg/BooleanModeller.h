@@ -31,10 +31,9 @@ public:
 	Solid * getIntersection();
 	Solid * getDifference();
 
+    Solid * composeSolid(int faceStatus1, int faceStatus2, int faceStatus3);
+
 private:
-	
-	Solid * composeSolid(int faceStatus1, int faceStatus2, int faceStatus3);
-	
 	void groupObjectComponents(Object3D & pObject, VertexSet & vertices, IntSet & indices, ColorSet & colors, int faceStatus1, int faceStatus2);
 };
 
