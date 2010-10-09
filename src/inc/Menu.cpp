@@ -657,30 +657,6 @@ void MeshNetworkMenu::setup() {
 
     add_widget(create_mesh);
 
-    std::tr1::shared_ptr<GenericWidget<int> > status_1 = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Face status 1",
-        MeshNetwork::instance().face_status_1_ptr(),
-        "min=1 max=5"));
-
-    add_widget(status_1);
-
-    std::tr1::shared_ptr<GenericWidget<int> > status_2 = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Face status 2",
-        MeshNetwork::instance().face_status_2_ptr(),
-        "min=1 max=5"));
-
-    add_widget(status_2);
-
-    std::tr1::shared_ptr<GenericWidget<int> > status_3 = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Face status 3",
-        MeshNetwork::instance().face_status_3_ptr(),
-        "min=1 max=5"));
-
-    add_widget(status_3);
-
     Menu::setup();
 }
 

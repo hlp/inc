@@ -34,10 +34,6 @@ namespace inc {
 
 MeshNetwork::MeshNetwork() {
     instance_ = this;
-
-    face_status_1_ = 1;
-    face_status_2_ = 1;
-    face_status_3_ = 1;
 }
 
 MeshNetwork::~MeshNetwork() {
