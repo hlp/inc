@@ -41,7 +41,7 @@ MeshNetwork::~MeshNetwork() {
 }
 
 void MeshNetwork::create_tube_union() {
-    ci::ObjLoader loader(ci::loadFileStream("data/tripod-1.obj"));
+    ci::ObjLoader loader(ci::loadFileStream("data/tripod-2.obj"));
     ci::TriMesh tube_mesh;
     loader.load(&tube_mesh, true);
 
