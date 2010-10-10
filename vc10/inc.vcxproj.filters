@@ -264,6 +264,9 @@
     <ClCompile Include="..\src\incApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\inc\inc_LinkFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -462,6 +465,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\incApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_LinkFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
