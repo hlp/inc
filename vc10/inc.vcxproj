@@ -152,8 +152,8 @@
     <ClCompile Include="..\src\csg\og_window.c" />
     <ClCompile Include="..\src\csg\Segment.cpp" />
     <ClCompile Include="..\src\csg\Solid.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)\csgSolid.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\csgSolid.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\src\csg\UT_Functions.cpp" />
     <ClCompile Include="..\src\csg\UT_Intersection.cpp" />
@@ -161,6 +161,22 @@
     <ClCompile Include="..\src\csg\VectorSet.cpp" />
     <ClCompile Include="..\src\csg\Vertex.cpp" />
     <ClCompile Include="..\src\csg\VertexSet.cpp" />
+    <ClCompile Include="..\src\incApp.cpp" />
+    <ClCompile Include="..\src\inc\inc_Button.cpp" />
+    <ClCompile Include="..\src\inc\inc_Camera.cpp" />
+    <ClCompile Include="..\src\inc\inc_CSG.cpp" />
+    <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp" />
+    <ClCompile Include="..\src\inc\inc_DxfSaver.cpp" />
+    <ClCompile Include="..\src\inc\inc_GraphicItem.cpp" />
+    <ClCompile Include="..\src\inc\inc_Manager.cpp" />
+    <ClCompile Include="..\src\inc\inc_Menu.cpp" />
+    <ClCompile Include="..\src\inc\inc_MeshCreator.cpp" />
+    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp" />
+    <ClCompile Include="..\src\inc\inc_Origin.cpp" />
+    <ClCompile Include="..\src\inc\inc_Renderer.cpp" />
+    <ClCompile Include="..\src\inc\inc_Solid.cpp" />
+    <ClCompile Include="..\src\inc\inc_SolidCreator.cpp" />
+    <ClCompile Include="..\src\inc\inc_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\csg\BooleanModeller.h" />
@@ -209,7 +225,25 @@
     <ClInclude Include="..\include\csg\VectorSet.h" />
     <ClInclude Include="..\include\csg\Vertex.h" />
     <ClInclude Include="..\include\csg\VertexSet.h" />
+    <ClInclude Include="..\include\incApp.h" />
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
+    <ClInclude Include="..\include\inc\inc_Button.h" />
+    <ClInclude Include="..\include\inc\inc_Camera.h" />
+    <ClInclude Include="..\include\inc\inc_CSG.h" />
+    <ClInclude Include="..\include\inc\inc_CurveSketcher.h" />
+    <ClInclude Include="..\include\inc\inc_DxfSaver.h" />
+    <ClInclude Include="..\include\inc\inc_GraphicItem.h" />
+    <ClInclude Include="..\include\inc\inc_Manager.h" />
+    <ClInclude Include="..\include\inc\inc_Menu.h" />
+    <ClInclude Include="..\include\inc\inc_MeshCreator.h" />
+    <ClInclude Include="..\include\inc\inc_MeshNetwork.h" />
+    <ClInclude Include="..\include\inc\inc_Module.h" />
+    <ClInclude Include="..\include\inc\inc_Origin.h" />
+    <ClInclude Include="..\include\inc\inc_Renderer.h" />
+    <ClInclude Include="..\include\inc\inc_Solid.h" />
+    <ClInclude Include="..\include\inc\inc_SolidCreator.h" />
+    <ClInclude Include="..\include\inc\inc_Units.h" />
+    <ClInclude Include="..\include\inc\inc_Widget.h" />
     <ClInclude Include="..\src\csg\og_internal.h" />
   </ItemGroup>
   <ItemGroup>
