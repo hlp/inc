@@ -18,17 +18,16 @@
  */
 
 #include <incApp.h>
-
-#include <inc/Solid.h>
-#include <inc/Renderer.h>
-#include <inc/Manager.h>
-#include <inc/Camera.h>
-#include <inc/Menu.h>
-#include <inc/Origin.h>
-#include <inc/Module.h>
-#include <inc/SolidCreator.h>
-#include <inc/CurveSketcher.h>
-#include <inc/MeshCreator.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Renderer.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Camera.h>
+#include <inc/inc_Menu.h>
+#include <inc/inc_Origin.h>
+#include <inc/inc_Module.h>
+#include <inc/inc_SolidCreator.h>
+#include <inc/inc_CurveSketcher.h>
+#include <inc/inc_MeshCreator.h>
 
 IncApp::IncApp() {
     instance_ = this;

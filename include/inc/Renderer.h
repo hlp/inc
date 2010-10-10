@@ -22,7 +22,7 @@
 #include <cinder/params/Params.h>
 #include <cinder/Color.h>
 
-#include <inc/Module.h>
+#include <inc/inc_Module.h>
 #include <incApp.h>
 
 namespace inc {

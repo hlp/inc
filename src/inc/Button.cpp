@@ -21,8 +21,8 @@
 #include <cinder/Text.h>
 #include <cinder/Rect.h>
 
-#include <inc/Button.h>
-#include <inc/Menu.h>
+#include <inc/inc_Button.h>
+#include <inc/inc_Menu.h>
 #include <incApp.h>
 
 #if 0

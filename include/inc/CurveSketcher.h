@@ -31,7 +31,7 @@
 #include <cinder/app/App.h>
 #include <cinder/Color.h>
 
-#include <inc/Module.h>
+#include <inc/inc_Module.h>
 
 namespace inc {
 

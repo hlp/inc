@@ -23,10 +23,10 @@
 #include <cinder/Ray.h>
 #include <cinder/cairo/Cairo.h>
 
-#include <inc/CurveSketcher.h>
-#include <inc/Camera.h>
+#include <inc/inc_CurveSketcher.h>
+#include <inc/inc_Camera.h>
 #include <incApp.h>
-#include <inc/MeshCreator.h>
+#include <inc/inc_MeshCreator.h>
 
 namespace inc {
 

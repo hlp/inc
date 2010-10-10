@@ -23,11 +23,11 @@
 #include <cinder/TriMesh.h>
 
 #include <incApp.h>
-#include <inc/SolidCreator.h>
-#include <inc/Solid.h>
-#include <inc/Manager.h>
-#include <inc/CurveSketcher.h> // for ControlPoint
-#include <inc/Camera.h>
+#include <inc/inc_SolidCreator.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_CurveSketcher.h> // for ControlPoint
+#include <inc/inc_Camera.h>
 
 namespace inc {
 

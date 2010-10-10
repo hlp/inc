@@ -22,7 +22,7 @@
 #include <deque>
 #include <vector>
 
-#include <inc/Module.h>
+#include <inc/inc_Module.h>
 
 namespace inc {
 class Solid;

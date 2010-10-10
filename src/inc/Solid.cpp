@@ -48,13 +48,13 @@
 #include <cinder/Rand.h>
 #include <cinder/ObjLoader.h>
 
-#include <inc/Solid.h>
-#include <inc/GraphicItem.h>
-#include <inc/Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_GraphicItem.h>
+#include <inc/inc_Manager.h>
 #include <inc/BunnyMesh.h>
-#include <inc/DxfSaver.h>
-#include <inc/Menu.h>
-#include <inc/MeshCreator.h>
+#include <inc/inc_DxfSaver.h>
+#include <inc/inc_Menu.h>
+#include <inc/inc_MeshCreator.h>
 
 //#define BULLET_DEBUG_DRAW 1
 

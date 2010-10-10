@@ -24,9 +24,9 @@
 #include <cinder/app/App.h>
 #include <cinder/CinderMath.h>
 
-#include <inc/GraphicItem.h>
-#include <inc/Solid.h>
-#include <inc/Renderer.h>
+#include <inc/inc_GraphicItem.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Renderer.h>
 
 namespace inc {
 

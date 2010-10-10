@@ -25,10 +25,10 @@
 #include <csg/BooleanModeller.h>
 
 #include <inc/inc_MeshNetwork.h>
-#include <inc/Solid.h>
-#include <inc/Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Manager.h>
 #include <inc/inc_CSG.h>
-#include <inc/MeshCreator.h>
+#include <inc/inc_MeshCreator.h>
 
 namespace inc {
 

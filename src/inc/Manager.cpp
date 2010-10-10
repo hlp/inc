@@ -19,8 +19,8 @@
 
 #include <cinder/app/App.h>
 
-#include <inc/Manager.h>
-#include <inc/Solid.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
 
 namespace inc {
     Manager::Manager() {

@@ -28,8 +28,8 @@
 
 
 
-#include <inc/DxfSaver.h>
-#include <inc/Solid.h>
+#include <inc/inc_DxfSaver.h>
+#include <inc/inc_Solid.h>
 
 namespace inc {
 

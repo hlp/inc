@@ -22,10 +22,10 @@
 #include <cinder/gl/TileRender.h>
 #include <cinder/ImageIo.h>
 
-#include <inc/Renderer.h>
-#include <inc/Manager.h>
-#include <inc/Solid.h>
-#include <inc/Camera.h>
+#include <inc/inc_Renderer.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Camera.h>
 
 namespace inc {
 

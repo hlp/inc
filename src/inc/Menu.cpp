@@ -25,17 +25,17 @@
 #include <cinder/app/MouseEvent.h>
 #include <cinder/ImageIo.h>
 
-#include <inc/Menu.h>
+#include <inc/inc_Menu.h>
 #include <incApp.h>
-#include <inc/DxfSaver.h>
-#include <inc/Manager.h>
-#include <inc/Solid.h>
-#include <inc/Widget.h>
-#include <inc/MeshCreator.h>
-#include <inc/CurveSketcher.h>
-#include <inc/SolidCreator.h>
-#include <inc/Renderer.h>
-#include <inc/Origin.h>
+#include <inc/inc_DxfSaver.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Widget.h>
+#include <inc/inc_MeshCreator.h>
+#include <inc/inc_CurveSketcher.h>
+#include <inc/inc_SolidCreator.h>
+#include <inc/inc_Renderer.h>
+#include <inc/inc_Origin.h>
 #include <inc/inc_MeshNetwork.h>
 
 namespace inc {

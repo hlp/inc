@@ -22,10 +22,10 @@
 #include <cinder/app/App.h>
 #include <cinder/ObjLoader.h>
 
-#include <inc/MeshCreator.h>
-#include <inc/Manager.h>
-#include <inc/Solid.h>
-#include <inc/CurveSketcher.h>
+#include <inc/inc_MeshCreator.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshNetwork.h>
 
 namespace inc {

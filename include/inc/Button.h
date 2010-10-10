@@ -33,7 +33,7 @@
 #include <cinder/app/MouseEvent.h>
 #include <cinder/Vector.h>
 
-#include <inc/Widget.h>
+#include <inc/inc_Widget.h>
 
 #if 0
 

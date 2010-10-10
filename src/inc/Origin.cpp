@@ -19,10 +19,10 @@
 
 #include <cinder/app/App.h>
 
-#include <inc/Origin.h>
-#include <inc/GraphicItem.h>
-#include <inc/Solid.h>
-#include <inc/Manager.h>
+#include <inc/inc_Origin.h>
+#include <inc/inc_GraphicItem.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Manager.h>
 
 namespace inc {
 

@@ -21,11 +21,11 @@
 #include <cinder/MayaCamUI.h>
 #include <cinder/Ray.h>
 
-#include <inc/Camera.h>
+#include <inc/inc_Camera.h>
 #include <incApp.h>
-#include <inc/Manager.h>
-#include <inc/Solid.h>
-#include <inc/CurveSketcher.h>
+#include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_CurveSketcher.h>
 
 namespace inc {
     Camera::Camera() {

@@ -54,9 +54,6 @@
     <ClCompile Include="..\src\inc\Widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\inc\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\inc\MeshCreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -262,6 +259,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\inc\inc_CSG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

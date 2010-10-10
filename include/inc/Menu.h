@@ -27,8 +27,8 @@
 #include <cinder/app/KeyEvent.h>
 #include <cinder/app/App.h>
 
-#include <inc/Module.h>
-#include <inc/Widget.h>
+#include <inc/inc_Module.h>
+#include <inc/inc_Widget.h>
 
 namespace inc {
 

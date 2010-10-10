@@ -19,8 +19,8 @@
 
 #include <cinder/gl/gl.h>
 
-#include <inc/Widget.h>
-#include <inc/Menu.h>
+#include <inc/inc_Widget.h>
+#include <inc/inc_Menu.h>
 
 namespace inc {
 
