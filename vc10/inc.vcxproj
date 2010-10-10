@@ -161,22 +161,6 @@
     <ClCompile Include="..\src\csg\VectorSet.cpp" />
     <ClCompile Include="..\src\csg\Vertex.cpp" />
     <ClCompile Include="..\src\csg\VertexSet.cpp" />
-    <ClCompile Include="..\src\incApp.cpp" />
-    <ClCompile Include="..\src\inc\Button.cpp" />
-    <ClCompile Include="..\src\inc\Camera.cpp" />
-    <ClCompile Include="..\src\inc\CurveSketcher.cpp" />
-    <ClCompile Include="..\src\inc\DxfSaver.cpp" />
-    <ClCompile Include="..\src\inc\GraphicItem.cpp" />
-    <ClCompile Include="..\src\inc\inc_CSG.cpp" />
-    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp" />
-    <ClCompile Include="..\src\inc\Manager.cpp" />
-    <ClCompile Include="..\src\inc\Menu.cpp" />
-    <ClCompile Include="..\src\inc\MeshCreator.cpp" />
-    <ClCompile Include="..\src\inc\Origin.cpp" />
-    <ClCompile Include="..\src\inc\Renderer.cpp" />
-    <ClCompile Include="..\src\inc\Solid.cpp" />
-    <ClCompile Include="..\src\inc\SolidCreator.cpp" />
-    <ClCompile Include="..\src\inc\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\csg\BooleanModeller.h" />
@@ -225,25 +209,7 @@
     <ClInclude Include="..\include\csg\VectorSet.h" />
     <ClInclude Include="..\include\csg\Vertex.h" />
     <ClInclude Include="..\include\csg\VertexSet.h" />
-    <ClInclude Include="..\include\incApp.h" />
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
-    <ClInclude Include="..\include\inc\Button.h" />
-    <ClInclude Include="..\include\inc\Camera.h" />
-    <ClInclude Include="..\include\inc\CurveSketcher.h" />
-    <ClInclude Include="..\include\inc\DxfSaver.h" />
-    <ClInclude Include="..\include\inc\GraphicItem.h" />
-    <ClInclude Include="..\include\inc\inc_CSG.h" />
-    <ClInclude Include="..\include\inc\inc_MeshNetwork.h" />
-    <ClInclude Include="..\include\inc\Manager.h" />
-    <ClInclude Include="..\include\inc\Menu.h" />
-    <ClInclude Include="..\include\inc\MeshCreator.h" />
-    <ClInclude Include="..\include\inc\Module.h" />
-    <ClInclude Include="..\include\inc\Origin.h" />
-    <ClInclude Include="..\include\inc\Renderer.h" />
-    <ClInclude Include="..\include\inc\Solid.h" />
-    <ClInclude Include="..\include\inc\SolidCreator.h" />
-    <ClInclude Include="..\include\inc\Units.h" />
-    <ClInclude Include="..\include\inc\Widget.h" />
     <ClInclude Include="..\src\csg\og_internal.h" />
   </ItemGroup>
   <ItemGroup>
