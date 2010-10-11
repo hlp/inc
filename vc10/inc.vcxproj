@@ -235,6 +235,7 @@
     <ClInclude Include="..\include\inc\inc_DxfSaver.h" />
     <ClInclude Include="..\include\inc\inc_GraphicItem.h" />
     <ClInclude Include="..\include\inc\inc_LinkFactory.h" />
+    <ClInclude Include="..\include\inc\inc_LinkMesh.h" />
     <ClInclude Include="..\include\inc\inc_Manager.h" />
     <ClInclude Include="..\include\inc\inc_Menu.h" />
     <ClInclude Include="..\include\inc\inc_MeshCreator.h" />
