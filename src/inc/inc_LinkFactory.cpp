@@ -22,6 +22,7 @@
 #include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btSliderConstraint.h>
+#include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 
 #include <cinder/gl/gl.h>
 
@@ -42,7 +43,7 @@ LinkFactory::LinkFactory() {
 	impulse_clamp_ = 0.0f;
 
     sphere_radius_ = 1.0f;
-    link_gap_ = 2.0f;
+    link_gap_ = sphere_radius_ * 2.0f;
 }
 
 void LinkFactory::setup() {
@@ -51,7 +52,7 @@ void LinkFactory::setup() {
 
 void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
     ci::Vec3f axis) {
-    ci::Vec3f position = ci::Vec3f::zero();
+    ci::Vec3f position = ci::Vec3f(0.0f, sphere_radius_ * 30.0f, 0.0f);
 
     // create rigid bodies (spheres)
     std::vector<std::vector<btRigidBody*> > r_bodies;
@@ -150,12 +151,16 @@ void LinkFactory::socket_link_rigid_bodies(btRigidBody& r1,
     btVector3 bt_p1(p1.x, p1.y, p1.z);
     btVector3 bt_p2(p2.x, p2.y, p2.z);
 
+    btVector3 mid = (bt_p2 - bt_p1) / 2.0;
+
     btPoint2PointConstraint* socket =
-        new btPoint2PointConstraint(r1, r2, bt_p1, bt_p2);
+        new btPoint2PointConstraint(r1, r2, mid, -mid);
 
     socket->m_setting.m_damping = damping_;
     socket->m_setting.m_impulseClamp = impulse_clamp_;
     socket->m_setting.m_tau = tau_;
+
+    SolidFactory::instance().dynamics_world()->addConstraint(socket);
 }
 
 void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
@@ -165,8 +170,12 @@ void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
     btVector3 bt_p2(p2.x, p2.y, p2.z);
     btVector3 bt_axis(axis.x, axis.y, axis.z);
 
+    btVector3 mid = (bt_p2 - bt_p1) / 2.0;
+
     btHingeConstraint* hinge = 
-        new btHingeConstraint(r1, r2, bt_p1, bt_p2, bt_axis, bt_axis);
+        new btHingeConstraint(r1, r2, mid, -mid, bt_axis, bt_axis);
+
+    SolidFactory::instance().dynamics_world()->addConstraint(hinge);
 }
 
 LinkFactory* LinkFactory::instance_;

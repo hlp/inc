@@ -29,7 +29,7 @@ namespace inc {
 Origin::Origin() {
     instance_ = this;
 
-    create_ground_plane_ = false;
+    create_ground_plane_ = true;
     draw_grid_ = false;
 }
 
@@ -51,14 +51,14 @@ void Origin::setup() {
     interface_.addParam("Grid Plane Intervals",
         origin_graphic_item_->grid_plane_intervals_ptr(), "");
     */
-    /*
+
     if (create_ground_plane_) {
         Manager::instance().solids().push_back(
             SolidFactory::create_static_solid_box(
-            ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
+            ci::Vec3f(200.f, 0.1f, 200.f), 
             ci::Vec3f().zero()));
     }
-    */
+
     /*
     Manager::instance().solids().push_back(
         SolidFactory::create_soft_sphere_container());

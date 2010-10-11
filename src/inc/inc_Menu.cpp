@@ -764,6 +764,8 @@ void DisplayMenu::setup() {
 LinkNetworkMenu::LinkNetworkMenu() {
     matrix_x_ = 10;
     matrix_y_ = 10;
+
+    hinge_axis_ = ci::Vec3f::yAxis();
 }
 
 void LinkNetworkMenu::setup() {
@@ -800,6 +802,34 @@ void LinkNetworkMenu::setup() {
         &matrix_y_, "min=1"));
 
     add_widget(matrix_y);
+
+    std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > hinge_axis = 
+        std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
+        new GenericWidget<ci::Vec3f>(*this, "Hinge Axis",
+        &hinge_axis_));
+
+    add_widget(hinge_axis);
+
+    std::tr1::shared_ptr<GenericWidget<float> > tau = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Tau",
+        &(LinkFactory::instance().tau_), "min=0.0 max=1.0 step=0.01"));
+
+    add_widget(tau);
+
+    std::tr1::shared_ptr<GenericWidget<float> > damping = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Damping",
+        &(LinkFactory::instance().damping_), "min=0.0 max=1.0 step=0.01"));
+
+    add_widget(damping);
+
+    std::tr1::shared_ptr<GenericWidget<float> > impulse_clamp = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Impulse clamp",
+        &(LinkFactory::instance().impulse_clamp_), "min=0.0 max=1.0 step=0.01"));
+
+    add_widget(impulse_clamp);
 
     Menu::setup();
 }

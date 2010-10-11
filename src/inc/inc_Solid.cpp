@@ -267,7 +267,7 @@ ci::ColorA SolidFactory::container_color_;
 
 SolidFactory::SolidFactory() {
     instance_ = this;
-    gravity_ = 1.1f;//-9.8f;//0.0f;//-9.8f;
+    gravity_ = -1.1f;//-9.8f;//0.0f;//-9.8f;
     last_gravity_ = gravity_;
     sphere_color_ = ci::ColorA(0.f ,0.4549f, 0.6275f, 0.45f);
     container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.45f);
