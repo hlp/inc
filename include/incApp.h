@@ -32,6 +32,7 @@ namespace inc {
     class SolidCreator;
     class MeshCreator;
     class CurveSketcher;
+    class LinkFactory;
 }
 
 class IncApp : public ci::app::AppBasic {
@@ -61,6 +62,7 @@ class IncApp : public ci::app::AppBasic {
         std::tr1::shared_ptr<inc::Origin> origin_;
         std::tr1::shared_ptr<inc::SolidCreator> solid_creator_;
         std::tr1::shared_ptr<inc::MeshCreator> mesh_creator_;
+        std::tr1::shared_ptr<inc::LinkFactory> link_factory_;
         std::tr1::shared_ptr<inc::CurveSketcher> curve_sketcher_;
 
         bool draw_interface_;

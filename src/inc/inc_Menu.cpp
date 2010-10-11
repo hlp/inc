@@ -37,6 +37,7 @@
 #include <inc/inc_Renderer.h>
 #include <inc/inc_Origin.h>
 #include <inc/inc_MeshNetwork.h>
+#include <inc/inc_LinkFactory.h>
 
 namespace inc {
 
@@ -760,6 +761,48 @@ void DisplayMenu::setup() {
 }
 
 
+LinkNetworkMenu::LinkNetworkMenu() {
+    matrix_x_ = 10;
+    matrix_y_ = 10;
+}
+
+void LinkNetworkMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > make = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Make matrix"));
+
+    make->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::LinkNetworkMenu::create_matrix), this));
+
+    add_widget(make);
+
+    std::tr1::shared_ptr<GenericWidget<int> > matrix_x = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Maxtrix x dimension",
+        &matrix_x_, "min=1"));
+
+    add_widget(matrix_x);
+
+    std::tr1::shared_ptr<GenericWidget<int> > matrix_y = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Maxtrix y dimension",
+        &matrix_y_, "min=1"));
+
+    add_widget(matrix_y);
+
+    Menu::setup();
+}
+
+bool LinkNetworkMenu::create_matrix(bool) {
+    LinkFactory::instance().create_socket_matrix(matrix_x_,
+        matrix_y_);
+
+    return true;
+}
+
+
 
 
 FileMenu::FileMenu() {
@@ -891,6 +934,7 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new AnemoneMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new MeshNetworkMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new LinkNetworkMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DisplayMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new FileMenu()));
 }

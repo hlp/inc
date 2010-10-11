@@ -195,6 +195,20 @@ public:
     std::string name() { return "NETWORK"; }
 };
 
+class LinkNetworkMenu : public Menu {
+public:
+    LinkNetworkMenu();
+    virtual void setup();
+
+    bool create_matrix(bool);
+
+    std::string name() { return "LINK"; }
+
+private:
+    int matrix_x_;
+    int matrix_y_;
+};
+
 class FileMenu : public Menu {
 public:
     FileMenu();

@@ -28,6 +28,7 @@
 #include <inc/inc_SolidCreator.h>
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshCreator.h>
+#include <inc/inc_LinkFactory.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -40,7 +41,7 @@ void IncApp::prepareSettings(Settings* settings) {
 	settings->setFrameRate(60.0f);
 	settings->setResizable(true);
 	settings->setFullScreen(false);
-    settings->setTitle("MOS Ball");
+    settings->setTitle("inc");
 }
 
 void IncApp::setup() {
@@ -71,6 +72,9 @@ void IncApp::setup() {
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
     mesh_creator_->setup();
+
+    link_factory_ = std::tr1::shared_ptr<inc::LinkFactory>(new inc::LinkFactory());
+    link_factory_->setup();
 
     manager_->setup_modules();
 

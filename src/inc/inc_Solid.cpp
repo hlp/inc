@@ -55,6 +55,7 @@
 #include <inc/inc_DxfSaver.h>
 #include <inc/inc_Menu.h>
 #include <inc/inc_MeshCreator.h>
+#include <inc/inc_LinkFactory.h>
 
 //#define BULLET_DEBUG_DRAW 1
 
@@ -579,7 +580,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_linked_soft_sph
     btSoftBody* sb2 = create_bullet_soft_sphere(
         p2, radius, 100);
 
-    socket_link_soft_spheres(sb1, sb2, p1, p2);
+    LinkFactory::instance().socket_link_soft_bodies(*sb1, *sb2, p1, p2);
 
     std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
         std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
@@ -652,7 +653,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
         for (int j = 0; j < h; ++j) {
             for (int k = 0; k < d; ++k) {
                 if (i > 0) {
-                    socket_link_soft_spheres(
+                    LinkFactory::instance().socket_link_soft_bodies(
                         s_bodies[i-1][j][k],
                         s_bodies[i][j][k],
                         positions[i-1][j][k],
@@ -660,7 +661,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
                 }
 
                 if (j > 0) {
-                    socket_link_soft_spheres(
+                    LinkFactory::instance().socket_link_soft_bodies(
                         s_bodies[i][j-1][k],
                         s_bodies[i][j][k],
                         positions[i][j-1][k],
@@ -668,7 +669,7 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_soft_sphere_mat
                 }
 
                 if (k > 0) {
-                    socket_link_soft_spheres(
+                    LinkFactory::instance().socket_link_soft_bodies(
                         s_bodies[i][j][k-1],
                         s_bodies[i][j][k],
                         positions[i][j][k-1],
@@ -808,15 +809,6 @@ std::tr1::shared_ptr<std::deque<SolidPtr> > SolidFactory::create_rigid_sphere_sp
     }
         
     return d_ptr;
-}
-
-void SolidFactory::socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
-    const ci::Vec3f& p1, const ci::Vec3f& p2) {
-    btSoftBody::LJoint::Specs lj;
-    lj.cfm = 1;
-	lj.erp = 1;
-	lj.position = ci::bullet::toBulletVector3((p1 + p2) / 2.0f);
-    s1->appendLinearJoint(lj, s2);
 }
 
 void SolidFactory::spring_link_rigid_spheres(btRigidBody* r1, btRigidBody* r2,
