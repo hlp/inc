@@ -35,15 +35,13 @@ public:
     LinkFactory();
     void setup();
 
-    void create_socket_matrix(int num_x, int num_y);
-    void create_hinge_matrix(int num_x, int num_y, ci::Vec3f axis);
-    void create_slider_matrix(int num_x, int num_y);
-
     enum LinkType {
         SOCKET = 0, // like an arm locket, 360 deg freedom
         HINGE = 1, // like a door hinge
         SLIDER = 2 // like a slide whistle
     };
+
+    void create_link_matrix(LinkType, int num_x, int num_y, ci::Vec3f axis = ci::Vec3f::yAxis());
 
     void LinkFactory::socket_link_soft_bodies(btSoftBody& s1, btSoftBody& s2,
         const ci::Vec3f& p1, const ci::Vec3f& p2);
@@ -60,7 +58,12 @@ public:
     float soft_cfm_;
     float soft_erp_;
 
+    float sphere_radius_;
+    float link_gap_;
+
 private:
+
+
     static LinkFactory* instance_;
 
     std::vector<std::tr1::shared_ptr<Solid> > current_matrix_;

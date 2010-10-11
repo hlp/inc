@@ -23,7 +23,11 @@
 #include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btSliderConstraint.h>
 
+#include <cinder/gl/gl.h>
+
 #include <inc/inc_LinkFactory.h>
+#include <inc/inc_Solid.h>
+#include <inc/inc_Manager.h>
 
 namespace inc {
 
@@ -36,10 +40,98 @@ LinkFactory::LinkFactory() {
     tau_ = 0.3f;
 	damping_ = 1.0f;
 	impulse_clamp_ = 0.0f;
+
+    sphere_radius_ = 1.0f;
+    link_gap_ = 2.0f;
 }
 
 void LinkFactory::setup() {
     // nothing here
+}
+
+void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
+    ci::Vec3f axis) {
+    ci::Vec3f position = ci::Vec3f::zero();
+
+    // create rigid bodies (spheres)
+    std::vector<std::vector<btRigidBody*> > r_bodies;
+    std::vector<std::vector<ci::Vec3f> > positions;
+
+    r_bodies.resize(w);
+    positions.resize(w);
+    for (int i = 0; i < w; ++i) {
+        r_bodies[i].resize(d);
+        positions[i].resize(d);
+    }
+
+    ci::Vec3f ptemp = position;
+    float r = sphere_radius_;
+    float gap = link_gap_;
+    ci::Vec3f xgap = ci::Vec3f(gap, 0.0f, 0.0f);
+    ci::Vec3f zgap = ci::Vec3f(0.0f, 0.0f, gap);
+    ci::Vec3f xdiam = ci::Vec3f(r*2.0f, 0.0f, 0.0f);
+    ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
+    int resolution = 20;
+
+    std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
+        std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+    
+    for (int i = 0; i < w; ++i) {
+            for (int k = 0; k < d; ++k) {
+                ci::Vec3f p = position + xgap * i + zgap * k +
+                    xdiam * i + zdiam * k;
+                positions[i][k] = p;
+                r_bodies[i][k] = 
+                    SolidFactory::create_bullet_rigid_sphere(p, r);
+
+                d_ptr->push_back(SolidPtr(new RigidSolid(
+                    new SphereGraphicItem(r), r_bodies[i][k], 
+                    SolidFactory::instance().dynamics_world())));
+            }
+    }
+
+    // link rigid bodies together
+    for (int i = 0; i < w; ++i) {
+        for (int k = 0; k < d; ++k) {
+            if (i > 0) {
+                switch (link_type) {
+                case HINGE:
+                    hinge_link_rigid_bodies(
+                        *(r_bodies[i-1][k]), *(r_bodies[i][k]),
+                        positions[i-1][k], positions[i][k], axis);
+                    break;
+                case SOCKET:
+                default:
+                    socket_link_rigid_bodies(
+                        *(r_bodies[i-1][k]), *(r_bodies[i][k]),
+                        positions[i-1][k], positions[i][k]);
+                    break;
+                }
+            }
+
+            if (k > 0) {
+                switch (link_type) {
+                case HINGE:
+                hinge_link_rigid_bodies(
+                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
+                    positions[i][k-1], positions[i][k], axis);
+                break;
+                case SOCKET:
+                default:
+                socket_link_rigid_bodies(
+                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
+                    positions[i][k-1], positions[i][k]);
+                break;
+                }
+            }
+        }
+    }
+
+    // add them to the scene
+    std::for_each(d_ptr->begin(), d_ptr->end(),
+        [] (SolidPtr s_ptr) {
+            Manager::instance().solids().push_back(s_ptr);
+    } );
 }
 
 void LinkFactory::socket_link_soft_bodies(btSoftBody& s1,
@@ -58,11 +150,12 @@ void LinkFactory::socket_link_rigid_bodies(btRigidBody& r1,
     btVector3 bt_p1(p1.x, p1.y, p1.z);
     btVector3 bt_p2(p2.x, p2.y, p2.z);
 
-    btPoint2PointConstraint socket(r1, r2, bt_p1, bt_p2);
+    btPoint2PointConstraint* socket =
+        new btPoint2PointConstraint(r1, r2, bt_p1, bt_p2);
 
-    socket.m_setting.m_damping = damping_;
-    socket.m_setting.m_impulseClamp = impulse_clamp_;
-    socket.m_setting.m_tau = tau_;
+    socket->m_setting.m_damping = damping_;
+    socket->m_setting.m_impulseClamp = impulse_clamp_;
+    socket->m_setting.m_tau = tau_;
 }
 
 void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
@@ -72,17 +165,8 @@ void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
     btVector3 bt_p2(p2.x, p2.y, p2.z);
     btVector3 bt_axis(axis.x, axis.y, axis.z);
 
-    btHingeConstraint hinge(r1, r2, bt_p1, bt_p2, bt_axis, bt_axis);
-}
-
-
-
-void LinkFactory::create_socket_matrix(int mat_x, int mat_y) {
-    // create rigid bodies (spheres)
-
-    // link rigid bodies together
-
-    // add them to the scene
+    btHingeConstraint* hinge = 
+        new btHingeConstraint(r1, r2, bt_p1, bt_p2, bt_axis, bt_axis);
 }
 
 LinkFactory* LinkFactory::instance_;

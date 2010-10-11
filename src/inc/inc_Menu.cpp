@@ -769,14 +769,23 @@ LinkNetworkMenu::LinkNetworkMenu() {
 void LinkNetworkMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
-    std::tr1::shared_ptr<GenericWidget<bool> > make = 
+    std::tr1::shared_ptr<GenericWidget<bool> > make_socket = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Make matrix"));
+        new GenericWidget<bool>(*this, "Make socket matrix"));
 
-    make->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::LinkNetworkMenu::create_matrix), this));
+    make_socket->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::LinkNetworkMenu::create_socket_matrix), this));
 
-    add_widget(make);
+    add_widget(make_socket);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > make_hinge = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Make hinge matrix"));
+
+    make_hinge->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::LinkNetworkMenu::create_hinge_matrix), this));
+
+    add_widget(make_hinge);
 
     std::tr1::shared_ptr<GenericWidget<int> > matrix_x = 
         std::tr1::shared_ptr<GenericWidget<int> >(
@@ -795,14 +804,19 @@ void LinkNetworkMenu::setup() {
     Menu::setup();
 }
 
-bool LinkNetworkMenu::create_matrix(bool) {
-    LinkFactory::instance().create_socket_matrix(matrix_x_,
-        matrix_y_);
+bool LinkNetworkMenu::create_socket_matrix(bool) {
+    LinkFactory::instance().create_link_matrix(LinkFactory::SOCKET,
+        matrix_x_, matrix_y_);
 
     return true;
 }
 
+bool LinkNetworkMenu::create_hinge_matrix(bool) {
+    LinkFactory::instance().create_link_matrix(LinkFactory::HINGE,
+        matrix_x_, matrix_y_, hinge_axis_);
 
+    return true;
+}
 
 
 FileMenu::FileMenu() {

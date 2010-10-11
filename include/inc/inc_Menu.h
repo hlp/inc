@@ -200,11 +200,13 @@ public:
     LinkNetworkMenu();
     virtual void setup();
 
-    bool create_matrix(bool);
+    bool create_socket_matrix(bool);
+    bool create_hinge_matrix(bool);
 
     std::string name() { return "LINK"; }
 
 private:
+    ci::Vec3f hinge_axis_;
     int matrix_x_;
     int matrix_y_;
 };

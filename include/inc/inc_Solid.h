@@ -182,10 +182,6 @@ public:
     float* sphere_kPR_ptr() { return &sphere_kPR_; }
     float* sphere_total_mass_ptr() { return &sphere_total_mass_; }
 
-private:
-    void init_physics();
-    bool physics_param_changed();
-        
     static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
         ci::Vec3f radius, float res);
     static void socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
@@ -194,6 +190,10 @@ private:
         const ci::Vec3f& p1, const ci::Vec3f& p2);
     static btRigidBody* create_bullet_rigid_sphere(ci::Vec3f position,
         float radius);
+
+private:
+    void init_physics();
+    bool physics_param_changed();
 
     static std::tr1::shared_ptr<ci::TriMesh> remove_mesh_duplicates(
         const ci::TriMesh& mesh);
