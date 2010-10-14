@@ -207,8 +207,12 @@ public:
     std::string name() { return "FILE"; }
 
 private:
+    std::string get_uuid();
+    std::string get_file_name();
+
     int image_counter_;
     int high_res_image_width_;
+    bool save_uuid_; // use a uuid instead of a number
 
     std::string file_name_;
 };

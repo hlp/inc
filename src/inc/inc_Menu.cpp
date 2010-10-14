@@ -17,6 +17,11 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
 #include <cinder/cairo/Cairo.h>
@@ -253,7 +258,6 @@ void SolidMenu::setup() {
 
     add_widget(sphere_radius_button);
 
-    /*
     std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_sphere_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Create rigid sphere"));
@@ -263,7 +267,6 @@ void SolidMenu::setup() {
         this));
 
     add_widget(create_rigid_sphere_button);
-    */
 
     std::tr1::shared_ptr<GenericWidget<bool> > create_soft_sphere_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -392,7 +395,9 @@ bool SolidMenu::set_gravity(float grav) {
 }
 
 bool SolidMenu::create_rigid_sphere(bool) {
-    SolidCreator::instance().create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), 
+    ci::Vec3f pos = SolidCreator::instance().creation_point();
+
+    SolidCreator::instance().create_rigid_sphere(pos, 
         ci::Vec3f::one() * sphere_radius_);
 
     return false;
@@ -766,6 +771,7 @@ FileMenu::FileMenu() {
     image_counter_ = 0;
     high_res_image_width_ = 5000;
     file_name_ = "mosball_";
+    save_uuid_ = true;
 }
 
 void FileMenu::setup() {
@@ -802,28 +808,47 @@ void FileMenu::setup() {
 
     add_widget(name);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > save_uuid = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Use UUID not numbers",
+        &save_uuid_));
+
     Menu::setup();
 }
 
 bool FileMenu::save_image(bool) {
-    std::ostringstream ss;
-    ss << image_counter_;
-
-    ci::writeImage(file_name_ + ss.str() + ".png", IncApp::instance().copyWindowSurface());
-    ++image_counter_;
+    ci::writeImage(get_file_name(), IncApp::instance().copyWindowSurface());
 
     return true;
 }
 
 bool FileMenu::save_high_res(bool) {
-    std::ostringstream ss;
-    ss << image_counter_;
-
-    Renderer::instance().save_image(high_res_image_width_, 
-        file_name_ + ss.str() + ".png");
-    ++image_counter_;
+    Renderer::instance().save_image(high_res_image_width_, get_file_name());
 
     return true;
+}
+
+std::string FileMenu::get_uuid() {
+    boost::uuids::random_generator gen;
+    boost::uuids::uuid id = gen();
+    std::string uuid_string = boost::lexical_cast<std::string>(id);
+
+    return uuid_string;
+}
+
+std::string FileMenu::get_file_name() {
+    std::string output_name;
+
+    if (save_uuid_) {
+        output_name = file_name_ + get_uuid() + ".png";
+    } else {
+        std::ostringstream ss;
+        ss << image_counter_;
+        output_name = file_name_ + ss.str() + ".png";
+        ++image_counter_;
+    }
+
+    return output_name;
 }
 
 /////////////////////////////////////
