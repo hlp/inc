@@ -169,6 +169,7 @@
     <ClCompile Include="..\src\inc\inc_DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\inc_GraphicItem.cpp" />
     <ClCompile Include="..\src\inc\inc_LinkFactory.cpp" />
+    <ClCompile Include="..\src\inc\inc_LinkMesh.cpp" />
     <ClCompile Include="..\src\inc\inc_Manager.cpp" />
     <ClCompile Include="..\src\inc\inc_Menu.cpp" />
     <ClCompile Include="..\src\inc\inc_MeshCreator.cpp" />

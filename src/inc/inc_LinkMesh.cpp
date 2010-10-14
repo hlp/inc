@@ -17,28 +17,25 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
-#include <deque>
-
-#include <inc/inc_GraphicItem.h>
-#include <inc/inc_LinkFactory.h>
-#include <inc/inc_Solid.h>
+#include <inc/inc_LinkMesh.h>
 
 namespace inc {
 
-class LinkMesh : public GraphicItem {
-public:
-    LinkMesh(int w, int d, LinkFactory::LinkType,
-        std::tr1::shared_ptr<std::deque<SolidPtr> > solids);
+LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType,
+    std::tr1::shared_ptr<std::deque<SolidPtr> > solids) {
 
-    static std::tr1::shared_ptr<LinkMesh> create_link_mesh(int w, int d,
-        LinkFactory::LinkType);
+}
 
-    virtual void draw();
+std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
+    LinkFactory::LinkType) {
 
-private:
-    std::deque<SolidPtr> solids_;
-};
+}
+
+void LinkMesh::draw() {
+    // TODO:
+}
+
+
+
 
 }
