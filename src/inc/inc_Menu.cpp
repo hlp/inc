@@ -813,6 +813,8 @@ void FileMenu::setup() {
         new GenericWidget<bool>(*this, "Use UUID not numbers",
         &save_uuid_));
 
+    add_widget(save_uuid);
+
     Menu::setup();
 }
 
