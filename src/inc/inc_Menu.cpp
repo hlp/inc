@@ -91,35 +91,11 @@ MainMenu::~MainMenu() {
 void MainMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 50));
 
-    std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Save DXF"));
-
-    save_dxf_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
-
-    add_widget(save_dxf_button);
-
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
 }
 
-bool MainMenu::save_dxf(bool) {
-    DxfSaver saver = DxfSaver("out.dxf");
 
-    saver.begin();
-
-    std::for_each(Manager::instance().solids().begin(),
-        Manager::instance().solids().end(), 
-        [&saver] (std::tr1::shared_ptr<Solid> solid) {
-            solid->save(saver); 
-            saver.add_layer();
-        } );
-
-    saver.end();
-
-    return false;
-}
 
 MainMenu* MainMenu::instance_;
 
@@ -777,6 +753,15 @@ FileMenu::FileMenu() {
 void FileMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
+    std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Save DXF"));
+
+    save_dxf_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::FileMenu::save_dxf), this));
+
+    add_widget(save_dxf_button);
+
     std::tr1::shared_ptr<GenericWidget<bool> > save = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Save screen"));
@@ -819,13 +804,13 @@ void FileMenu::setup() {
 }
 
 bool FileMenu::save_image(bool) {
-    ci::writeImage(get_file_name(), IncApp::instance().copyWindowSurface());
+    ci::writeImage(get_file_name() + ".png", IncApp::instance().copyWindowSurface());
 
     return true;
 }
 
 bool FileMenu::save_high_res(bool) {
-    Renderer::instance().save_image(high_res_image_width_, get_file_name());
+    Renderer::instance().save_image(high_res_image_width_, get_file_name() + ".png");
 
     return true;
 }
@@ -842,16 +827,35 @@ std::string FileMenu::get_file_name() {
     std::string output_name;
 
     if (save_uuid_) {
-        output_name = file_name_ + get_uuid() + ".png";
+        output_name = file_name_ + get_uuid();
     } else {
         std::ostringstream ss;
         ss << image_counter_;
-        output_name = file_name_ + ss.str() + ".png";
+        output_name = file_name_ + ss.str();
         ++image_counter_;
     }
 
     return output_name;
 }
+
+bool FileMenu::save_dxf(bool) {
+    DxfSaver saver = DxfSaver(get_file_name() + ".dxf");
+
+    saver.begin();
+
+    std::for_each(Manager::instance().solids().begin(),
+        Manager::instance().solids().end(), 
+        [&saver] (std::tr1::shared_ptr<Solid> solid) {
+            solid->save(saver); 
+            saver.add_layer();
+        } );
+
+    saver.end();
+
+    return false;
+}
+
+
 
 /////////////////////////////////////
 // MenuManager

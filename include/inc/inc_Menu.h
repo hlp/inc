@@ -62,7 +62,7 @@ public:
 
     virtual void setup();
 
-    bool save_dxf(bool); // called by a button so its passed a bool
+
 
     static MainMenu& instance();
 
@@ -203,6 +203,7 @@ public:
 
     bool save_image(bool);
     bool save_high_res(bool);
+    bool save_dxf(bool); // called by a button so its passed a bool
 
     std::string name() { return "FILE"; }
 
