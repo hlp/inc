@@ -17,6 +17,7 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/gl/gl.h>
 #include <cinder/Camera.h>
 #include <cinder/MayaCamUI.h>
 #include <cinder/Ray.h>
