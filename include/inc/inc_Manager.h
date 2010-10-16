@@ -46,6 +46,8 @@ public:
     void remove_module(std::tr1::shared_ptr<Module>);
     void add_solid(std::tr1::shared_ptr<Solid>);
     void remove_solid(std::tr1::shared_ptr<Solid>);
+    void add_graphic_item(std::tr1::shared_ptr<GraphicItem>);
+    void remove_graphic_item(std::tr1::shared_ptr<GraphicItem>);
         
     void setup();
     void update();

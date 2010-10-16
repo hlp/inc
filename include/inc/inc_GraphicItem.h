@@ -35,6 +35,7 @@ public:
     virtual void draw() = 0;
 };
 
+typedef std::tr1::shared_ptr<GraphicItem> GraphicItemPtr;
 
 class Solid;
 

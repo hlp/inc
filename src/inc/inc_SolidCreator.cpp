@@ -65,18 +65,22 @@ void SolidCreator::draw() {
     creation_point_->draw();
 }
 
-void SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
+SolidPtr SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
     SolidPtr ptr = SolidFactory::create_rigid_sphere(pos, radius);
 
     Manager::instance().solids().push_back(ptr);
     Manager::instance().register_for_selection(ptr);
+
+    return ptr;
 }
 
-void SolidCreator::create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius) {
+SolidPtr SolidCreator::create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius) {
     SolidPtr ptr = SolidFactory::create_soft_sphere(pos, radius);
 
     Manager::instance().solids().push_back(ptr);
     Manager::instance().register_for_selection(ptr);
+
+    return ptr;
 }
 
 void SolidCreator::create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius) {
