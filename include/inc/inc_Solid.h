@@ -79,6 +79,8 @@ public:
     RigidSolid(SolidGraphicItem*, btRigidBody*, btDynamicsWorld*);
     virtual ~RigidSolid();
 
+    virtual ci::Vec3f position();
+
     virtual void draw();
     virtual void save(Exporter&);
     virtual void set_gravity(float);

@@ -206,6 +206,12 @@ btRigidBody* RigidSolid::rigid_body_ptr() {
     return btRigidBody::upcast(body_);
 }
 
+ci::Vec3f RigidSolid::position() {
+    btVector3 origin = rigid_body().getWorldTransform().getOrigin();
+
+    return ci::Vec3f(origin.x(), origin.y(), origin.z());
+}
+
 
 
 
