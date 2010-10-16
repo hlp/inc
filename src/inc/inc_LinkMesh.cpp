@@ -39,12 +39,14 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 
     float height = 5.0f;
     // create solids
-    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids;
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids =
+        std::tr1::shared_ptr<std::deque<RigidSolidPtr>>(
+        new std::deque<RigidSolidPtr>());
 
     for (int i = 0; i < w; ++i) {
         for (int j = 0; j < d; ++j) {
             float axis_dist = (sphere_radius + sphere_radius*spacing_scale);
-            SolidPtr s = SolidCreator::instance().create_rigid_sphere(
+            RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(
                 ci::Vec3f(w * axis_dist, height, j * axis_dist),
                 ci::Vec3f::one() * sphere_radius);
 
@@ -61,6 +63,8 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
         std::tr1::shared_ptr<LinkMesh>(new LinkMesh(w, d, type, solids));
 
     Manager::instance().add_graphic_item(mesh_ptr);
+
+    return mesh_ptr;
 }
 
 void LinkMesh::draw() {

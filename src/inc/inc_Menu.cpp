@@ -43,6 +43,7 @@
 #include <inc/inc_Origin.h>
 #include <inc/inc_MeshNetwork.h>
 #include <inc/inc_LinkFactory.h>
+#include <inc/inc_LinkMesh.h>
 
 namespace inc {
 
@@ -851,7 +852,7 @@ bool LinkNetworkMenu::create_hinge_matrix(bool) {
 }
 
 bool LinkNetworkMenu::create_link_mesh(bool) {
-    LinkMesh::
+    LinkMesh::create_link_mesh(10, 10, 1.0f, 1.5f, LinkFactory::LinkType::SOCKET);
 
     return true;
 }
