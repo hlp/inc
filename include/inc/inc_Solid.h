@@ -43,6 +43,9 @@ public:
     Solid(SolidGraphicItem*, btCollisionObject*, btDynamicsWorld*);
     virtual ~Solid();
 
+    static bool allow_selection_;
+    static bool allow_forces_;
+
     virtual void update();
     virtual void draw();
     virtual void save(Exporter&) = 0;

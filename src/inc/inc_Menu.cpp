@@ -214,7 +214,7 @@ SolidMenu::~SolidMenu() {
 }
 
 void SolidMenu::setup() {
-    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 250));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 320));
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -359,6 +359,20 @@ void SolidMenu::setup() {
         SolidFactory::instance().sphere_total_mass_ptr(), "step=0.1 min=0.1"));
 
     add_widget(sphere_total_mass);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > allow_selection = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Allow solid selection",
+        &Solid::allow_selection_));
+
+    add_widget(allow_selection);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > allow_forces = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Allow solid forces",
+        &Solid::allow_forces_));
+
+    add_widget(allow_forces);
 
     Menu::setup();
 }

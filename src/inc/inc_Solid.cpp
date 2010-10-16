@@ -59,6 +59,10 @@
 //#define BULLET_DEBUG_DRAW 1
 
 namespace inc {
+
+bool Solid::allow_forces_;
+bool Solid::allow_selection_;
+
 Solid::Solid(SolidGraphicItem* item, btCollisionObject* body, btDynamicsWorld* world) 
     : graphic_item_(item), body_(body), world_(world) {
     selected_ = false;
@@ -251,12 +255,17 @@ void SoftSolid::set_selected(bool s) {
 }
 
 void SoftSolid::select() {
+    if (!allow_selection_)
+        return;
+    
     Solid::select();
 
-    if (selected())
-        ForceMenu::add_menu(*this);
-    else
+    if (selected()) {
+        if (allow_forces_)
+            ForceMenu::add_menu(*this);
+    } else {
         ForceMenu::remove_menu();
+    }
 }
 
 
@@ -270,6 +279,8 @@ SolidFactory::SolidFactory() {
     last_gravity_ = gravity_;
     sphere_color_ = ci::ColorA(0.f ,0.4549f, 0.6275f, 0.45f);
     container_color_ = ci::ColorA(1.f, 1.f, 1.f, 0.45f);
+    Solid::allow_forces_ = false;
+    Solid::allow_selection_ = false;
 
     kDF_ = 1;
 	kDP_ = 1.0f;
