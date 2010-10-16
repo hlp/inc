@@ -71,6 +71,7 @@ namespace inc {
 
     void Manager::draw() {
         // Nothing here
+        // Solids and GraphicItems are iterated over and drawn in inc::Renderer::draw
     }
 
     void Manager::draw_modules() {
@@ -103,6 +104,20 @@ namespace inc {
 
     void Manager::add_solid(SolidPtr ptr) {
         solids_.push_back(ptr);
+    }
+
+    void Manager::add_graphic_item(GraphicItemPtr ptr) {
+        graphic_items_.push_back(ptr);
+    }
+
+    void Manager::remove_graphic_item(GraphicItemPtr ptr) {
+        for (GraphicItemList::iterator it = graphic_items_.begin(); 
+            it != graphic_items_.end(); ++it) {
+            if (ptr == *it) {
+                graphic_items_.erase(it, it + 1);
+                break; // erase invalidates the loop
+            }
+        }
     }
 
     void Manager::clear_module_list() {

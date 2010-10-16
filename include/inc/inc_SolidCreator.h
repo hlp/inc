@@ -32,6 +32,9 @@
 namespace inc {
 
 class ControlPoint;
+class Solid;
+
+typedef std::tr1::shared_ptr<Solid> SolidPtr;
 
 class SolidCreator : public Module {
 public:
@@ -46,8 +49,8 @@ public:
     bool mouse_drag(ci::app::MouseEvent);
     bool mouse_up(ci::app::MouseEvent);
 
-    void create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
-    void create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
+    SolidPtr create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius);
+    SolidPtr create_soft_sphere(ci::Vec3f pos, ci::Vec3f radius);
     void create_linked_spheres(ci::Vec3f pos, ci::Vec3f radius);
     void create_sphere_matrix(ci::Vec3f pos, ci::Vec3f radius,
         int w, int h, int d);
