@@ -20,6 +20,7 @@
 #pragma once
 
 #include <vector>
+#include <deque>
 
 #include <cinder/Vector.h>
 
@@ -54,7 +55,8 @@ public:
         const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis);
 
     void link_rigid_body_matrix(int w, int d, LinkType link_type,
-        ci::Vec3f axis, std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids);
+        std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, 
+        ci::Vec3f axis = ci::Vec3f::yAxis());
 
     static LinkFactory& instance();
 

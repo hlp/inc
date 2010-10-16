@@ -136,7 +136,7 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
 }
 
 void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
-    ci::Vec3f axis, std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) {
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, ci::Vec3f axis) {
     // link rigid bodies together
     for (int i = 0; i < w; ++i) {
         for (int k = 0; k < d; ++k) {
@@ -153,8 +153,10 @@ void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
                 case SOCKET:
                 default:
                     socket_link_rigid_bodies(
-                        *(r_bodies[i-1][k]), *(r_bodies[i][k]),
-                        positions[i-1][k], positions[i][k]);
+                        solids->at((i-1)*d + k)->rigid_body(),
+                        solids->at(i*d + k)->rigid_body(),
+                        solids->at((i-1)*d + k)->position(),
+                        solids->at(i*d + k)->position());
                     break;
                 }
             }
@@ -163,14 +165,19 @@ void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
                 switch (link_type) {
                 case HINGE:
                 hinge_link_rigid_bodies(
-                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
-                    positions[i][k-1], positions[i][k], axis);
+                    solids->at(i*d + (k-1))->rigid_body(),
+                    solids->at(i*d + k)->rigid_body(),
+                    solids->at(i*d + (k-1))->position(),
+                    solids->at(i*d + k)->position(), 
+                    axis);
                 break;
                 case SOCKET:
                 default:
                 socket_link_rigid_bodies(
-                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
-                    positions[i][k-1], positions[i][k]);
+                    solids->at(i*d + (k-1))->rigid_body(),
+                    solids->at(i*d + k)->rigid_body(),
+                    solids->at(i*d + (k-1))->position(),
+                    solids->at(i*d + k)->position());
                 break;
                 }
             }

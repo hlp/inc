@@ -202,6 +202,7 @@ public:
 
     bool create_socket_matrix(bool);
     bool create_hinge_matrix(bool);
+    bool create_link_mesh(bool);
 
     std::string name() { return "LINK"; }
 

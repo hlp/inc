@@ -22,15 +22,16 @@
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_SolidCreator.h>
 #include <inc/inc_Manager.h>
+#include <inc/inc_LinkFactory.h>
 
 namespace inc {
 
 LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
-    std::tr1::shared_ptr<std::deque<SolidPtr>> solids) :
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) :
     w_(w), d_(d), solids_(solids) {
 
     // link all the solids together based on the link type
-
+    LinkFactory::instance().link_rigid_body_matrix(w, d, type, solids, ci::Vec3f::yAxis());
 }
 
 std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
@@ -38,7 +39,7 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 
     float height = 5.0f;
     // create solids
-    std::tr1::shared_ptr<std::deque<SolidPtr>> solids;
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids;
 
     for (int i = 0; i < w; ++i) {
         for (int j = 0; j < d; ++j) {
@@ -48,7 +49,7 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
                 ci::Vec3f::one() * sphere_radius);
 
             // make sure that the solids aren't being drawn
-            s->set_visible(false);
+            //s->set_visible(false);
 
             solids->push_back(s);
         }
@@ -64,6 +65,9 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 
 void LinkMesh::draw() {
     // draw a TriMesh equivalent
+
+    
+
 }
 
 

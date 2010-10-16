@@ -96,8 +96,6 @@ void MainMenu::setup() {
     Menu::setup();
 }
 
-
-
 MainMenu* MainMenu::instance_;
 
 MainMenu& MainMenu::instance() {
@@ -784,6 +782,15 @@ void LinkNetworkMenu::setup() {
 
     add_widget(make_hinge);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > make_mesh = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Make link mesh"));
+
+    make_mesh->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::LinkNetworkMenu::create_link_mesh), this));
+
+    add_widget(make_mesh);
+
     std::tr1::shared_ptr<GenericWidget<int> > matrix_x = 
         std::tr1::shared_ptr<GenericWidget<int> >(
         new GenericWidget<int>(*this, "Maxtrix x dimension",
@@ -839,6 +846,12 @@ bool LinkNetworkMenu::create_socket_matrix(bool) {
 bool LinkNetworkMenu::create_hinge_matrix(bool) {
     LinkFactory::instance().create_link_matrix(LinkFactory::HINGE,
         matrix_x_, matrix_y_, hinge_axis_);
+
+    return true;
+}
+
+bool LinkNetworkMenu::create_link_mesh(bool) {
+    LinkMesh::
 
     return true;
 }

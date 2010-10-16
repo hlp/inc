@@ -30,7 +30,7 @@ namespace inc {
 class LinkMesh : public GraphicItem {
 public:
     LinkMesh(int w, int d, LinkFactory::LinkType,
-        std::tr1::shared_ptr<std::deque<SolidPtr>> solids);
+        std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids);
 
     static std::tr1::shared_ptr<LinkMesh> create_link_mesh(int w, int d,
         float radius, float spacing_scale, LinkFactory::LinkType);
@@ -38,7 +38,7 @@ public:
     virtual void draw();
 
 private:
-    std::tr1::shared_ptr<std::deque<SolidPtr>> solids_;
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids_;
     int w_;
     int d_;
 };

@@ -25,6 +25,7 @@
 
 #include <boost/cstdint.hpp>
 
+#include <cinder/app/App.h> // for CallbackId
 #include <cinder/params/Params.h>
 
 #include <inc/inc_Module.h>
