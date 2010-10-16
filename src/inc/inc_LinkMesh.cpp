@@ -28,10 +28,19 @@ namespace inc {
 
 LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) :
-    w_(w), d_(d), solids_(solids) {
+    w_(w), d_(d) {
+
+    // copy the deque into a more efficient vector
+    std::for_each(solids->begin(), solids->end(), [&] (RigidSolidPtr ptr) {
+        solids_.push_back(ptr);
+    } );
 
     // link all the solids together based on the link type
     LinkFactory::instance().link_rigid_body_matrix(w, d, type, solids, ci::Vec3f::yAxis());
+}
+
+LinkMesh::~LinkMesh() {
+    solids_.clear();
 }
 
 std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
@@ -43,15 +52,17 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
         std::tr1::shared_ptr<std::deque<RigidSolidPtr>>(
         new std::deque<RigidSolidPtr>());
 
+    float axis_dist = (sphere_radius * 2 + sphere_radius*spacing_scale);
+
     for (int i = 0; i < w; ++i) {
         for (int j = 0; j < d; ++j) {
-            float axis_dist = (sphere_radius + sphere_radius*spacing_scale);
+            
             RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(
-                ci::Vec3f(w * axis_dist, height, j * axis_dist),
+                ci::Vec3f(i * axis_dist, height, j * axis_dist),
                 ci::Vec3f::one() * sphere_radius);
 
             // make sure that the solids aren't being drawn
-            //s->set_visible(false);
+            s->set_visible(false);
 
             solids->push_back(s);
         }
@@ -68,13 +79,20 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 void LinkMesh::draw() {
-    // draw a TriMesh equivalent
+    ci::gl::enableWireframe();
 
-    
+    for (int i = 1; i < w_; ++i) {
+        glBegin(GL_TRIANGLE_STRIP);
 
+        for (int j = 0; j < d_; ++j) {
+            glVertex3f(solids_[(i-1)*w_ + j]->position());
+            glVertex3f(solids_[i*w_ + j]->position());
+        }
+
+        glEnd();
+    }
+
+    ci::gl::disableWireframe();
 }
-
-
-
 
 }

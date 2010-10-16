@@ -31,6 +31,10 @@ namespace inc {
 #ifdef TRACE_DTORS
         ci::app::console() << "Deleting Manager" << std::endl;
 #endif
+
+        graphic_items_.clear();
+        solids_.clear();
+        modules_.clear();
     }
 
     void Manager::setup() {
