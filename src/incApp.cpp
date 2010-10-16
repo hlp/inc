@@ -104,6 +104,7 @@ void IncApp::shutdown() {
     solid_factory_->delete_constraints();
 
     // delete all objets in the scene
+    manager_->clear_graphic_item_list();
     manager_->clear_solid_list();
 
     // remove other shared_ptr refs to modules
