@@ -25,8 +25,11 @@
 
 namespace inc {
 
-LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType,
-    std::tr1::shared_ptr<std::deque<SolidPtr>> solids) {
+LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
+    std::tr1::shared_ptr<std::deque<SolidPtr>> solids) :
+    w_(w), d_(d), solids_(solids) {
+
+    // link all the solids together based on the link type
 
 }
 
@@ -44,6 +47,9 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
                 ci::Vec3f(w * axis_dist, height, j * axis_dist),
                 ci::Vec3f::one() * sphere_radius);
 
+            // make sure that the solids aren't being drawn
+            s->set_visible(false);
+
             solids->push_back(s);
         }
     }
@@ -57,7 +63,6 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 void LinkMesh::draw() {
-    // make sure that the solids aren't being drawn
     // draw a TriMesh equivalent
 }
 

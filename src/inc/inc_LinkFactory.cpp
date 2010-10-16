@@ -74,8 +74,8 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
     ci::Vec3f zdiam = ci::Vec3f(0.0f, 0.0f, r*2.0f);
     int resolution = 20;
 
-    std::tr1::shared_ptr<std::deque<SolidPtr> > d_ptr = 
-        std::tr1::shared_ptr<std::deque<SolidPtr> >(new std::deque<SolidPtr>());
+    std::tr1::shared_ptr<std::deque<RigidSolidPtr> > d_ptr = 
+        std::tr1::shared_ptr<std::deque<RigidSolidPtr> >(new std::deque<RigidSolidPtr>());
     
     for (int i = 0; i < w; ++i) {
             for (int k = 0; k < d; ++k) {
@@ -85,7 +85,7 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
                 r_bodies[i][k] = 
                     SolidFactory::create_bullet_rigid_sphere(p, r);
 
-                d_ptr->push_back(SolidPtr(new RigidSolid(
+                d_ptr->push_back(RigidSolidPtr(new RigidSolid(
                     new SphereGraphicItem(r), r_bodies[i][k], 
                     SolidFactory::instance().dynamics_world())));
             }
@@ -133,6 +133,49 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
         [] (SolidPtr s_ptr) {
             Manager::instance().solids().push_back(s_ptr);
     } );
+}
+
+void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
+    ci::Vec3f axis, std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) {
+    // link rigid bodies together
+    for (int i = 0; i < w; ++i) {
+        for (int k = 0; k < d; ++k) {
+            if (i > 0) {
+                switch (link_type) {
+                case HINGE:
+                    hinge_link_rigid_bodies(
+                        solids->at((i-1)*d + k)->rigid_body(),
+                        solids->at(i*d + k)->rigid_body(),
+                        solids->at((i-1)*d + k)->position(),
+                        solids->at(i*d + k)->position(),
+                        axis);
+                    break;
+                case SOCKET:
+                default:
+                    socket_link_rigid_bodies(
+                        *(r_bodies[i-1][k]), *(r_bodies[i][k]),
+                        positions[i-1][k], positions[i][k]);
+                    break;
+                }
+            }
+
+            if (k > 0) {
+                switch (link_type) {
+                case HINGE:
+                hinge_link_rigid_bodies(
+                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
+                    positions[i][k-1], positions[i][k], axis);
+                break;
+                case SOCKET:
+                default:
+                socket_link_rigid_bodies(
+                    *(r_bodies[i][k-1]), *(r_bodies[i][k]),
+                    positions[i][k-1], positions[i][k]);
+                break;
+                }
+            }
+        }
+    }
 }
 
 void LinkFactory::socket_link_soft_bodies(btSoftBody& s1,

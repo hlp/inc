@@ -38,7 +38,9 @@ public:
     virtual void draw();
 
 private:
-    std::deque<SolidPtr> solids_;
+    std::tr1::shared_ptr<std::deque<SolidPtr>> solids_;
+    int w_;
+    int d_;
 };
 
 }

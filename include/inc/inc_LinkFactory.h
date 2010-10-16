@@ -29,6 +29,9 @@ class btRigidBody;
 namespace inc {
 
 class Solid;
+class RigidSolid;
+
+typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
 
 class LinkFactory {
 public:
@@ -49,6 +52,9 @@ public:
         const ci::Vec3f& p1, const ci::Vec3f& p2);
     void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
         const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis);
+
+    void link_rigid_body_matrix(int w, int d, LinkType link_type,
+        ci::Vec3f axis, std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids);
 
     static LinkFactory& instance();
 
