@@ -115,6 +115,7 @@ public:
 class DebugDraw;
 
 typedef std::tr1::shared_ptr<Solid> SolidPtr;
+typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
 
 class SolidFactory : public Module {
 public:
@@ -136,7 +137,7 @@ public:
 
     void update_object_gravity(); // this applies any gravity changes to all objects
         
-    static SolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
+    static RigidSolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
     static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
     static std::tr1::shared_ptr<std::deque<SolidPtr> > create_linked_soft_spheres(
         ci::Vec3f pos, ci::Vec3f radius);

@@ -486,10 +486,10 @@ SolidPtr SolidFactory::create_static_solid_box(ci::Vec3f dimensions,
     return solid;
 }
 
-SolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius) {
+RigidSolidPtr SolidFactory::create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius) {
     btRigidBody* body = create_bullet_rigid_sphere(position, radius.x);
 
-    SolidPtr solid(new RigidSolid(new SphereGraphicItem(radius.x), body, 
+    RigidSolidPtr solid(new RigidSolid(new SphereGraphicItem(radius.x), body, 
         SolidFactory::instance().dynamics_world()));
 
     return solid;
