@@ -30,12 +30,23 @@
 
 namespace inc {
 
+GraphicItem::GraphicItem() {
+    visible_ = true;
+}
+
 GraphicItem::~GraphicItem() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting GraphicItem" << std::endl;
 #endif
 }
 
+void GraphicItem::set_visible(bool vis) {
+    visible_ = vis;
+}
+
+bool GraphicItem::visible() {
+    return visible_;
+}
 
 SolidGraphicItem::~SolidGraphicItem() { 
 }

@@ -89,14 +89,16 @@ void Renderer::draw_objects() {
     // Draw Solids
     SolidList& solids = Manager::instance().solids();
     for (SolidList::const_iterator it = solids.begin(); it != solids.end(); ++it) {
-        (*it)->draw();
+        if ((*it)->visible())
+            (*it)->draw();
     }
 
     // Draw GraphicItems
     GraphicItemList& graphic_items = Manager::instance().graphic_items();
     for (GraphicItemList::const_iterator it = graphic_items.begin(); 
         it != graphic_items.end(); ++it) {
-        (*it)->draw();
+        if ((*it)->visible())
+            (*it)->draw();
     }
 }
 
