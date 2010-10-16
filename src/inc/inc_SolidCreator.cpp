@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <vector>
+
 #include <cinder/params/Params.h>
 #include <cinder/app/App.h>
 #include <cinder/ObjLoader.h>

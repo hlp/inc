@@ -17,6 +17,11 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
 #include <cinder/cairo/Cairo.h>
@@ -87,35 +92,11 @@ MainMenu::~MainMenu() {
 void MainMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 50));
 
-    std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Save DXF"));
-
-    save_dxf_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MainMenu::save_dxf), this));
-
-    add_widget(save_dxf_button);
-
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
 }
 
-bool MainMenu::save_dxf(bool) {
-    DxfSaver saver = DxfSaver("out.dxf");
 
-    saver.begin();
-
-    std::for_each(Manager::instance().solids().begin(),
-        Manager::instance().solids().end(), 
-        [&saver] (std::tr1::shared_ptr<Solid> solid) {
-            solid->save(saver); 
-            saver.add_layer();
-        } );
-
-    saver.end();
-
-    return false;
-}
 
 MainMenu* MainMenu::instance_;
 
@@ -234,7 +215,7 @@ SolidMenu::~SolidMenu() {
 }
 
 void SolidMenu::setup() {
-    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 250));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 320));
 
     std::tr1::shared_ptr<GenericWidget<float> > set_gravity_button = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -254,7 +235,6 @@ void SolidMenu::setup() {
 
     add_widget(sphere_radius_button);
 
-    /*
     std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_sphere_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Create rigid sphere"));
@@ -264,7 +244,6 @@ void SolidMenu::setup() {
         this));
 
     add_widget(create_rigid_sphere_button);
-    */
 
     std::tr1::shared_ptr<GenericWidget<bool> > create_soft_sphere_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -382,6 +361,20 @@ void SolidMenu::setup() {
 
     add_widget(sphere_total_mass);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > allow_selection = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Allow solid selection",
+        &Solid::allow_selection_));
+
+    add_widget(allow_selection);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > allow_forces = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Allow solid forces",
+        &Solid::allow_forces_));
+
+    add_widget(allow_forces);
+
     Menu::setup();
 }
 
@@ -393,7 +386,9 @@ bool SolidMenu::set_gravity(float grav) {
 }
 
 bool SolidMenu::create_rigid_sphere(bool) {
-    SolidCreator::instance().create_rigid_sphere(ci::Vec3f(0.0f, 100.0f, 0.0f), 
+    ci::Vec3f pos = SolidCreator::instance().creation_point();
+
+    SolidCreator::instance().create_rigid_sphere(pos, 
         ci::Vec3f::one() * sphere_radius_);
 
     return false;
@@ -853,10 +848,20 @@ FileMenu::FileMenu() {
     image_counter_ = 0;
     high_res_image_width_ = 5000;
     file_name_ = "mosball_";
+    save_uuid_ = true;
 }
 
 void FileMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > save_dxf_button = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Save DXF"));
+
+    save_dxf_button->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::FileMenu::save_dxf), this));
+
+    add_widget(save_dxf_button);
 
     std::tr1::shared_ptr<GenericWidget<bool> > save = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -889,29 +894,69 @@ void FileMenu::setup() {
 
     add_widget(name);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > save_uuid = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Use UUID not numbers",
+        &save_uuid_));
+
+    add_widget(save_uuid);
+
     Menu::setup();
 }
 
 bool FileMenu::save_image(bool) {
-    std::ostringstream ss;
-    ss << image_counter_;
-
-    ci::writeImage(file_name_ + ss.str() + ".png", IncApp::instance().copyWindowSurface());
-    ++image_counter_;
+    ci::writeImage(get_file_name() + ".png", IncApp::instance().copyWindowSurface());
 
     return true;
 }
 
 bool FileMenu::save_high_res(bool) {
-    std::ostringstream ss;
-    ss << image_counter_;
-
-    Renderer::instance().save_image(high_res_image_width_, 
-        file_name_ + ss.str() + ".png");
-    ++image_counter_;
+    Renderer::instance().save_image(high_res_image_width_, get_file_name() + ".png");
 
     return true;
 }
+
+std::string FileMenu::get_uuid() {
+    boost::uuids::random_generator gen;
+    boost::uuids::uuid id = gen();
+    std::string uuid_string = boost::lexical_cast<std::string>(id);
+
+    return uuid_string;
+}
+
+std::string FileMenu::get_file_name() {
+    std::string output_name;
+
+    if (save_uuid_) {
+        output_name = file_name_ + get_uuid();
+    } else {
+        std::ostringstream ss;
+        ss << image_counter_;
+        output_name = file_name_ + ss.str();
+        ++image_counter_;
+    }
+
+    return output_name;
+}
+
+bool FileMenu::save_dxf(bool) {
+    DxfSaver saver = DxfSaver(get_file_name() + ".dxf");
+
+    saver.begin();
+
+    std::for_each(Manager::instance().solids().begin(),
+        Manager::instance().solids().end(), 
+        [&saver] (std::tr1::shared_ptr<Solid> solid) {
+            solid->save(saver); 
+            saver.add_layer();
+        } );
+
+    saver.end();
+
+    return false;
+}
+
+
 
 /////////////////////////////////////
 // MenuManager
