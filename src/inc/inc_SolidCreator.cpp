@@ -65,8 +65,8 @@ void SolidCreator::draw() {
     creation_point_->draw();
 }
 
-SolidPtr SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
-    SolidPtr ptr = SolidFactory::create_rigid_sphere(pos, radius);
+RigidSolidPtr SolidCreator::create_rigid_sphere(ci::Vec3f pos, ci::Vec3f radius) {
+    RigidSolidPtr ptr = SolidFactory::create_rigid_sphere(pos, radius);
 
     Manager::instance().solids().push_back(ptr);
     Manager::instance().register_for_selection(ptr);
