@@ -21,6 +21,7 @@
 
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_SolidCreator.h>
+#include <inc/inc_Manager.h>
 
 namespace inc {
 
@@ -48,6 +49,11 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     }
 
     // create new link mesh using solids
+
+    std::tr1::shared_ptr<LinkMesh> mesh_ptr = 
+        std::tr1::shared_ptr<LinkMesh>(new LinkMesh(w, d, type, solids));
+
+    Manager::instance().add_graphic_item(mesh_ptr);
 }
 
 void LinkMesh::draw() {
