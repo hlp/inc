@@ -68,6 +68,7 @@ Solid::Solid(SolidGraphicItem* item, btCollisionObject* body, btDynamicsWorld* w
     : graphic_item_(item), body_(body), world_(world) {
     selected_ = false;
     has_force_ = false;
+    visible_ = true;
     force_ = ci::Vec3f::zero();
 
     // it is still valid to have a solid without a graphic representation
@@ -100,6 +101,14 @@ btCollisionObject& Solid::collision_object() {
 
 void Solid::remove_force() {
     has_force_ = false;
+}
+
+void Solid::set_visible(bool vis) {
+    visible_ = vis;
+}
+
+bool Solid::visible() {
+    return visible_;
 }
 
 /* Original code from: http://www.devmaster.net/wiki/Ray-sphere_intersection

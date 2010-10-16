@@ -60,6 +60,8 @@ public:
 
     bool selected();
     void set_selected(bool);
+    bool visible();
+    void set_visible(bool);
 
 protected:
     SolidGraphicItem* graphic_item_;
@@ -67,6 +69,7 @@ protected:
     btDynamicsWorld* world_;
     bool selected_;
     bool has_force_;
+    bool visible_;
     ci::Vec3f force_;
 
 };

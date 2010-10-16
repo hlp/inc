@@ -31,8 +31,15 @@
 namespace inc {
 class GraphicItem {
 public:
+    GraphicItem();
     virtual ~GraphicItem(); 
     virtual void draw() = 0;
+
+    void set_visible(bool);
+    bool visible();
+
+private:
+    bool visible_;
 };
 
 typedef std::tr1::shared_ptr<GraphicItem> GraphicItemPtr;
