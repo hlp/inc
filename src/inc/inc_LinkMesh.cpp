@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cinder/gl/gl.h>
+
 #include <inc/inc_LinkMesh.h>
 
 namespace inc {
@@ -26,10 +28,11 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType,
 
 }
 
+/*
 std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     LinkFactory::LinkType) {
-
 }
+*/
 
 void LinkMesh::draw() {
     // TODO:
