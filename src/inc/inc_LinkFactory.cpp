@@ -29,6 +29,7 @@
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_Solid.h>
 #include <inc/inc_Manager.h>
+#include <inc/inc_LinkMesh.h>
 
 namespace inc {
 
@@ -135,28 +136,36 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
     } );
 }
 
-void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
+std::tr1::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
+    int w, int d, LinkType link_type,
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, ci::Vec3f axis) {
+
+    std::tr1::shared_ptr<std::vector<JointPtr>> joints = 
+        std::tr1::shared_ptr<std::vector<JointPtr>>(
+        new std::vector<JointPtr>());
+
     // link rigid bodies together
     for (int i = 0; i < w; ++i) {
         for (int k = 0; k < d; ++k) {
             if (i > 0) {
                 switch (link_type) {
                 case HINGE:
-                    hinge_link_rigid_bodies(
-                        solids->at((i-1)*d + k)->rigid_body(),
-                        solids->at(i*d + k)->rigid_body(),
-                        solids->at((i-1)*d + k)->position(),
-                        solids->at(i*d + k)->position(),
-                        axis);
+                    joints->push_back(HingeJointPtr(
+                        new HingeJoint(hinge_link_rigid_bodies(
+                            solids->at((i-1)*d + k)->rigid_body(),
+                            solids->at(i*d + k)->rigid_body(),
+                            solids->at((i-1)*d + k)->position(),
+                            solids->at(i*d + k)->position(),
+                            axis))));
                     break;
                 case SOCKET:
                 default:
-                    socket_link_rigid_bodies(
-                        solids->at((i-1)*d + k)->rigid_body(),
-                        solids->at(i*d + k)->rigid_body(),
-                        solids->at((i-1)*d + k)->position(),
-                        solids->at(i*d + k)->position());
+                    joints->push_back(SocketJointPtr(
+                        new SocketJoint(socket_link_rigid_bodies(
+                            solids->at((i-1)*d + k)->rigid_body(),
+                            solids->at(i*d + k)->rigid_body(),
+                            solids->at((i-1)*d + k)->position(),
+                            solids->at(i*d + k)->position()))));
                     break;
                 }
             }
@@ -164,25 +173,29 @@ void LinkFactory::link_rigid_body_matrix(int w, int d, LinkType link_type,
             if (k > 0) {
                 switch (link_type) {
                 case HINGE:
-                hinge_link_rigid_bodies(
-                    solids->at(i*d + (k-1))->rigid_body(),
-                    solids->at(i*d + k)->rigid_body(),
-                    solids->at(i*d + (k-1))->position(),
-                    solids->at(i*d + k)->position(), 
-                    axis);
+                    joints->push_back(HingeJointPtr(
+                        new HingeJoint(hinge_link_rigid_bodies(
+                            solids->at(i*d + (k-1))->rigid_body(),
+                            solids->at(i*d + k)->rigid_body(),
+                            solids->at(i*d + (k-1))->position(),
+                            solids->at(i*d + k)->position(), 
+                            axis))));
                 break;
                 case SOCKET:
                 default:
-                socket_link_rigid_bodies(
-                    solids->at(i*d + (k-1))->rigid_body(),
-                    solids->at(i*d + k)->rigid_body(),
-                    solids->at(i*d + (k-1))->position(),
-                    solids->at(i*d + k)->position());
+                    joints->push_back(SocketJointPtr(
+                        new SocketJoint(socket_link_rigid_bodies(
+                            solids->at(i*d + (k-1))->rigid_body(),
+                            solids->at(i*d + k)->rigid_body(),
+                            solids->at(i*d + (k-1))->position(),
+                            solids->at(i*d + k)->position()))));
                 break;
                 }
             }
         }
     }
+
+    return joints;
 }
 
 void LinkFactory::socket_link_soft_bodies(btSoftBody& s1,
@@ -195,7 +208,7 @@ void LinkFactory::socket_link_soft_bodies(btSoftBody& s1,
     s1.appendLinearJoint(lj, &s2);
 }
 
-void LinkFactory::socket_link_rigid_bodies(btRigidBody& r1,
+btPoint2PointConstraint* LinkFactory::socket_link_rigid_bodies(btRigidBody& r1,
     btRigidBody& r2, const ci::Vec3f& p1, const ci::Vec3f& p2) {
 
     btVector3 bt_p1(p1.x, p1.y, p1.z);
@@ -205,16 +218,18 @@ void LinkFactory::socket_link_rigid_bodies(btRigidBody& r1,
 
     btPoint2PointConstraint* socket =
         new btPoint2PointConstraint(r1, r2, mid, -mid);
-
+    
     socket->m_setting.m_damping = damping_;
     socket->m_setting.m_impulseClamp = impulse_clamp_;
     socket->m_setting.m_tau = tau_;
 
     SolidFactory::instance().dynamics_world()->addConstraint(socket);
+
+    return socket;
 }
 
-void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
-    const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis) {
+btHingeConstraint* LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, 
+    btRigidBody& r2, const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis) {
 
     btVector3 bt_p1(p1.x, p1.y, p1.z);
     btVector3 bt_p2(p2.x, p2.y, p2.z);
@@ -224,8 +239,10 @@ void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
 
     btHingeConstraint* hinge = 
         new btHingeConstraint(r1, r2, mid, -mid, bt_axis, bt_axis);
-
+    
     SolidFactory::instance().dynamics_world()->addConstraint(hinge);
+
+    return hinge;
 }
 
 LinkFactory* LinkFactory::instance_;

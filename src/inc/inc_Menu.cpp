@@ -756,8 +756,9 @@ void DisplayMenu::setup() {
 
 
 LinkNetworkMenu::LinkNetworkMenu() {
-    matrix_x_ = 10;
-    matrix_y_ = 10;
+    LinkMesh::new_mesh_w_ = 10;
+    LinkMesh::new_mesh_d_ = 10;
+    LinkMesh::new_mesh_height_ = 5.0f;
 
     hinge_axis_ = ci::Vec3f::yAxis();
 }
@@ -795,16 +796,23 @@ void LinkNetworkMenu::setup() {
     std::tr1::shared_ptr<GenericWidget<int> > matrix_x = 
         std::tr1::shared_ptr<GenericWidget<int> >(
         new GenericWidget<int>(*this, "Maxtrix x dimension",
-        &matrix_x_, "min=1"));
+        &LinkMesh::new_mesh_w_, "min=1"));
 
     add_widget(matrix_x);
 
     std::tr1::shared_ptr<GenericWidget<int> > matrix_y = 
         std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Maxtrix y dimension",
-        &matrix_y_, "min=1"));
+        new GenericWidget<int>(*this, "Maxtrix z dimension",
+        &LinkMesh::new_mesh_d_, "min=1"));
 
     add_widget(matrix_y);
+
+    std::tr1::shared_ptr<GenericWidget<float> > mesh_height = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh height",
+        &LinkMesh::new_mesh_height_, "step=0.1"));
+
+    add_widget(mesh_height);
 
     std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > hinge_axis = 
         std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
@@ -839,20 +847,21 @@ void LinkNetworkMenu::setup() {
 
 bool LinkNetworkMenu::create_socket_matrix(bool) {
     LinkFactory::instance().create_link_matrix(LinkFactory::SOCKET,
-        matrix_x_, matrix_y_);
+        LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_);
 
     return true;
 }
 
 bool LinkNetworkMenu::create_hinge_matrix(bool) {
     LinkFactory::instance().create_link_matrix(LinkFactory::HINGE,
-        matrix_x_, matrix_y_, hinge_axis_);
+        LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, hinge_axis_);
 
     return true;
 }
 
 bool LinkNetworkMenu::create_link_mesh(bool) {
-    LinkMesh::create_link_mesh(20, 20, 1.0f, 2.5f, LinkFactory::LinkType::SOCKET);
+    LinkMesh::create_link_mesh(LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, 
+        1.0f, 2.5f, LinkFactory::LinkType::SOCKET);
 
     return true;
 }

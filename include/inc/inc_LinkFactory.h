@@ -26,12 +26,15 @@
 
 class btSoftBody;
 class btRigidBody;
+class btPoint2PointConstraint;
+class btHingeConstraint;
 
 namespace inc {
 
 class Solid;
 class RigidSolid;
-
+class Joint;
+typedef std::tr1::shared_ptr<Joint> JointPtr;
 typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
 
 class LinkFactory {
@@ -49,12 +52,13 @@ public:
 
     void LinkFactory::socket_link_soft_bodies(btSoftBody& s1, btSoftBody& s2,
         const ci::Vec3f& p1, const ci::Vec3f& p2);
-    void LinkFactory::socket_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
-        const ci::Vec3f& p1, const ci::Vec3f& p2);
-    void LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, btRigidBody& r2,
-        const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis);
+    btPoint2PointConstraint* LinkFactory::socket_link_rigid_bodies(btRigidBody& r1, 
+        btRigidBody& r2, const ci::Vec3f& p1, const ci::Vec3f& p2);
+    btHingeConstraint* LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, 
+        btRigidBody& r2, const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis);
 
-    void link_rigid_body_matrix(int w, int d, LinkType link_type,
+    std::tr1::shared_ptr<std::vector<JointPtr>> link_rigid_body_matrix(
+        int w, int d, LinkType link_type,
         std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, 
         ci::Vec3f axis = ci::Vec3f::yAxis());
 

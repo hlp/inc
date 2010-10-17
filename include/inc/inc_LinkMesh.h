@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <memory>
 #include <deque>
 
 #include <inc/inc_GraphicItem.h>
@@ -26,6 +27,42 @@
 #include <inc/inc_Solid.h>
 
 namespace inc {
+
+class Joint {
+public:
+    // this should be pure virtual 
+    virtual ci::Vec3f position() = 0;
+    virtual ~Joint() { }
+};
+
+typedef std::tr1::shared_ptr<Joint> JointPtr;
+
+class HingeJoint : public Joint {
+public:
+    HingeJoint(btHingeConstraint* hinge)
+        : hinge_(hinge) { }
+
+    ci::Vec3f position();
+
+private:
+    btHingeConstraint* hinge_;
+};
+
+typedef std::tr1::shared_ptr<HingeJoint> HingeJointPtr;
+
+class SocketJoint : public Joint {
+public:
+    SocketJoint(btPoint2PointConstraint* socket) 
+        : socket_(socket) { }
+
+    ci::Vec3f position();
+
+private:
+    btPoint2PointConstraint* socket_;
+};
+
+typedef std::tr1::shared_ptr<SocketJoint> SocketJointPtr;
+
 
 class LinkMesh : public GraphicItem {
 public:
@@ -38,8 +75,13 @@ public:
 
     virtual void draw();
 
+    static int new_mesh_w_;
+    static int new_mesh_d_;
+    static float new_mesh_height_;
+
 private:
     std::vector<RigidSolidPtr> solids_;
+    std::tr1::shared_ptr<std::vector<JointPtr>> joints_;
     int w_;
     int d_;
 };

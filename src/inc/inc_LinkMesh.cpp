@@ -17,14 +17,26 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <BulletDynamics/Dynamics/btRigidBody.h>
+#include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btSliderConstraint.h>
+#include <BulletDynamics/Dynamics/btDynamicsWorld.h>
+
 #include <cinder/gl/gl.h>
+#include <cinder/Rand.h>
 
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_SolidCreator.h>
 #include <inc/inc_Manager.h>
 #include <inc/inc_LinkFactory.h>
+#include <incApp.h>
 
 namespace inc {
+
+int LinkMesh::new_mesh_w_;
+int LinkMesh::new_mesh_d_;
+float LinkMesh::new_mesh_height_;
 
 LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) :
@@ -36,7 +48,17 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     } );
 
     // link all the solids together based on the link type
-    LinkFactory::instance().link_rigid_body_matrix(w, d, type, solids, ci::Vec3f::yAxis());
+    joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
+        type, solids, ci::Vec3f::yAxis());
+
+    // lock 5 random points 
+    ci::Rand rand;
+    rand.seed(IncApp::instance().getElapsedFrames());
+    int range = w_ * d_;
+    for (int i = 0; i < 5; ++i) {
+        solids_[rand.nextInt(range)]->rigid_body().setMassProps(
+            0.0f, btVector3(0.0, 0.0, 0.0));
+    }
 }
 
 LinkMesh::~LinkMesh() {
@@ -46,7 +68,7 @@ LinkMesh::~LinkMesh() {
 std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     float sphere_radius, float spacing_scale, LinkFactory::LinkType type) {
 
-    float height = 5.0f;
+    float height = new_mesh_height_;
     // create solids
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids =
         std::tr1::shared_ptr<std::deque<RigidSolidPtr>>(
@@ -79,6 +101,61 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 void LinkMesh::draw() {
+    /*
+    // Hinge line drawing code
+
+    glBegin(GL_LINES);
+
+    for (int i = 0; i < w_-1; ++i) {
+        for (int j = 0; j < d_-1; ++j) {
+            if (i == 0) {
+                if (j != 0) {
+                    glVertex3f(joints_->at(j-1)->position());
+                    glVertex3f(joints_->at(j)->position());
+                }
+            } else if (j == 0) { // && i != 0
+                glVertex3f(joints_->at((i-1)*w_ + j)->position());
+                glVertex3f(joints_->at(i*w_ + j)->position());
+            } else {
+                glVertex3f(joints_->at((i-1)*w_ + j)->position());
+                glVertex3f(joints_->at(i*w_ + j)->position());
+
+                glVertex3f(joints_->at(i*w_ + (j-1))->position());
+                glVertex3f(joints_->at(i*w_ + j)->position());
+            }
+        }
+    }
+
+    glEnd();
+    */
+
+    
+    glBegin(GL_LINES);
+
+    for (int i = 0; i < w_; ++i) {
+        for (int j = 0; j < d_; ++j) {
+            if (i == 0) {
+                if (j != 0) {
+                    glVertex3f(solids_[j-1]->position());
+                    glVertex3f(solids_[j]->position());
+                }
+            } else if (j == 0) { // && i != 0
+                glVertex3f(solids_[(i-1)*w_ + j]->position());
+                glVertex3f(solids_[i*w_ + j]->position());
+            } else {
+                glVertex3f(solids_[(i-1)*w_ + j]->position());
+                glVertex3f(solids_[i*w_ + j]->position());
+
+                glVertex3f(solids_[i*w_ + (j-1)]->position());
+                glVertex3f(solids_[i*w_ + j]->position());
+            }
+        }
+    }
+
+    glEnd();
+    
+
+    /*
     ci::gl::enableWireframe();
 
     for (int i = 1; i < w_; ++i) {
@@ -93,6 +170,27 @@ void LinkMesh::draw() {
     }
 
     ci::gl::disableWireframe();
+    */
+}
+
+
+ci::Vec3f HingeJoint::position() {
+    btVector3 a_pos = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
+
+    btTransform trans = hinge_->getAFrame();
+    btVector3 vec = trans.getOrigin();
+
+    return ci::Vec3f(vec.x(), vec.y(), vec.z());
+}
+
+ci::Vec3f SocketJoint::position() {
+    btVector3 a_pos = socket_->getRigidBodyA().getWorldTransform().getOrigin();
+    btVector3 pivot_in_a = socket_->getPivotInA();
+
+    return ci::Vec3f(a_pos.x(), a_pos.y(), a_pos.z());
+
+    return ci::Vec3f(a_pos.x() + pivot_in_a.x(),
+        a_pos.y() + pivot_in_a.y(), a_pos.z() + pivot_in_a.z());
 }
 
 }
