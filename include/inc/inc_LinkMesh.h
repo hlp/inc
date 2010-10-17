@@ -31,6 +31,8 @@ namespace inc {
 class Joint {
 public:
     // this should be pure virtual 
+    virtual ci::Vec3f a_position() = 0;
+    virtual ci::Vec3f b_position() = 0;
     virtual ci::Vec3f position() = 0;
     virtual ~Joint() { }
 };
@@ -42,6 +44,8 @@ public:
     HingeJoint(btHingeConstraint* hinge)
         : hinge_(hinge) { }
 
+    ci::Vec3f a_position();
+    ci::Vec3f b_position();
     ci::Vec3f position();
 
 private:
@@ -55,6 +59,8 @@ public:
     SocketJoint(btPoint2PointConstraint* socket) 
         : socket_(socket) { }
 
+    ci::Vec3f a_position();
+    ci::Vec3f b_position();
     ci::Vec3f position();
 
 private:
@@ -78,8 +84,12 @@ public:
     static int new_mesh_w_;
     static int new_mesh_d_;
     static float new_mesh_height_;
+    static int num_lock_points_;
+    static ci::Vec3f hinge_axis_;
 
 private:
+    void draw_joint(JointPtr);
+
     std::vector<RigidSolidPtr> solids_;
     std::tr1::shared_ptr<std::vector<JointPtr>> joints_;
     int w_;

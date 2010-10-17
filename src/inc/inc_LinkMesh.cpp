@@ -37,6 +37,8 @@ namespace inc {
 int LinkMesh::new_mesh_w_;
 int LinkMesh::new_mesh_d_;
 float LinkMesh::new_mesh_height_;
+int LinkMesh::num_lock_points_;
+ci::Vec3f LinkMesh::hinge_axis_;
 
 LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) :
@@ -49,13 +51,13 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
 
     // link all the solids together based on the link type
     joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
-        type, solids, ci::Vec3f::yAxis());
+        type, solids, hinge_axis_);
 
     // lock 5 random points 
     ci::Rand rand;
     rand.seed(IncApp::instance().getElapsedFrames());
     int range = w_ * d_;
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < num_lock_points_; ++i) {
         solids_[rand.nextInt(range)]->rigid_body().setMassProps(
             0.0f, btVector3(0.0, 0.0, 0.0));
     }
@@ -100,7 +102,29 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     return mesh_ptr;
 }
 
+void LinkMesh::draw_joint(JointPtr joint) {
+
+}
+
 void LinkMesh::draw() {
+
+    glBegin(GL_LINES);
+
+    std::for_each(joints_->begin(), joints_->end(),
+        [] (JointPtr ptr) {
+            ci::Vec3f a_pos = ptr->a_position();
+            ci::Vec3f b_pos = ptr->b_position();
+            ci::Vec3f pos = ptr->position();
+
+            glVertex3f(pos);
+            glVertex3f(a_pos);
+
+            glVertex3f(pos);
+            glVertex3f(b_pos);
+    } );
+
+    glEnd();
+
     /*
     // Hinge line drawing code
 
@@ -129,7 +153,7 @@ void LinkMesh::draw() {
     glEnd();
     */
 
-    
+    /*
     glBegin(GL_LINES);
 
     for (int i = 0; i < w_; ++i) {
@@ -153,7 +177,7 @@ void LinkMesh::draw() {
     }
 
     glEnd();
-    
+    */
 
     /*
     ci::gl::enableWireframe();
@@ -173,12 +197,38 @@ void LinkMesh::draw() {
     */
 }
 
+ci::Vec3f HingeJoint::a_position() {
+    btVector3 vec = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
+
+    return ci::Vec3f(vec.x(), vec.y(), vec.z());
+}
+
+ci::Vec3f HingeJoint::b_position() {
+    btVector3 vec = hinge_->getRigidBodyB().getWorldTransform().getOrigin();
+
+    return ci::Vec3f(vec.x(), vec.y(), vec.z());
+}
 
 ci::Vec3f HingeJoint::position() {
     btVector3 a_pos = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
-
+    
     btTransform trans = hinge_->getAFrame();
     btVector3 vec = trans.getOrigin();
+    
+    return ci::Vec3f(a_pos.x() + vec.x(), a_pos.y() + vec.y(), 
+        a_pos.z() + vec.z());
+}
+
+
+
+ci::Vec3f SocketJoint::a_position() {
+    btVector3 vec = socket_->getRigidBodyA().getWorldTransform().getOrigin();
+
+    return ci::Vec3f(vec.x(), vec.y(), vec.z());
+}
+
+ci::Vec3f SocketJoint::b_position() {
+    btVector3 vec = socket_->getRigidBodyB().getWorldTransform().getOrigin();
 
     return ci::Vec3f(vec.x(), vec.y(), vec.z());
 }
@@ -186,8 +236,6 @@ ci::Vec3f HingeJoint::position() {
 ci::Vec3f SocketJoint::position() {
     btVector3 a_pos = socket_->getRigidBodyA().getWorldTransform().getOrigin();
     btVector3 pivot_in_a = socket_->getPivotInA();
-
-    return ci::Vec3f(a_pos.x(), a_pos.y(), a_pos.z());
 
     return ci::Vec3f(a_pos.x() + pivot_in_a.x(),
         a_pos.y() + pivot_in_a.y(), a_pos.z() + pivot_in_a.z());

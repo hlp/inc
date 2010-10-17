@@ -759,12 +759,12 @@ LinkNetworkMenu::LinkNetworkMenu() {
     LinkMesh::new_mesh_w_ = 10;
     LinkMesh::new_mesh_d_ = 10;
     LinkMesh::new_mesh_height_ = 5.0f;
-
-    hinge_axis_ = ci::Vec3f::yAxis();
+    LinkMesh::num_lock_points_ = 4;
+    LinkMesh::hinge_axis_ = ci::Vec3f::yAxis();
 }
 
 void LinkNetworkMenu::setup() {
-    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 250));
 
     std::tr1::shared_ptr<GenericWidget<bool> > make_socket = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -814,10 +814,17 @@ void LinkNetworkMenu::setup() {
 
     add_widget(mesh_height);
 
+    std::tr1::shared_ptr<GenericWidget<int> > num_lock = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Num lock points",
+        &LinkMesh::num_lock_points_, "min=0"));
+
+    add_widget(num_lock);
+
     std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > hinge_axis = 
         std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
         new GenericWidget<ci::Vec3f>(*this, "Hinge Axis",
-        &hinge_axis_));
+        &LinkMesh::hinge_axis_));
 
     add_widget(hinge_axis);
 
@@ -861,7 +868,7 @@ bool LinkNetworkMenu::create_hinge_matrix(bool) {
 
 bool LinkNetworkMenu::create_link_mesh(bool) {
     LinkMesh::create_link_mesh(LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, 
-        1.0f, 2.5f, LinkFactory::LinkType::SOCKET);
+        1.0f, 2.5f, LinkFactory::LinkType::HINGE);
 
     return true;
 }
@@ -870,7 +877,7 @@ bool LinkNetworkMenu::create_link_mesh(bool) {
 FileMenu::FileMenu() {
     image_counter_ = 0;
     high_res_image_width_ = 5000;
-    file_name_ = "mosball_";
+    file_name_ = "linkages_";
     save_uuid_ = true;
 }
 
