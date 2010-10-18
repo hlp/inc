@@ -53,7 +53,7 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
         type, solids, hinge_axis_);
 
-    // lock 5 random points 
+    // lock random points 
     ci::Rand rand;
     rand.seed(IncApp::instance().getElapsedFrames());
     int range = w_ * d_;
@@ -70,6 +70,8 @@ LinkMesh::~LinkMesh() {
 std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     float sphere_radius, float spacing_scale, LinkFactory::LinkType type) {
 
+    ci::Vec3f offset = SolidCreator::instance().creation_point();
+    
     float height = new_mesh_height_;
     // create solids
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids =
@@ -78,11 +80,14 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 
     float axis_dist = (sphere_radius * 2 + sphere_radius*spacing_scale);
 
+    ci::Vec3f r_pos;
+
     for (int i = 0; i < w; ++i) {
         for (int j = 0; j < d; ++j) {
-            
-            RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(
-                ci::Vec3f(i * axis_dist, height, j * axis_dist),
+            r_pos = offset + ci::Vec3f(i * axis_dist, 0.0f, j * axis_dist);
+            r_pos.y = height;
+
+            RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(r_pos,
                 ci::Vec3f::one() * sphere_radius);
 
             // make sure that the solids aren't being drawn

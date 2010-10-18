@@ -210,6 +210,8 @@ private:
     ci::Vec3f hinge_axis_;
     int matrix_x_;
     int matrix_y_;
+    int joint_type_;
+    float joint_spacing_;
 };
 
 class FileMenu : public Menu {

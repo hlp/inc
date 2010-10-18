@@ -761,6 +761,8 @@ LinkNetworkMenu::LinkNetworkMenu() {
     LinkMesh::new_mesh_height_ = 5.0f;
     LinkMesh::num_lock_points_ = 4;
     LinkMesh::hinge_axis_ = ci::Vec3f::yAxis();
+    joint_type_ = 0; // 0 = HINGE, 1 = SOCKET
+    joint_spacing_ = 2.5;
 }
 
 void LinkNetworkMenu::setup() {
@@ -849,6 +851,20 @@ void LinkNetworkMenu::setup() {
 
     add_widget(impulse_clamp);
 
+    std::tr1::shared_ptr<GenericWidget<int> > joint_type = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Joint Type 0=HINGE 1=SOCKET",
+        &joint_type_, "min=0 max=1"));
+
+    add_widget(joint_type);
+
+    std::tr1::shared_ptr<GenericWidget<float> > space = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Spacing",
+        &joint_spacing_, "min=0.0 step=0.01"));
+
+    add_widget(space);
+
     Menu::setup();
 }
 
@@ -867,8 +883,15 @@ bool LinkNetworkMenu::create_hinge_matrix(bool) {
 }
 
 bool LinkNetworkMenu::create_link_mesh(bool) {
+    LinkFactory::LinkType type;
+
+    if (joint_type_ == 0)
+        type = LinkFactory::LinkType::HINGE;
+    else if (joint_type_ == 1)
+        type = LinkFactory::LinkType::SOCKET;
+
     LinkMesh::create_link_mesh(LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, 
-        1.0f, 2.5f, LinkFactory::LinkType::SOCKET);
+        1.0f, joint_spacing_, type);
 
     return true;
 }
