@@ -68,6 +68,9 @@ public:
     GraphicItemList& graphic_items();
     ModuleList& modules();
 
+    // clear the scene and set it back to start 
+    void reset();
+
 private:
     SolidList solids_;
     SolidList selectable_;
