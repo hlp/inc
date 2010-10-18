@@ -93,8 +93,23 @@ MainMenu::~MainMenu() {
 void MainMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 50));
 
+    std::tr1::shared_ptr<GenericWidget<bool> > reset_scene = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Reset Scene"));
+
+    reset_scene->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MainMenu::reset), this));
+
+    add_widget(reset_scene);
+
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
+}
+
+bool MainMenu::reset(bool) {
+    Manager::instance().reset();
+
+    return true;
 }
 
 MainMenu* MainMenu::instance_;

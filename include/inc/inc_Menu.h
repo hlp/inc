@@ -62,7 +62,7 @@ public:
 
     virtual void setup();
 
-
+    bool reset(bool);
 
     static MainMenu& instance();
 
