@@ -79,6 +79,7 @@ private:
 
 typedef std::tr1::shared_ptr<SocketJoint> SocketJointPtr;
 
+class Exporter;
 
 class LinkMesh : public GraphicItem {
 public:
@@ -90,6 +91,9 @@ public:
         float radius, float spacing_scale, LinkFactory::LinkType);
 
     virtual void draw();
+
+    // Override
+    void save(Exporter&);
 
     static int new_mesh_w_;
     static int new_mesh_d_;

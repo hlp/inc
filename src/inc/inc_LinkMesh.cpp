@@ -31,6 +31,7 @@
 #include <inc/inc_Manager.h>
 #include <inc/inc_LinkFactory.h>
 #include <incApp.h>
+#include <inc/inc_DxfSaver.h>
 
 namespace inc {
 
@@ -134,6 +135,10 @@ void LinkMesh::draw() {
     glEnd();
 }
 
+void LinkMesh::save(Exporter& exporter) {
+
+}
+
 ci::Vec3f HingeJoint::a_position() {
     btVector3 vec = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
 
@@ -175,5 +180,7 @@ ci::Vec3f SocketJoint::position() {
 
     return ci::Vec3f(pivot_in_a.x(), pivot_in_a.y(), pivot_in_a.z());
 }
+
+
 
 }
