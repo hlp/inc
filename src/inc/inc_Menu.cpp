@@ -1019,6 +1019,13 @@ bool FileMenu::save_dxf(bool) {
             saver.add_layer();
         } );
 
+    std::for_each(Manager::instance().graphic_items().begin(),
+        Manager::instance().graphic_items().end(), 
+        [&saver] (std::tr1::shared_ptr<GraphicItem> item) {
+            item->save(saver); 
+            saver.add_layer();
+        } );
+
     saver.end();
 
     return false;

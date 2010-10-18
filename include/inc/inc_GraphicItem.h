@@ -29,11 +29,16 @@
 #include <cinder/Ray.h>
 
 namespace inc {
+class Exporter;
+
 class GraphicItem {
 public:
     GraphicItem();
     virtual ~GraphicItem(); 
     virtual void draw() = 0;
+
+    // maybe should be pure virtual...?
+    virtual void save(Exporter&) { }
 
     void set_visible(bool);
     bool visible();
