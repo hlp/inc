@@ -102,12 +102,7 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     return mesh_ptr;
 }
 
-void LinkMesh::draw_joint(JointPtr joint) {
-
-}
-
 void LinkMesh::draw() {
-
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);
@@ -126,77 +121,6 @@ void LinkMesh::draw() {
     } );
 
     glEnd();
-
-    /*
-    // Hinge line drawing code
-
-    glBegin(GL_LINES);
-
-    for (int i = 0; i < w_-1; ++i) {
-        for (int j = 0; j < d_-1; ++j) {
-            if (i == 0) {
-                if (j != 0) {
-                    glVertex3f(joints_->at(j-1)->position());
-                    glVertex3f(joints_->at(j)->position());
-                }
-            } else if (j == 0) { // && i != 0
-                glVertex3f(joints_->at((i-1)*w_ + j)->position());
-                glVertex3f(joints_->at(i*w_ + j)->position());
-            } else {
-                glVertex3f(joints_->at((i-1)*w_ + j)->position());
-                glVertex3f(joints_->at(i*w_ + j)->position());
-
-                glVertex3f(joints_->at(i*w_ + (j-1))->position());
-                glVertex3f(joints_->at(i*w_ + j)->position());
-            }
-        }
-    }
-
-    glEnd();
-    */
-
-    /*
-    glBegin(GL_LINES);
-
-    for (int i = 0; i < w_; ++i) {
-        for (int j = 0; j < d_; ++j) {
-            if (i == 0) {
-                if (j != 0) {
-                    glVertex3f(solids_[j-1]->position());
-                    glVertex3f(solids_[j]->position());
-                }
-            } else if (j == 0) { // && i != 0
-                glVertex3f(solids_[(i-1)*w_ + j]->position());
-                glVertex3f(solids_[i*w_ + j]->position());
-            } else {
-                glVertex3f(solids_[(i-1)*w_ + j]->position());
-                glVertex3f(solids_[i*w_ + j]->position());
-
-                glVertex3f(solids_[i*w_ + (j-1)]->position());
-                glVertex3f(solids_[i*w_ + j]->position());
-            }
-        }
-    }
-
-    glEnd();
-    */
-
-    /*
-    ci::gl::enableWireframe();
-
-    for (int i = 1; i < w_; ++i) {
-        glBegin(GL_TRIANGLE_STRIP);
-
-        for (int j = 0; j < d_; ++j) {
-            glVertex3f(solids_[(i-1)*w_ + j]->position());
-            glVertex3f(solids_[i*w_ + j]->position());
-        }
-
-        glEnd();
-    }
-
-    ci::gl::disableWireframe();
-    */
 }
 
 ci::Vec3f HingeJoint::a_position() {

@@ -88,8 +88,6 @@ public:
     static ci::Vec3f hinge_axis_;
 
 private:
-    void draw_joint(JointPtr);
-
     std::vector<RigidSolidPtr> solids_;
     std::tr1::shared_ptr<std::vector<JointPtr>> joints_;
     int w_;
