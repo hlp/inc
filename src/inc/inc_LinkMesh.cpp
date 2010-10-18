@@ -136,7 +136,15 @@ void LinkMesh::draw() {
 }
 
 void LinkMesh::save(Exporter& exporter) {
+    std::for_each(joints_->begin(), joints_->end(),
+        [&] (JointPtr ptr) {
+            ci::Vec3f a_pos = ptr->a_position();
+            ci::Vec3f b_pos = ptr->b_position();
+            ci::Vec3f pos = ptr->position();
 
+            exporter.write_line(pos, a_pos);
+            exporter.write_line(pos, b_pos);
+    } );
 }
 
 ci::Vec3f HingeJoint::a_position() {
