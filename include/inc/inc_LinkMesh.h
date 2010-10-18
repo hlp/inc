@@ -26,6 +26,10 @@
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_Solid.h>
 
+class btTypedConstraint;
+class btHingeConstraint;
+class btPoint2PointConstraint;
+
 namespace inc {
 
 class Joint {
@@ -34,6 +38,8 @@ public:
     virtual ci::Vec3f a_position() = 0;
     virtual ci::Vec3f b_position() = 0;
     virtual ci::Vec3f position() = 0;
+    virtual btTypedConstraint* constraint_ptr() = 0;
+
     virtual ~Joint() { }
 };
 
@@ -47,6 +53,8 @@ public:
     ci::Vec3f a_position();
     ci::Vec3f b_position();
     ci::Vec3f position();
+
+    btTypedConstraint* constraint_ptr() { return hinge_; }
 
 private:
     btHingeConstraint* hinge_;
@@ -62,6 +70,8 @@ public:
     ci::Vec3f a_position();
     ci::Vec3f b_position();
     ci::Vec3f position();
+
+    btTypedConstraint* constraint_ptr() { return socket_; }
 
 private:
     btPoint2PointConstraint* socket_;

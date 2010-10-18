@@ -64,6 +64,12 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
 }
 
 LinkMesh::~LinkMesh() {
+    btDynamicsWorld* dw = SolidFactory::instance().dynamics_world();
+
+    std::for_each(joints_->begin(), joints_->end(), [=] (JointPtr ptr) {
+        dw->removeConstraint(ptr->constraint_ptr());
+    } );
+
     solids_.clear();
 }
 
