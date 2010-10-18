@@ -108,6 +108,8 @@ void LinkMesh::draw_joint(JointPtr joint) {
 
 void LinkMesh::draw() {
 
+    glColor3f(1.0f, 1.0f, 1.0f);
+
     glBegin(GL_LINES);
 
     std::for_each(joints_->begin(), joints_->end(),
@@ -209,14 +211,13 @@ ci::Vec3f HingeJoint::b_position() {
     return ci::Vec3f(vec.x(), vec.y(), vec.z());
 }
 
+// NOTE: btDiscreteDynamicsWorld.cpp debugDrawConstraint has code that extracts
+// position information from joints
 ci::Vec3f HingeJoint::position() {
-    btVector3 a_pos = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
+    btTransform tr = hinge_->getRigidBodyA().getCenterOfMassTransform() * hinge_->getAFrame();
+    btVector3 pos = tr.getOrigin();
     
-    btTransform trans = hinge_->getAFrame();
-    btVector3 vec = trans.getOrigin();
-    
-    return ci::Vec3f(a_pos.x() + vec.x(), a_pos.y() + vec.y(), 
-        a_pos.z() + vec.z());
+    return ci::Vec3f(pos.x(), pos.y(), pos.z());
 }
 
 
@@ -234,11 +235,10 @@ ci::Vec3f SocketJoint::b_position() {
 }
 
 ci::Vec3f SocketJoint::position() {
-    btVector3 a_pos = socket_->getRigidBodyA().getWorldTransform().getOrigin();
     btVector3 pivot_in_a = socket_->getPivotInA();
+	pivot_in_a = socket_->getRigidBodyA().getCenterOfMassTransform() * pivot_in_a; 
 
-    return ci::Vec3f(a_pos.x() + pivot_in_a.x(),
-        a_pos.y() + pivot_in_a.y(), a_pos.z() + pivot_in_a.z());
+    return ci::Vec3f(pivot_in_a.x(), pivot_in_a.y(), pivot_in_a.z());
 }
 
 }

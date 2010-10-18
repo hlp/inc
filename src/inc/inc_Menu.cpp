@@ -868,7 +868,7 @@ bool LinkNetworkMenu::create_hinge_matrix(bool) {
 
 bool LinkNetworkMenu::create_link_mesh(bool) {
     LinkMesh::create_link_mesh(LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, 
-        1.0f, 2.5f, LinkFactory::LinkType::HINGE);
+        1.0f, 2.5f, LinkFactory::LinkType::SOCKET);
 
     return true;
 }
