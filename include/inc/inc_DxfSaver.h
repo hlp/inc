@@ -37,6 +37,8 @@ public:
     virtual void input_soft_solid(SoftSolid& solid) = 0;
 
     virtual void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2) = 0;
+    virtual void write_triangle(const ci::Vec3f& v1,
+        const ci::Vec3f& v2, const ci::Vec3f& v3) = 0;
 
     virtual void set_layer(int) = 0;
     virtual void add_layer() = 0;
@@ -60,6 +62,8 @@ public:
     //void write_file();
 
     void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2);
+    void write_triangle(const ci::Vec3f& v1,
+        const ci::Vec3f& v2, const ci::Vec3f& v3);
 
 private:
     void write_header();
@@ -68,8 +72,7 @@ private:
     void write_triangle(float v1x, float v1y, float v1z,
         float v2x, float v2y, float v2z,
         float v3x, float v3y, float v3z);
-    void write_triangle(const ci::Vec3f& v1,
-        const ci::Vec3f& v2, const ci::Vec3f& v3);
+
 
     std::ofstream file_;
     std::string file_name_;
