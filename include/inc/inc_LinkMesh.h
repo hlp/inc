@@ -100,6 +100,7 @@ public:
     static float new_mesh_height_;
     static int num_lock_points_;
     static ci::Vec3f hinge_axis_;
+    static float line_weight_;
 
 private:
     std::vector<RigidSolidPtr> solids_;

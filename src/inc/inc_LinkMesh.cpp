@@ -40,6 +40,7 @@ int LinkMesh::new_mesh_d_;
 float LinkMesh::new_mesh_height_;
 int LinkMesh::num_lock_points_;
 ci::Vec3f LinkMesh::hinge_axis_;
+float LinkMesh::line_weight_;
 
 LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids) :
@@ -115,6 +116,8 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 void LinkMesh::draw() {
+    glLineWidth(line_weight_);
+
     glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);

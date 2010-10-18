@@ -776,6 +776,7 @@ LinkNetworkMenu::LinkNetworkMenu() {
     LinkMesh::new_mesh_height_ = 5.0f;
     LinkMesh::num_lock_points_ = 4;
     LinkMesh::hinge_axis_ = ci::Vec3f::yAxis();
+    LinkMesh::line_weight_ = 1.0f;
     joint_type_ = 0; // 0 = HINGE, 1 = SOCKET
     joint_spacing_ = 2.5;
 }
@@ -879,6 +880,13 @@ void LinkNetworkMenu::setup() {
         &joint_spacing_, "min=0.0 step=0.01"));
 
     add_widget(space);
+
+    std::tr1::shared_ptr<GenericWidget<float> > line_weight = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Line weight",
+        &LinkMesh::line_weight_, "min=0.0 step=0.01"));
+
+    add_widget(line_weight);
 
     Menu::setup();
 }
