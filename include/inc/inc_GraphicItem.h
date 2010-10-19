@@ -149,6 +149,10 @@ public:
     // check the ray intersection with all the triangles of the mesh
     virtual bool detect_selection(ci::Ray);
 
+    static bool draw_face_normals_;
+    static float face_normals_length_;
+    static ci::ColorA face_normals_color_;
+
 private:
     void make_gl_vertex(int face, int node) {
         glVertex3f(

@@ -127,18 +127,6 @@ MeshMenu::~MeshMenu() {
 void MeshMenu::setup() {
     interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
 
-    // TODO: decide if I want to keep this method. If not, remove it
-    /*
-    std::tr1::shared_ptr<GenericWidget<bool> > bag_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Make circular mesh"));
-
-    bag_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::MeshMenu::create_bag), this));
-
-    add_widget(bag_button);
-    */
-
     std::tr1::shared_ptr<GenericWidget<float> > kDF = 
         std::tr1::shared_ptr<GenericWidget<float> >(
         new GenericWidget<float>(*this, "Dynamic friction coefficient",
@@ -267,18 +255,6 @@ void SolidMenu::setup() {
 
     add_widget(create_soft_sphere_button);
 
-    /*
-    std::tr1::shared_ptr<GenericWidget<bool> > create_linked_sphere_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Create linked sphere"));
-
-    create_linked_sphere_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::SolidMenu::create_linked_spheres), 
-        this));
-
-    add_widget(create_linked_sphere_button);
-    */
-
     std::tr1::shared_ptr<GenericWidget<bool> > create_soft_sphere_matrix_button = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Create soft sphere matrix"));
@@ -288,30 +264,6 @@ void SolidMenu::setup() {
         this));
 
     add_widget(create_soft_sphere_matrix_button);
-
-    /*
-    std::tr1::shared_ptr<GenericWidget<bool> > create_spring_matrix_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Create rigid sphere spring matrix"));
-
-    create_spring_matrix_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::SolidMenu::create_rigid_sphere_spring_matrix), 
-        this));
-
-    add_widget(create_spring_matrix_button);
-    */
-
-    /*
-    std::tr1::shared_ptr<GenericWidget<bool> > create_rigid_matrix_button = 
-        std::tr1::shared_ptr<GenericWidget<bool> >(
-        new GenericWidget<bool>(*this, "Create rigid sphere matrix"));
-
-    create_rigid_matrix_button->value_changed().registerCb(
-        std::bind1st(std::mem_fun(&inc::SolidMenu::create_rigid_sphere_matrix), 
-        this));
-
-    add_widget(create_rigid_matrix_button);
-    */
 
     std::tr1::shared_ptr<GenericWidget<int> > set_w = 
         std::tr1::shared_ptr<GenericWidget<int> >(
@@ -674,9 +626,14 @@ bool MeshNetworkMenu::create_network(bool) {
     return false;
 }
 
+DisplayMenu::DisplayMenu() {
+    SoftBodyGraphicItem::draw_face_normals_ = false;
+    SoftBodyGraphicItem::face_normals_length_ = 3.0f;
+    SoftBodyGraphicItem::face_normals_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+}
 
 void DisplayMenu::setup() {
-    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 250));
 
     std::tr1::shared_ptr<GenericWidget<bool> > alpha_blending = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
@@ -727,42 +684,33 @@ void DisplayMenu::setup() {
 
     add_widget(thickness);
 
-    /*
-    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_base_color = 
-        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
-        new GenericWidget<ci::ColorA>(*this, "Solids base gradient color",
-        Renderer::instance().solids_base_color_ptr()));
-
-    add_widget(solids_base_color);
-
-    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_top_color = 
-        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
-        new GenericWidget<ci::ColorA>(*this, "Solids top gradient color",
-        Renderer::instance().solids_top_color_ptr()));
-
-    add_widget(solids_top_color);
-
-    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > solids_line_color = 
-        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
-        new GenericWidget<ci::ColorA>(*this, "Solids line color",
-        Renderer::instance().solids_line_color_ptr()));
-
-    add_widget(solids_line_color);
-
-    std::tr1::shared_ptr<GenericWidget<float> > solids_thickness = 
-        std::tr1::shared_ptr<GenericWidget<float> >(
-        new GenericWidget<float>(*this, "Solids line thickness",
-        Renderer::instance().solids_line_thickness_ptr()));
-
-    add_widget(solids_thickness);
-    */
-
     std::tr1::shared_ptr<GenericWidget<bool> > grid = 
         std::tr1::shared_ptr<GenericWidget<bool> >(
         new GenericWidget<bool>(*this, "Draw origin and grid",
         Origin::instance().draw_grid_ptr()));
 
     add_widget(grid);
+
+    std::tr1::shared_ptr<GenericWidget<bool> > draw_normals = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Draw face normals",
+        &SoftBodyGraphicItem::draw_face_normals_));
+
+    add_widget(draw_normals);
+
+    std::tr1::shared_ptr<GenericWidget<float> > normal_length = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Face normals length",
+        &SoftBodyGraphicItem::face_normals_length_));
+
+    add_widget(normal_length);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > normal_color = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Face normals color",
+        &SoftBodyGraphicItem::face_normals_color_));
+
+    add_widget(normal_color);
 
     Menu::setup();
 }

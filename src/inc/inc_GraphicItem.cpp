@@ -196,6 +196,11 @@ float SphereGraphicItem::bounding_sphere_radius() {
 }
 
 
+
+bool SoftBodyGraphicItem::draw_face_normals_;
+float SoftBodyGraphicItem::face_normals_length_;
+ci::ColorA SoftBodyGraphicItem::face_normals_color_;
+
 SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body,
     ci::ColorA color) : soft_body_(soft_body), color_(color) {
 

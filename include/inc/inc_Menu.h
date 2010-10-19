@@ -181,6 +181,7 @@ public:
 
 class DisplayMenu : public Menu {
 public:
+    DisplayMenu();
     virtual void setup();
 
     std::string name() { return "DISPLAY"; }
