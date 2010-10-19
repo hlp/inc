@@ -628,7 +628,7 @@ bool MeshNetworkMenu::create_network(bool) {
 
 DisplayMenu::DisplayMenu() {
     SoftBodyGraphicItem::draw_face_normals_ = false;
-    SoftBodyGraphicItem::face_normals_length_ = 3.0f;
+    SoftBodyGraphicItem::face_normals_length_ = 2.0f;
     SoftBodyGraphicItem::face_normals_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -701,7 +701,8 @@ void DisplayMenu::setup() {
     std::tr1::shared_ptr<GenericWidget<float> > normal_length = 
         std::tr1::shared_ptr<GenericWidget<float> >(
         new GenericWidget<float>(*this, "Face normals length",
-        &SoftBodyGraphicItem::face_normals_length_));
+        &SoftBodyGraphicItem::face_normals_length_,
+        "min=0 step=0.01"));
 
     add_widget(normal_length);
 

@@ -223,7 +223,7 @@ void SoftBodyGraphicItem::draw() {
     glBegin(GL_LINES);
 
     int num_faces = soft_body_->m_faces.size();
-
+    
     for (int i = 0; i < num_faces; ++i) {
         make_gl_vertex(i, 0);
         make_gl_vertex(i, 1);
@@ -296,6 +296,27 @@ void SoftBodyGraphicItem::draw() {
 
     last_max_y_ = curr_max_y;
     last_min_y_ = curr_min_y;
+
+    glEnd();
+
+    if (!draw_face_normals_)
+        return;
+
+    glColor4f(face_normals_color_);
+
+    glBegin(GL_LINES);
+
+    btVector3 normal_vec;
+    ci::Vec3f face_center;
+
+    for (int i = 0; i < num_faces; ++i) {
+        normal_vec = soft_body_->m_faces[i].m_normal;
+        face_center = get_face_center(i);
+        
+        glVertex3f(face_center);
+        glVertex3f(face_center + ci::Vec3f(normal_vec.x(), normal_vec.y(),
+            normal_vec.z()) * face_normals_length_);
+    }
 
     glEnd();
 }

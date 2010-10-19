@@ -154,6 +154,21 @@ public:
     static ci::ColorA face_normals_color_;
 
 private:
+    ci::Vec3f get_face_center(int index) {
+        return ci::Vec3f(
+            (soft_body_->m_faces[index].m_n[0]->m_x.x() + 
+            soft_body_->m_faces[index].m_n[1]->m_x.x() + 
+            soft_body_->m_faces[index].m_n[2]->m_x.x()) / 3.0f,
+
+            (soft_body_->m_faces[index].m_n[0]->m_x.y() + 
+            soft_body_->m_faces[index].m_n[1]->m_x.y() + 
+            soft_body_->m_faces[index].m_n[2]->m_x.y()) / 3.0f,
+
+            (soft_body_->m_faces[index].m_n[0]->m_x.z() + 
+            soft_body_->m_faces[index].m_n[1]->m_x.z() + 
+            soft_body_->m_faces[index].m_n[2]->m_x.z()) / 3.0f);
+    }
+
     void make_gl_vertex(int face, int node) {
         glVertex3f(
             soft_body_->m_faces[face].m_n[node]->m_x.x(),
