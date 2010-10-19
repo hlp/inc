@@ -26,6 +26,7 @@
 #include <inc/inc_Manager.h>
 #include <inc/inc_Solid.h>
 #include <inc/inc_Camera.h>
+#include <inc/inc_SolidCreator.h>
 
 namespace inc {
 
@@ -153,20 +154,13 @@ GLenum Light::gl_index() {
 }
 
 void CameraLight::draw() {
-    ci::Vec3f cam_pos = Camera::instance().cam().getCamera().getEyePoint();
-    //ci::Vec3f cam_dir = Camera::instance().cam().getCamera().getViewDirection();
-
-    //ci::app::console() << cam_pos.x << " : " << cam_pos.y << " : " << cam_pos.z << std::endl;
-
-	GLfloat light_position[] = { cam_pos.x, cam_pos.y, cam_pos.z, 1.0f };
-    //GLfloat light_position[] = { 5.0f, 0.0f, 5.0f, 1.0f };
+    // set up a directional (sun-like) light far away from the model
+	GLfloat light_position[] = { 50.0f, 1.0f, 50.0f, 0.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
     
 	glLightfv(gl_index_, GL_POSITION, light_position);
-    //glLightfv(gl_index_, GL_SPOT_DIRECTION, cam_dir);
-    //glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0);
-    //glLightfv(gl_index_, GL_DIFFUSE, white_light);
-    //glLightfv(gl_index_, GL_SPECULAR, white_light);
+    glLightfv(gl_index_, GL_DIFFUSE, white_light);
+    glLightfv(gl_index_, GL_SPECULAR, white_light);
 }
 
 }
