@@ -351,7 +351,16 @@ void SoftBodyGraphicItem::draw() {
     if (!draw_face_normals_)
         return;
 
-    glColor4f(face_normals_color_);
+    if (use_lighting) {
+        vert_color[0] = face_normals_color_.r;
+        vert_color[1] = face_normals_color_.g;
+        vert_color[2] = face_normals_color_.b;
+        vert_color[3] = face_normals_color_.a;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+    } else {
+        glColor4f(face_normals_color_);
+    }
 
     glBegin(GL_LINES);
 
