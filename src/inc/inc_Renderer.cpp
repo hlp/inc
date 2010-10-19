@@ -76,6 +76,9 @@ void Renderer::draw_init() {
     ci::gl::enableDepthWrite(enable_depth_write_);
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    if (enable_lighting_)
+        draw_lights();
 }
 
 void Renderer::draw() {
@@ -85,8 +88,7 @@ void Renderer::draw() {
 }
 
 void Renderer::begin3D() {
-    if (enable_lighting_)
-        draw_lights();
+    // nothing here
 }
 
 void Renderer::draw_lights() {
@@ -152,14 +154,17 @@ GLenum Light::gl_index() {
 
 void CameraLight::draw() {
     ci::Vec3f cam_pos = Camera::instance().cam().getCamera().getEyePoint();
-    ci::Vec3f cam_dir = Camera::instance().cam().getCamera().getViewDirection();
+    //ci::Vec3f cam_dir = Camera::instance().cam().getCamera().getViewDirection();
+
+    //ci::app::console() << cam_pos.x << " : " << cam_pos.y << " : " << cam_pos.z << std::endl;
 
 	GLfloat light_position[] = { cam_pos.x, cam_pos.y, cam_pos.z, 1.0f };
-    GLfloat light_direction[] = { cam_dir.x, cam_dir.y, cam_dir.z };
+    //GLfloat light_position[] = { 5.0f, 0.0f, 5.0f, 1.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
-
+    
 	glLightfv(gl_index_, GL_POSITION, light_position);
-    glLightfv(gl_index_, GL_SPOT_DIRECTION, light_direction);
+    //glLightfv(gl_index_, GL_SPOT_DIRECTION, cam_dir);
+    //glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180.0);
     //glLightfv(gl_index_, GL_DIFFUSE, white_light);
     //glLightfv(gl_index_, GL_SPECULAR, white_light);
 }

@@ -93,11 +93,14 @@ public:
     // used for saving a higher resolution image
     void save_image(int width, std::string name);
 
+    // this must be called before the camera
+    void draw_lights();
+
 private:
     void begin3D();
     void draw_objects();
     void end3D();
-    void draw_lights();
+    
 
     std::tr1::shared_ptr<CameraLight> cam_light_;
 

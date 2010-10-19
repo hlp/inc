@@ -213,29 +213,7 @@ SoftBodyGraphicItem::~SoftBodyGraphicItem() {
 
 // theres almost certainly a better way to implement this method
 void SoftBodyGraphicItem::draw() {
-    if (solid().selected())
-        glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    else
-        ci::gl::color(Renderer::instance().line_color());
-
-    glLineWidth(Renderer::instance().line_thickness());
-
-    glBegin(GL_LINES);
-
     int num_faces = soft_body_->m_faces.size();
-    
-    for (int i = 0; i < num_faces; ++i) {
-        make_gl_vertex(i, 0);
-        make_gl_vertex(i, 1);
-
-        make_gl_vertex(i, 1);
-        make_gl_vertex(i, 2);
-
-        make_gl_vertex(i, 0);
-        make_gl_vertex(i, 2);
-    }
-
-    glEnd();
 
     ci::gl::color(Renderer::instance().base_color());
 
@@ -331,6 +309,42 @@ void SoftBodyGraphicItem::draw() {
 
     last_max_y_ = curr_max_y;
     last_min_y_ = curr_min_y;
+
+    glEnd();
+
+    ci::ColorA line_color;
+
+    if (solid().selected()) {
+        line_color = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);
+    } else {
+        line_color = Renderer::instance().line_color();
+    }
+
+    if (use_lighting) {
+        vert_color[0] = line_color.r;
+        vert_color[1] = line_color.g;
+        vert_color[2] = line_color.b;
+        vert_color[3] = line_color.a;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+    } else {
+        glColor4f(line_color);
+    }
+
+    glLineWidth(Renderer::instance().line_thickness());
+
+    glBegin(GL_LINES);
+    
+    for (int i = 0; i < num_faces; ++i) {
+        make_gl_vertex(i, 0);
+        make_gl_vertex(i, 1);
+
+        make_gl_vertex(i, 1);
+        make_gl_vertex(i, 2);
+
+        make_gl_vertex(i, 0);
+        make_gl_vertex(i, 2);
+    }
 
     glEnd();
 
