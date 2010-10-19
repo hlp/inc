@@ -243,6 +243,7 @@ void SoftBodyGraphicItem::draw() {
 
     float num_verts = num_faces * 3;
     float v = 0.0f;
+    bool use_lighting = Renderer::instance().enable_lighting();
 
     float r1 = Renderer::instance().base_color().r;
     float g1 = Renderer::instance().base_color().g;
@@ -259,31 +260,65 @@ void SoftBodyGraphicItem::draw() {
     float curr_min_y = get_vertex_height(0, 0);
     float curr_max_y = get_vertex_height(0, 0);
 
+    GLfloat vert_color[4];
+
     for (int i = 0; i < num_faces; ++i) {
         vert_height = get_vertex_height(i, 0);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+            vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+            vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+            vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+            vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
 
         make_gl_vertex(i, 0);
 
         vert_height = get_vertex_height(i, 1);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+                vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+                vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+                vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+                vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
+
+
 
         make_gl_vertex(i, 1);
 
         vert_height = get_vertex_height(i, 2);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+                vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+                vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+                vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+                vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
 
         make_gl_vertex(i, 2);
 

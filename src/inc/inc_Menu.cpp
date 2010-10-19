@@ -656,6 +656,13 @@ void DisplayMenu::setup() {
 
     add_widget(depth_write);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > lighting = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "OpenGL enable lighting",
+        Renderer::instance().enable_lighting_ptr()));
+
+    add_widget(lighting);
+
     std::tr1::shared_ptr<GenericWidget<ci::ColorA> > base_color = 
         std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
         new GenericWidget<ci::ColorA>(*this, "Mesh base gradient color",

@@ -35,6 +35,7 @@ Renderer::Renderer() {
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;
+    enable_lighting_ = true;
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -53,10 +54,12 @@ Renderer::~Renderer() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting Renderer" << std::endl;
 #endif
+
+    cam_light_.reset();
 }
 
 void Renderer::setup() {
-    // nothing here
+    cam_light_ = std::tr1::shared_ptr<CameraLight>(new CameraLight(0));
 }
 
 void Renderer::update() {
@@ -82,7 +85,15 @@ void Renderer::draw() {
 }
 
 void Renderer::begin3D() {
-    // Nothing here
+    if (enable_lighting_)
+        draw_lights();
+}
+
+void Renderer::draw_lights() {
+    glEnable(GL_LIGHTING);
+
+    cam_light_->enable();
+    cam_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -103,7 +114,8 @@ void Renderer::draw_objects() {
 }
 
 void Renderer::end3D() {
-    // Nothing here
+    if (enable_lighting_)
+        glDisable(GL_LIGHTING);
 }
 
 Renderer* Renderer::instance_;
@@ -126,6 +138,30 @@ void Renderer::save_image(int width, std::string name) {
     ci::writeImage(name, tr.getSurface());
 
     IncApp::instance().set_draw_interface(true);
+}
+
+GLenum Light::gl_index() {
+    switch (index_) {
+        case 0:
+        default:
+            return GL_LIGHT0;
+    }
+
+    return GL_LIGHT0;
+}
+
+void CameraLight::draw() {
+    ci::Vec3f cam_pos = Camera::instance().cam().getCamera().getEyePoint();
+    ci::Vec3f cam_dir = Camera::instance().cam().getCamera().getViewDirection();
+
+	GLfloat light_position[] = { cam_pos.x, cam_pos.y, cam_pos.z, 1.0f };
+    GLfloat light_direction[] = { cam_dir.x, cam_dir.y, cam_dir.z };
+    GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	glLightfv(gl_index_, GL_POSITION, light_position);
+    glLightfv(gl_index_, GL_SPOT_DIRECTION, light_direction);
+    //glLightfv(gl_index_, GL_DIFFUSE, white_light);
+    //glLightfv(gl_index_, GL_SPECULAR, white_light);
 }
 
 }
