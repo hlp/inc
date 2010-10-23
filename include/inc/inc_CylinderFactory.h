@@ -34,8 +34,6 @@ public:
     CylinderFactory();
     virtual ~CylinderFactory();
 
-    void draw(); // for debugging
-
     static CylinderFactory& instance();
 
     SoftSolidPtr create_soft_cylinder(std::pair<ci::Vec3f, ci::Vec3f>,
@@ -49,9 +47,6 @@ private:
         ci::Vec3f, ci::Vec3f>, float radius);
 
     static CylinderFactory* instance_;
-
-    std::tr1::shared_ptr<ci::BSpline3f> debug_spline_;
-
 };
 
 }

@@ -88,8 +88,6 @@ void IncApp::draw() {
     manager_->draw_modules();
 
     inc::MeshCreator::instance().draw();
-
-    inc::CylinderFactory::instance().draw();
     
     if (draw_interface_) {
         ci::params::InterfaceGl::draw();

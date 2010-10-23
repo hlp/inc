@@ -113,25 +113,9 @@ std::tr1::shared_ptr<ci::BSpline3f> CylinderFactory::generate_cylinder_bspline(s
         points.push_back(point);
     }
 
-    debug_spline_ = std::tr1::shared_ptr<ci::BSpline3f>(
-        new ci::BSpline3f(points, 3, false, true));
-
     // 1st = points, 2nd = degree, 3rd = add points to close, 4th = is it open
     return std::tr1::shared_ptr<ci::BSpline3f>(new ci::BSpline3f(points, 3,
         false, true));
-}
-
-void CylinderFactory::draw() {
-    if (debug_spline_.get() == NULL)
-        return;
-
-    glBegin(GL_LINE_STRIP);
-
-    for (float t = 0.0f; t <= 1.0f; t += 0.01) {
-        ci::gl::vertex(debug_spline_->getPosition(t));
-    }
-
-    glEnd();
 }
 
 CylinderFactory& CylinderFactory::instance() {
