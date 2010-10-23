@@ -27,6 +27,8 @@ namespace inc {
 class Solid;
 class MeshNetwork;
 
+typedef std::tr1::shared_ptr<ci::TriMesh> TriMeshPtr;
+
 class MeshCreator {
 public:
     MeshCreator();
@@ -34,17 +36,27 @@ public:
 
     void setup();
 
-    std::tr1::shared_ptr<ci::TriMesh> generate_circle_mesh(ci::Vec3f center,
+    // this creates a circular dome mesh
+    TriMeshPtr generate_circle_mesh(ci::Vec3f center,
         float radius);
-    std::tr1::shared_ptr<ci::TriMesh> generate_bspline_mesh(
-        std::tr1::shared_ptr<ci::BSpline3f> mesh, float height);
+    // this takes a closed bspline mesh and makes it into a dome
+    TriMeshPtr generate_bspline_dome_mesh(
+        std::tr1::shared_ptr<ci::BSpline3f> bspline, float height);
+    // this takes an open bspline mesh and revolves it (using the Ray between
+    // the first and last points as the axis)
+    TriMeshPtr generate_bspline_revolve_mesh(
+        std::tr1::shared_ptr<ci::BSpline3f> bspline, int x_res, int y_res);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_circle_mesh(ci::Vec3f center, float radius);
     void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
 
+    // loads an obj and creates a soft body mesh from it, and adds it 
+    // to the scene
     void add_obj_mesh(const std::string& file_name,
         ci::Vec3f scl = ci::Vec3f::one());
+
+    // these are utility methods that should be refactored
     void add_tripod_mesh();
     void add_anemone_mesh();
 

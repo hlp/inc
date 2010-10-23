@@ -53,7 +53,7 @@ void MeshCreator::setup() {
     mesh_network_ = std::tr1::shared_ptr<MeshNetwork>(new MeshNetwork());
 }
 
-std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_circle_mesh(
+TriMeshPtr MeshCreator::generate_circle_mesh(
     ci::Vec3f center, float radius) {
     int line_res = 80; // 20 points per line
     int rot_res = 80; // rotate in 1/20th incrementns
@@ -171,7 +171,7 @@ void MeshCreator::draw() {
 
 // there's a problem with this method.
 void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) {
-    std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_mesh(bspline, 
+    std::tr1::shared_ptr<ci::TriMesh> mesh = generate_bspline_dome_mesh(bspline, 
         mesh_scale_);
 
     current_mesh_ = SolidFactory::create_soft_mesh(mesh);
@@ -179,7 +179,7 @@ void MeshCreator::add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f> bspline) 
     Manager::instance().add_solid(current_mesh_);
 }
 
-std::tr1::shared_ptr<ci::TriMesh> MeshCreator::generate_bspline_mesh(
+TriMeshPtr MeshCreator::generate_bspline_dome_mesh(
     std::tr1::shared_ptr<ci::BSpline3f> bspline, float height) {
     int rot_res = arch_resolution_;
     int slice_res = slice_resolution_; // the number of points to sample the bspline
@@ -288,6 +288,13 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
 
     return points;
 }
+
+TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
+    std::tr1::shared_ptr<ci::BSpline3f> bspline, int x_res, int y_res) {
+
+    return TriMeshPtr(NULL);
+}
+
 
 bool MeshCreator::adjust_mesh_scale(float scale) {
     mesh_scale_ = scale;

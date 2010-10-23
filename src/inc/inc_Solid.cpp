@@ -582,10 +582,10 @@ SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mes
     return solid;
 }
 
-SolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
+SoftSolidPtr SolidFactory::create_soft_sphere(ci::Vec3f position, ci::Vec3f radius) {
     btSoftBody*	soft_body = create_bullet_soft_sphere(position, radius, 100);
 
-    SolidPtr solid(new SoftSolid(new SoftBodyGraphicItem(soft_body,
+    SoftSolidPtr solid(new SoftSolid(new SoftBodyGraphicItem(soft_body,
         sphere_color_), soft_body, 
         SolidFactory::instance().dynamics_world()));
 

@@ -166,6 +166,7 @@
     <ClCompile Include="..\src\inc\inc_Camera.cpp" />
     <ClCompile Include="..\src\inc\inc_CSG.cpp" />
     <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp" />
+    <ClCompile Include="..\src\inc\inc_CylinderFactory.cpp" />
     <ClCompile Include="..\src\inc\inc_DxfSaver.cpp" />
     <ClCompile Include="..\src\inc\inc_GraphicItem.cpp" />
     <ClCompile Include="..\src\inc\inc_Manager.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\include\inc\inc_Camera.h" />
     <ClInclude Include="..\include\inc\inc_CSG.h" />
     <ClInclude Include="..\include\inc\inc_CurveSketcher.h" />
+    <ClInclude Include="..\include\inc\inc_CylinderFactory.h" />
     <ClInclude Include="..\include\inc\inc_DxfSaver.h" />
     <ClInclude Include="..\include\inc\inc_GraphicItem.h" />
     <ClInclude Include="..\include\inc\inc_Manager.h" />
