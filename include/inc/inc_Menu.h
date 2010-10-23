@@ -112,9 +112,13 @@ public:
     bool create_soft_sphere_matrix(bool);
     bool create_rigid_sphere_matrix(bool);
     bool create_rigid_sphere_spring_matrix(bool);
+    bool create_soft_cylinder(bool);
 
     // Override
     std::string name() { return "SOLIDS"; }
+
+    float cylinder_height_;
+    float cylinder_radius_;
 
 private:
     static SolidMenu* instance_;

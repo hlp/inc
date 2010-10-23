@@ -22,6 +22,7 @@
 #include <inc/inc_CylinderFactory.h>
 #include <inc/inc_Solid.h>
 #include <inc/inc_MeshCreator.h>
+#include <inc/inc_Manager.h>
 
 namespace inc {
 
@@ -37,11 +38,25 @@ CylinderFactory::~CylinderFactory() {
 
 SoftSolidPtr CylinderFactory::create_soft_cylinder(std::pair<ci::Vec3f, 
     ci::Vec3f> centers, float radius, int resolution) {
-    // TODO: hook into x_res and y_res
+    // TODO: hook into slice and rotate res
+    /*
     TriMeshPtr mesh = MeshCreator::instance().generate_bspline_revolve_mesh(
-        generate_cylinder_bspline(centers, radius), 30, 30);
+        generate_cylinder_bspline(centers, radius), 20, 40);
 
-    return SolidFactory::create_soft_mesh(mesh);
+    SoftSolidPtr ptr = SolidFactory::create_soft_mesh(mesh, ci::Vec3f::one(),
+        false);
+    */
+
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> points = 
+        MeshCreator::instance().generate_bspline_revolve_points(
+        generate_cylinder_bspline(centers, radius), 20, 40);
+
+    SoftSolidPtr ptr = 
+        SolidFactory::instance().create_soft_container_from_convex_hull(points);
+
+    Manager::instance().add_solid(ptr);
+
+    return ptr;
 }
 
 SoftSolidPtr CylinderFactory::create_soft_cylinder_network(std::vector<
@@ -98,9 +113,25 @@ std::tr1::shared_ptr<ci::BSpline3f> CylinderFactory::generate_cylinder_bspline(s
         points.push_back(point);
     }
 
+    debug_spline_ = std::tr1::shared_ptr<ci::BSpline3f>(
+        new ci::BSpline3f(points, 3, false, true));
+
     // 1st = points, 2nd = degree, 3rd = add points to close, 4th = is it open
     return std::tr1::shared_ptr<ci::BSpline3f>(new ci::BSpline3f(points, 3,
         false, true));
+}
+
+void CylinderFactory::draw() {
+    if (debug_spline_.get() == NULL)
+        return;
+
+    glBegin(GL_LINE_STRIP);
+
+    for (float t = 0.0f; t <= 1.0f; t += 0.01) {
+        ci::gl::vertex(debug_spline_->getPosition(t));
+    }
+
+    glEnd();
 }
 
 CylinderFactory& CylinderFactory::instance() {

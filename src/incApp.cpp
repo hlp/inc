@@ -28,6 +28,7 @@
 #include <inc/inc_SolidCreator.h>
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshCreator.h>
+#include <inc/inc_CylinderFactory.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -87,6 +88,8 @@ void IncApp::draw() {
     manager_->draw_modules();
 
     inc::MeshCreator::instance().draw();
+
+    inc::CylinderFactory::instance().draw();
     
     if (draw_interface_) {
         ci::params::InterfaceGl::draw();

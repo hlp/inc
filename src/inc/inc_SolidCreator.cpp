@@ -30,6 +30,7 @@
 #include <inc/inc_Manager.h>
 #include <inc/inc_CurveSketcher.h> // for ControlPoint
 #include <inc/inc_Camera.h>
+#include <inc/inc_CylinderFactory.h>
 
 namespace inc {
 
@@ -44,6 +45,8 @@ SolidCreator::~SolidCreator() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting SolidCreator" << std::endl;
 #endif
+
+    cylinder_factory_.reset();
 }
 
 void SolidCreator::setup() {
@@ -55,6 +58,8 @@ void SolidCreator::setup() {
         &SolidCreator::mouse_drag);
     mouse_up_cb_id_ = IncApp::instance().registerMouseUp(this, 
         &SolidCreator::mouse_up);
+
+    cylinder_factory_ = std::tr1::shared_ptr<CylinderFactory>(new CylinderFactory());
 }
 
 void SolidCreator::update() {

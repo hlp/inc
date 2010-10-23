@@ -44,8 +44,13 @@ public:
         std::tr1::shared_ptr<ci::BSpline3f> bspline, float height);
     // this takes an open bspline mesh and revolves it (using the Ray between
     // the first and last points as the axis)
+    // slice_res = the number of points to sample in the bspline
+    // rot_res = the number of times to rotate
     TriMeshPtr generate_bspline_revolve_mesh(
-        std::tr1::shared_ptr<ci::BSpline3f> bspline, int x_res, int y_res);
+        std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
+    // similar to above but only returns the points
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> generate_bspline_revolve_points(
+        std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_circle_mesh(ci::Vec3f center, float radius);

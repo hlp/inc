@@ -289,8 +289,9 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
     return points;
 }
 
-TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
-    std::tr1::shared_ptr<ci::BSpline3f> bspline, int x_res, int y_res) {
+std::tr1::shared_ptr<std::vector<ci::Vec3f>> 
+MeshCreator::generate_bspline_revolve_points(
+    std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res) {
 
     ci::Vec3f start = bspline->getPosition(0.0f);
     ci::Vec3f end = bspline->getPosition(1.0f);
@@ -302,10 +303,9 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
     // perp = vector lying in disc
     ci::Vec3f perp = axis.cross(alt);
 
-    int slice_res = 30; // the number of points to sample in the bspline
-    int rot_res = 30; // the number of times to rotate 
-
     std::vector<ci::Vec3f> base_points;
+
+    // sample the bspline
 
     float t;
     for (int i = 0; i < slice_res; ++i) {
@@ -314,15 +314,25 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
         base_points.push_back(bspline->getPosition(t));
     }
 
-    // create the vertices of the mesh 
+    // create the vertices of the mesh
 
-    std::vector<ci::Vec3f> mesh_points;
     ci::Vec3f p;
     float theta;
+
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> mesh_points(new
+        std::vector<ci::Vec3f>());
 
     for (int i = 0; i < rot_res; ++i) {
         for (int j = 0; j < slice_res; ++j) {
             theta = ci::lmap<float>(i, 0, rot_res - 1, 0, M_PI * 2.0f);
+
+            if (j == 0) {
+                mesh_points->push_back(start);
+                continue;
+            } else if (j == (slice_res - 1)) {
+                mesh_points->push_back(end);
+                continue;
+            }
 
             p = base_points[j];
             p -= start;
@@ -331,18 +341,28 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
 
             p += start;
 
-            mesh_points.push_back(p);
+            mesh_points->push_back(p);
         }
     }
+
+    return mesh_points;
+}
+
+TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
+    std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res) {
+
+    // get the vertices
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> mesh_points = 
+        generate_bspline_revolve_points(bspline, slice_res, rot_res);
 
     // stitch all the vertices together 
 
     TriMeshPtr mesh(new ci::TriMesh());
 
-    std::for_each(mesh_points.begin(), mesh_points.end(), 
+    std::for_each(mesh_points->begin(), mesh_points->end(), 
         [&] (ci::Vec3f vec) { mesh->appendVertex(vec); } );
 
-    // this lambda  
+    // this lambda converts from 2D i, j coordinates to the 1D vector coords
     auto append_by_index = [&mesh, &slice_res] (int i1, int j1,
         int i2, int j2, int i3, int j3) {
         int index1 = i1 * slice_res + j1;
@@ -353,7 +373,7 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
     };
 
     for (int i = 0; i < rot_res; ++i) {
-        for (int j = 1; j < slice_res; ++j) {
+        for (int j = 1; j < slice_res - 1; ++j) {
             if (i == 0) {
                 append_by_index(rot_res-1, j-1, rot_res-1, j, i, j);
                 append_by_index(rot_res-1, j-1, i, j-1, i, j);

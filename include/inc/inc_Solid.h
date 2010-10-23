@@ -151,8 +151,9 @@ public:
     static SoftSolidPtr create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh>,
         ci::Vec3f scl = ci::Vec3f::one(), bool lock_base_vertices = true);
 
-    static SolidPtr create_rigid_sphere_container();
-    static SolidPtr create_soft_sphere_container();
+    SoftSolidPtr create_soft_container_from_convex_hull(
+        std::tr1::shared_ptr<std::vector<ci::Vec3f>> points, 
+        bool lock_base_vertices = true);
 
     // I don't use these
     static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);

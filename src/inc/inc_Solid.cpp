@@ -542,6 +542,7 @@ SoftSolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in
         SolidFactory::instance().soft_body_world_info(),
         vertices, triangles, mesh.getNumTriangles(), false);
 
+
     soft_body->m_materials[0]->m_kLST = 0.1;
     //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
 	soft_body->m_cfg.kDF = kDF_;
@@ -560,11 +561,11 @@ SoftSolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in
     soft_body->scale(ci::bullet::toBulletVector3(scl));
     //soft_body->transform(btTransform(m, 
     //    ci::bullet::toBulletVector3(ci::Vec3f(0.0f, 50.0f, 0.0f))));
-
+    
     for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
         soft_body->setMass(i, 1.0f);
     }
-    
+
     if (lock_base_vertices) {
         std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
 
@@ -581,6 +582,50 @@ SoftSolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in
     delete [] triangles;
     delete [] vertices;
     
+    return solid;
+}
+
+SoftSolidPtr SolidFactory::create_soft_container_from_convex_hull(
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> points, bool lock_base_vertices) {
+
+	btAlignedObjectArray<btVector3>	pts;
+
+    std::for_each(points->begin(), points->end(), [&] (const ci::Vec3f& vec) {
+        pts.push_back(btVector3(vec.x, vec.y, vec.z));
+    } );
+
+	btSoftBody* soft_body = btSoftBodyHelpers::CreateFromConvexHull(
+        soft_body_world_info(),&pts[0],pts.size());
+
+    soft_body->m_materials[0]->m_kLST = 0.1;
+    //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;
+	soft_body->m_cfg.kDF = kDF_;
+	soft_body->m_cfg.kDP = kDP_; // no fun
+    soft_body->m_cfg.kDG = kDG_; // no fun
+	soft_body->m_cfg.kPR = kPR_;
+    soft_body->m_cfg.kMT = kMT_; // pose rigiditiy
+
+    for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
+        soft_body->setMass(i, 1.0f);
+    }
+
+    if (lock_base_vertices) {
+        // create tri mesh from bullet soft body
+
+        /*
+        std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
+
+        std::for_each(anchors->begin(), anchors->end(),
+            [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
+        */
+    }
+
+    soft_dynamics_world()->addSoftBody(soft_body);
+
+    SoftSolidPtr solid(new SoftSolid(
+        new SoftBodyGraphicItem(soft_body, container_color_), 
+        soft_body, SolidFactory::instance().dynamics_world()));
+
     return solid;
 }
 
@@ -946,58 +991,6 @@ btSoftBody* SolidFactory::create_bullet_soft_sphere(ci::Vec3f position,
     SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
     return soft_body;
-}
-
-SolidPtr SolidFactory::create_rigid_sphere_container() {
-    ci::ObjLoader loader(ci::loadFileStream("sock.obj"));
-    ci::TriMesh mesh;
-    loader.load(&mesh, true);
-
-    std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
-        remove_mesh_duplicates(mesh);
-
-    mesh = *mesh_ptr;
-
-    std::vector<ci::Vec3f> vertices = mesh.getVertices();
-	std::vector<size_t> indices = mesh.getIndices();
-		
-	btTriangleMesh* tmesh = new btTriangleMesh(true, false);
-    mesh_cleanup_.push_back(tmesh);
-		
-    for(int i = 0; i < mesh.getNumIndices(); i += 3) {
-		tmesh->addTriangle(ci::bullet::toBulletVector3(vertices[indices[i]]), 
-			ci::bullet::toBulletVector3(vertices[indices[i+1]]), 
-			ci::bullet::toBulletVector3(vertices[indices[i+2]]), 
-			true);
-	}
-
-	btBvhTriangleMeshShape* tri_mesh = new btBvhTriangleMeshShape(tmesh, true, true);
-    tri_mesh->setLocalScaling(ci::bullet::toBulletVector3(ci::Vec3f::one() * 10.0f));
-	tri_mesh->setMargin(0.05f);
-
-    btDefaultMotionState *motion_state = new btDefaultMotionState(btTransform(
-        ci::bullet::toBulletQuaternion(ci::Quatf(-M_PI / 2.0f, 0.0f, 0.0f)),
-        ci::bullet::toBulletVector3((ci::Vec3f(0.0, 15.0f, 0.0f)))));
-	btRigidBody::btRigidBodyConstructionInfo body_ci(0.0f, motion_state, tri_mesh, btVector3(0,0,0));
-	btRigidBody* rigid_body = new btRigidBody(body_ci);
-
-    SolidFactory::instance().soft_dynamics_world()->addRigidBody(rigid_body);
-
-    SolidPtr solid(new RigidSolid(NULL, rigid_body,
-        SolidFactory::instance().dynamics_world()));
-
-    return solid;
-}
-
-SolidPtr SolidFactory::create_soft_sphere_container() {
-    ci::ObjLoader loader(ci::loadFileStream("sock-narrow-3.obj"));
-    ci::TriMesh mesh;
-    loader.load(&mesh, true);
-
-    std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
-        std::tr1::shared_ptr<ci::TriMesh>(new ci::TriMesh(mesh));
-    
-    return create_soft_mesh(mesh_ptr);
 }
 
 btDynamicsWorld* SolidFactory::dynamics_world() {

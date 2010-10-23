@@ -42,6 +42,7 @@
 #include <inc/inc_Renderer.h>
 #include <inc/inc_Origin.h>
 #include <inc/inc_MeshNetwork.h>
+#include <inc/inc_CylinderFactory.h>
 
 namespace inc {
 
@@ -209,6 +210,9 @@ SolidMenu::SolidMenu() {
     matrix_d_ = 1;
 
     sphere_radius_ = 3.0f;
+
+    cylinder_height_ = 5.0f;
+    cylinder_radius_ = 2.0f;
 }
 
 SolidMenu::~SolidMenu() {
@@ -265,6 +269,16 @@ void SolidMenu::setup() {
 
     add_widget(create_soft_sphere_matrix_button);
 
+    std::tr1::shared_ptr<GenericWidget<bool> > create_soft_cylinder = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Create soft cylinder"));
+
+    create_soft_cylinder->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::SolidMenu::create_soft_cylinder), 
+        this));
+
+    add_widget(create_soft_cylinder);
+
     std::tr1::shared_ptr<GenericWidget<int> > set_w = 
         std::tr1::shared_ptr<GenericWidget<int> >(
         new GenericWidget<int>(*this, "Matrix width", &matrix_w_));
@@ -282,6 +296,20 @@ void SolidMenu::setup() {
         new GenericWidget<int>(*this, "Matrix depth", &matrix_d_));
 
     add_widget(set_d);
+
+    std::tr1::shared_ptr<GenericWidget<float> > cyl_height = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Cylinder height", 
+        &cylinder_height_, "step=0.01"));
+
+    add_widget(cyl_height);
+
+    std::tr1::shared_ptr<GenericWidget<float> > cyl_radius = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Cylinder radius", 
+        &cylinder_radius_, "step=0.01"));
+
+    add_widget(cyl_radius);
 
     std::tr1::shared_ptr<GenericWidget<float> > sphere_kLST = 
         std::tr1::shared_ptr<GenericWidget<float> >(
@@ -395,6 +423,14 @@ bool SolidMenu::create_rigid_sphere_matrix(bool) {
 bool SolidMenu::create_rigid_sphere_spring_matrix(bool) {
     SolidCreator::instance().create_sphere_spring_matrix(ci::Vec3f(0.0f, 100.0f, 0.0f), 
         ci::Vec3f::one() * sphere_radius_, matrix_w_, matrix_h_, matrix_d_);
+
+    return false;
+}
+
+bool SolidMenu::create_soft_cylinder(bool) {
+    CylinderFactory::instance().create_soft_cylinder(std::pair<ci::Vec3f, ci::Vec3f>(
+        ci::Vec3f::zero(), ci::Vec3f::yAxis() * cylinder_height_),
+        cylinder_radius_, 10);
 
     return false;
 }
