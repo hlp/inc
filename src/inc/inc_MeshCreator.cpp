@@ -292,7 +292,79 @@ std::tr1::shared_ptr<std::vector<ci::Vec3f> > MeshCreator::make_vertical_arc(
 TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
     std::tr1::shared_ptr<ci::BSpline3f> bspline, int x_res, int y_res) {
 
-    return TriMeshPtr(NULL);
+    ci::Vec3f start = bspline->getPosition(0.0f);
+    ci::Vec3f end = bspline->getPosition(1.0f);
+    ci::Vec3f mid = bspline->getPosition(0.5f);
+
+    // axis = central rotation axis
+    ci::Vec3f axis = (end - start).normalized();
+    ci::Vec3f alt = (mid - start).normalized();
+    // perp = vector lying in disc
+    ci::Vec3f perp = axis.cross(alt);
+
+    int slice_res = 30; // the number of points to sample in the bspline
+    int rot_res = 30; // the number of times to rotate 
+
+    std::vector<ci::Vec3f> base_points;
+
+    float t;
+    for (int i = 0; i < slice_res; ++i) {
+        t = ci::lmap<float>(i, 0, slice_res - 1, 0, 1.0f);
+
+        base_points.push_back(bspline->getPosition(t));
+    }
+
+    // create the vertices of the mesh 
+
+    std::vector<ci::Vec3f> mesh_points;
+    ci::Vec3f p;
+    float theta;
+
+    for (int i = 0; i < rot_res; ++i) {
+        for (int j = 0; j < slice_res; ++j) {
+            theta = ci::lmap<float>(i, 0, rot_res - 1, 0, M_PI * 2.0f);
+
+            p = base_points[j];
+            p -= start;
+
+            p = ci::Quatf(axis, theta) * p;
+
+            p += start;
+
+            mesh_points.push_back(p);
+        }
+    }
+
+    // stitch all the vertices together 
+
+    TriMeshPtr mesh(new ci::TriMesh());
+
+    std::for_each(mesh_points.begin(), mesh_points.end(), 
+        [&] (ci::Vec3f vec) { mesh->appendVertex(vec); } );
+
+    // this lambda  
+    auto append_by_index = [&mesh, &slice_res] (int i1, int j1,
+        int i2, int j2, int i3, int j3) {
+        int index1 = i1 * slice_res + j1;
+        int index2 = i2 * slice_res + j2;
+        int index3 = i3 * slice_res + j3;
+
+        mesh->appendTriangle(index1, index2, index3);
+    };
+
+    for (int i = 0; i < rot_res; ++i) {
+        for (int j = 1; j < slice_res; ++j) {
+            if (i == 0) {
+                append_by_index(rot_res-1, j-1, rot_res-1, j, i, j);
+                append_by_index(rot_res-1, j-1, i, j-1, i, j);
+            } else {
+                append_by_index(i-1, j-1, i-1, j, i, j);
+                append_by_index(i-1, j-1, i, j-1, i, j);
+            }
+        }
+    }
+
+    return mesh;
 }
 
 
