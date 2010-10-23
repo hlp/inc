@@ -148,8 +148,8 @@ public:
         ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
     static std::tr1::shared_ptr<std::deque<SolidPtr> > create_rigid_sphere_spring_matrix(
         ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
-    static SolidPtr create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh>,
-        ci::Vec3f scl = ci::Vec3f::one());
+    static SoftSolidPtr create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh>,
+        ci::Vec3f scl = ci::Vec3f::one(), bool lock_base_vertices = true);
 
     static SolidPtr create_rigid_sphere_container();
     static SolidPtr create_soft_sphere_container();

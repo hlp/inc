@@ -21,6 +21,7 @@
 
 #include <inc/inc_CylinderFactory.h>
 #include <inc/inc_Solid.h>
+#include <inc/inc_MeshCreator.h>
 
 namespace inc {
 
@@ -35,10 +36,12 @@ CylinderFactory::~CylinderFactory() {
 }
 
 SoftSolidPtr CylinderFactory::create_soft_cylinder(std::pair<ci::Vec3f, 
-    ci::Vec3f>, float radius, int resolution) {
-    
+    ci::Vec3f> centers, float radius, int resolution) {
+    // TODO: hook into x_res and y_res
+    TriMeshPtr mesh = MeshCreator::instance().generate_bspline_revolve_mesh(
+        generate_cylinder_bspline(centers, radius), 30, 30);
 
-    return SolidFactory::create_soft_sphere(ci::Vec3f(), ci::Vec3f::one());
+    return SolidFactory::create_soft_mesh(mesh);
 }
 
 SoftSolidPtr CylinderFactory::create_soft_cylinder_network(std::vector<
@@ -48,9 +51,56 @@ SoftSolidPtr CylinderFactory::create_soft_cylinder_network(std::vector<
 }
 
 std::tr1::shared_ptr<ci::BSpline3f> CylinderFactory::generate_cylinder_bspline(std::pair<
-    ci::Vec3f, ci::Vec3f>, float radius) {
+    ci::Vec3f, ci::Vec3f> centers, float radius) {
+    std::vector<ci::Vec3f> points;
 
-    return std::tr1::shared_ptr<ci::BSpline3f>(NULL);
+    // number of control points per disc
+    int num_disc = 5;
+    // number of control points for the side length
+    int num_side = 10;
+
+    ci::Vec3f start = centers.first;
+    ci::Vec3f end = centers.second;
+    ci::Vec3f axis = end - start;
+    axis.normalize();
+    ci::Vec3f alt = ci::Vec3f::yAxis();
+    if (alt == axis)
+        alt = ci::Vec3f::zAxis();
+    // perp is the vector lying in the circles
+    ci::Vec3f perp = axis.cross(alt);
+    perp.normalize();
+
+    // the current working point
+    ci::Vec3f point = start;
+
+    float disc_step = radius / (float) num_disc;
+    float side_step = (end - start).length() / (float) num_side;
+
+    // walk along the entire perimeter of the line, adding points
+    // start with the center of the first disc
+    points.push_back(point);
+
+    // add points for the start disc
+    for (int i = 0; i < num_disc; ++i) {
+        point += perp * disc_step;
+        points.push_back(point);
+    }
+
+    // add points for the side
+    for (int i = 0; i < num_side; ++i) {
+        point += axis * side_step;
+        points.push_back(point);
+    }
+
+    // walk backwards on the top disc
+    for (int i = 0; i < num_disc; ++i) {
+        point -= perp * disc_step;
+        points.push_back(point);
+    }
+
+    // 1st = points, 2nd = degree, 3rd = add points to close, 4th = is it open
+    return std::tr1::shared_ptr<ci::BSpline3f>(new ci::BSpline3f(points, 3,
+        false, true));
 }
 
 CylinderFactory& CylinderFactory::instance() {

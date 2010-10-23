@@ -509,8 +509,8 @@ float SolidFactory::sphere_kPR_;
 float SolidFactory::sphere_total_mass_;
 
 // NOTE: this not only loads the mesh, it locks the bottom vertices
-SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh,
-    ci::Vec3f scl) {
+SoftSolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mesh,
+    ci::Vec3f scl, bool lock_base_vertices) {
     ci::TriMesh mesh_copy = *in_mesh; // TODO: remove this copy step
 
     std::tr1::shared_ptr<ci::TriMesh> mesh_ptr = 
@@ -564,15 +564,17 @@ SolidPtr SolidFactory::create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh> in_mes
     for (int i = 0; i < soft_body->m_nodes.size(); ++i) {
         soft_body->setMass(i, 1.0f);
     }
-        
-    std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
+    
+    if (lock_base_vertices) {
+        std::tr1::shared_ptr<std::vector<int> > anchors = get_top_vertices(mesh);
 
-    std::for_each(anchors->begin(), anchors->end(),
-        [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
+        std::for_each(anchors->begin(), anchors->end(),
+            [soft_body] (int index) { soft_body->setMass(index, 0.0f); });
+    }
 
     SolidFactory::instance().soft_dynamics_world()->addSoftBody(soft_body);
 
-    SolidPtr solid(new SoftSolid(
+    SoftSolidPtr solid(new SoftSolid(
         new SoftBodyGraphicItem(soft_body, container_color_), 
         soft_body, SolidFactory::instance().dynamics_world()));
 
