@@ -18,11 +18,16 @@
  */
 
 #include <cinder/gl/gl.h>
+#include <cinder/app/App.h>
+#include <cinder/TriMesh.h>
+#include <cinder/CinderMath.h>
+#include <cinder/Rand.h>
 
 #include <inc/inc_CylinderFactory.h>
 #include <inc/inc_Solid.h>
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_Manager.h>
+#include <incApp.h>
 
 namespace inc {
 
@@ -37,23 +42,33 @@ CylinderFactory::~CylinderFactory() {
 }
 
 SoftSolidPtr CylinderFactory::create_soft_cylinder(std::pair<ci::Vec3f, 
-    ci::Vec3f> centers, float radius, int resolution) {
+    ci::Vec3f> centers, float radius, int slice_res, int rot_res) {
     // TODO: hook into slice and rotate res
-    
+    if (rot_res % 2 == 0) {
+        ci::app::console() << "ERROR: cannot create cylinder with odd rotation resultion" << std::endl;
+        return SoftSolidPtr(NULL);
+    }
+
     TriMeshPtr mesh = MeshCreator::instance().generate_bspline_revolve_mesh(
-        generate_cylinder_bspline(centers, radius), 40, 15);
+        generate_cylinder_bspline(centers, radius), slice_res, rot_res);
+    
+    /*
+    ci::Rand rand(IncApp::instance().getElapsedFrames());
+    int rand_indice = rand.randFloat(mesh->getNumTriangles() - 5);
+    
+    std::tr1::shared_ptr<std::vector<int>> triangles(new std::vector<int>());
+
+    for (int i = 0; i < 5; ++i) {
+        triangles->push_back(rand_indice + i);
+    }
+
+    TriMeshPtr mesh_increase = MeshCreator::instance().increase_resolution(mesh,
+        triangles, 4);
+
+    SoftSolidPtr ptr = SolidFactory::create_soft_mesh(mesh_increase);
+    */
 
     SoftSolidPtr ptr = SolidFactory::create_soft_mesh(mesh);
-    
-
-    /*
-    std::tr1::shared_ptr<std::vector<ci::Vec3f>> points = 
-        MeshCreator::instance().generate_bspline_revolve_points(
-        generate_cylinder_bspline(centers, radius), 20, 40);
-
-    SoftSolidPtr ptr = 
-        SolidFactory::instance().create_soft_container_from_convex_hull(points);
-    */
 
     Manager::instance().add_solid(ptr);
 

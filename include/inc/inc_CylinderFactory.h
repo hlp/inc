@@ -36,11 +36,12 @@ public:
 
     static CylinderFactory& instance();
 
+    // Rotation resolution MUST BE ODD!
     SoftSolidPtr create_soft_cylinder(std::pair<ci::Vec3f, ci::Vec3f>,
-        float radius, int resolution);
+        float radius, int slice_res, int rot_res);
 
     SoftSolidPtr create_soft_cylinder_network(std::vector<std::pair<ci::Vec3f,
-        ci::Vec3f>>, float radius, int resolution);
+        ci::Vec3f>>, float radius, int res);
 
 private:
     std::tr1::shared_ptr<ci::BSpline3f> generate_cylinder_bspline(std::pair<

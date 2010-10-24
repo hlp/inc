@@ -1037,6 +1037,7 @@ float* SolidFactory::gravity_ptr() {
     return &gravity_;
 }
 
+// yes, this method does actually work, it's needed for OBJ loading
 std::tr1::shared_ptr<ci::TriMesh> SolidFactory::remove_mesh_duplicates(
     const ci::TriMesh& mesh) {
 
@@ -1049,25 +1050,59 @@ std::tr1::shared_ptr<ci::TriMesh> SolidFactory::remove_mesh_duplicates(
     std::vector<ci::Vec3f> vertex_reduce;
     std::vector<ci::Vec3f>::const_iterator reduce_it;
 
+    float thresh = 0.0000001;
+
+    // NOTE: the threshhold code so far seems really buggy. The code as it stands now
+    // removes vertices, but only if they are exact float matches (a relative rarity).
+    // the "thresh" code checks distances, but removes a lot of vertices it shouldn't
+    bool use_thresh = false;
+
+    std::map<ci::Vec3f, int> remove_index_map;
+
     for (std::vector<ci::Vec3f>::const_iterator it = vertices.begin();
         it != vertices.end(); ++it) {
+        if (use_thresh) {
+            bool found = false;
+            int i = 0;
+            for (reduce_it = vertex_reduce.begin(); reduce_it != vertex_reduce.end();
+                ++reduce_it) {
+                if (it->distance(*reduce_it) < thresh) {
+                    found = true;
 
-        reduce_it = find(vertex_reduce.begin(), vertex_reduce.end(), *it);
-        if (reduce_it != vertex_reduce.end())
-            continue;
+                    remove_index_map[*it] = i;
+
+                    break;
+                }
+                ++i;
+            }
+
+            if (found)
+                continue;
+        } else {
+            reduce_it = find(vertex_reduce.begin(), vertex_reduce.end(), *it);
+            if (reduce_it != vertex_reduce.end())
+                continue;
+        }
 
         vertex_reduce.push_back(*it);
         mesh_ptr->appendVertex(*it);
     }
 
     // algorithm to find the indice of the vector
-    auto find_indice = [] (const std::vector<ci::Vec3f>& vec, 
+    auto find_indice = [&] (const std::vector<ci::Vec3f>& vec, 
         ci::Vec3f val)->int {
+        
+        // first try looking if it was removed
+        if (use_thresh && remove_index_map.find(val) != remove_index_map.end())
+            return remove_index_map[val];
+
+        // otherwise we should have an exact match
         for (int i = 0; i < vec.size(); ++i) {
             if (vec[i] == val)
                 return i;
         }
 
+        // oh no, this is not good...
         return 0;
     };
 

@@ -211,8 +211,8 @@ SolidMenu::SolidMenu() {
 
     sphere_radius_ = 3.0f;
 
-    cylinder_height_ = 5.0f;
-    cylinder_radius_ = 2.0f;
+    cylinder_height_ = 35.0f;
+    cylinder_radius_ = 10.0f;
 }
 
 SolidMenu::~SolidMenu() {
@@ -430,7 +430,7 @@ bool SolidMenu::create_rigid_sphere_spring_matrix(bool) {
 bool SolidMenu::create_soft_cylinder(bool) {
     CylinderFactory::instance().create_soft_cylinder(std::pair<ci::Vec3f, ci::Vec3f>(
         ci::Vec3f::zero(), ci::Vec3f::yAxis() * cylinder_height_),
-        cylinder_radius_, 10);
+        cylinder_radius_, 40, 15);
 
     return false;
 }

@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <cinder/TriMesh.h>
 #include <cinder/Vector.h>
 
@@ -41,7 +43,7 @@ public:
         float radius);
     // this takes a closed bspline mesh and makes it into a dome
     TriMeshPtr generate_bspline_dome_mesh(
-        std::tr1::shared_ptr<ci::BSpline3f> bspline, float height);
+        std::shared_ptr<ci::BSpline3f> bspline, float height);
     // this takes an open bspline mesh and revolves it (using the Ray between
     // the first and last points as the axis)
     // slice_res = the number of points to sample in the bspline
@@ -50,11 +52,17 @@ public:
         std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
     // similar to above but only returns the points
     std::tr1::shared_ptr<std::vector<ci::Vec3f>> generate_bspline_revolve_points(
-        std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
+        std::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
+
+    TriMeshPtr increase_resolution(TriMeshPtr, 
+        std::shared_ptr<std::vector<int>> triangle_indices, int amount);
+
+    std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>> split_triangle(
+        ci::Vec3<ci::Vec3f>, int amount);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_circle_mesh(ci::Vec3f center, float radius);
-    void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
+    void add_bspline_mesh(std::shared_ptr<ci::BSpline3f>);
 
     // loads an obj and creates a soft body mesh from it, and adds it 
     // to the scene

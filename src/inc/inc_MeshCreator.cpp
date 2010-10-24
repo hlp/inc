@@ -438,6 +438,81 @@ std::vector<ci::Vec3<int>> MeshCreator::patch_cirle(const std::vector<int>& indi
     return patch_indices;
 }
 
+TriMeshPtr MeshCreator::increase_resolution(TriMeshPtr mesh, 
+    std::shared_ptr<std::vector<int>> triangle_indices, int amount) {
+
+    int num_triangles = triangle_indices->size();
+
+    std::map<int, std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>>>
+        tri_indice_to_split;
+    std::map<int, std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>>>::iterator tri_it;
+
+    ci::Vec3f vec_1, vec_2, vec_3;
+    int i = 0;
+    for (std::vector<int>::iterator it = triangle_indices->begin(); 
+        it != triangle_indices->end(); ++it) {
+        mesh->getTriangleVertices(*it, &vec_1, &vec_2, &vec_3);
+
+        tri_indice_to_split[*it] = split_triangle(ci::Vec3<ci::Vec3f>(
+            vec_1, vec_2, vec_3), amount);
+
+        ++i;
+    }
+
+    TriMeshPtr new_mesh = TriMeshPtr(new ci::TriMesh());
+    int vertex_count = 0;
+
+    auto add_tri = [&new_mesh, &vertex_count] (const ci::Vec3f& v1, const ci::Vec3f& v2,
+        const ci::Vec3f& v3) {
+        new_mesh->appendVertex(v1);
+        new_mesh->appendVertex(v2);
+        new_mesh->appendVertex(v3);
+        new_mesh->appendTriangle(vertex_count, vertex_count + 1, vertex_count + 2);
+        vertex_count += 3;
+    };
+    
+    int num_mesh_triangles = mesh->getNumTriangles();
+    for (int i = 0; i < num_mesh_triangles; ++i) {
+        tri_it = tri_indice_to_split.find(i);
+        if (tri_it != tri_indice_to_split.end()) {
+            // insert these triangles
+            std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>> tris = 
+                tri_indice_to_split[i];
+
+            for (std::vector<ci::Vec3<ci::Vec3f>>::iterator it = tris->begin();
+                it != tris->end(); ++it) {
+                add_tri(it->x, it->y, it->z);
+            }
+
+            continue;
+        } 
+
+        mesh->getTriangleVertices(i, &vec_1, &vec_2, &vec_3);
+        add_tri(vec_1, vec_2, vec_3);
+    }
+
+    return new_mesh;
+}
+
+std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>> MeshCreator::split_triangle(
+    ci::Vec3<ci::Vec3f> triangle, int amount) {
+    if (amount != 4)
+        std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>>(NULL);
+
+    ci::Vec3f mid_1 = (triangle.x + triangle.y) / 2.0f;
+    ci::Vec3f mid_2 = (triangle.y + triangle.z) / 2.0f;
+    ci::Vec3f mid_3 = (triangle.x + triangle.z) / 2.0f;
+
+    std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>> triangles(
+        new std::vector<ci::Vec3<ci::Vec3f>>());
+
+    triangles->push_back(ci::Vec3<ci::Vec3f>(triangle.x, mid_1, mid_3));
+    triangles->push_back(ci::Vec3<ci::Vec3f>(mid_1, triangle.y, mid_2));
+    triangles->push_back(ci::Vec3<ci::Vec3f>(mid_2, mid_3, mid_1));
+    triangles->push_back(ci::Vec3<ci::Vec3f>(mid_2, triangle.z, mid_3));
+
+    return triangles;
+}
 
 bool MeshCreator::adjust_mesh_scale(float scale) {
     mesh_scale_ = scale;
