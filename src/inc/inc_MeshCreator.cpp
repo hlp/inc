@@ -372,8 +372,19 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
         mesh->appendTriangle(index1, index2, index3);
     };
 
+    std::vector<int> top_indices;
+    std::vector<int> bottom_indices;
+
     for (int i = 0; i < rot_res; ++i) {
         for (int j = 1; j < slice_res - 1; ++j) {
+            if (j == 1) {
+                bottom_indices.push_back(i * slice_res + j);
+                continue;
+            } else if (j == (slice_res - 2)) {
+                top_indices.push_back(i * slice_res + j);
+            }
+            
+
             if (i == 0) {
                 append_by_index(rot_res-1, j-1, rot_res-1, j, i, j);
                 append_by_index(rot_res-1, j-1, i, j-1, i, j);
@@ -384,7 +395,47 @@ TriMeshPtr MeshCreator::generate_bspline_revolve_mesh(
         }
     }
 
+    // patch the top and bottom circles
+
+    std::vector<ci::Vec3<int>> bottom_patch = patch_cirle(bottom_indices);
+
+    std::for_each(bottom_patch.begin(), bottom_patch.end(), [&] (const ci::Vec3<int>& tri) {
+        mesh->appendTriangle(tri.x, tri.y, tri.z);
+    } );
+
+    std::vector<ci::Vec3<int>> top_patch = patch_cirle(top_indices);
+
+    std::for_each(top_patch.begin(), top_patch.end(), [&] (const ci::Vec3<int>& tri) {
+        mesh->appendTriangle(tri.x, tri.y, tri.z);
+    } );
+
     return mesh;
+}
+
+// requires there to be an even number of indices
+std::vector<ci::Vec3<int>> MeshCreator::patch_cirle(const std::vector<int>& indices) {
+    int start = indices[0];
+    int end = indices[indices.size() - 1];
+    int mid_num = indices.size() / 2 + 1;
+    int mid = indices[mid_num];
+
+    std::vector<ci::Vec3<int>> patch_indices;
+
+    // do the 2 triangles
+    patch_indices.push_back(ci::Vec3<int>(start, end, indices[1]));
+    patch_indices.push_back(ci::Vec3<int>(mid, indices[mid_num - 1], indices[mid_num + 1]));
+
+    int i_countdown = indices.size() - 1;
+    for (int i = 1; i < mid_num - 1; ++i) {
+        patch_indices.push_back(ci::Vec3<int>(indices[i], indices[i_countdown], 
+            indices[i+1]));
+        patch_indices.push_back(ci::Vec3<int>(indices[i+1], 
+            indices[i_countdown-1], indices[i_countdown]));
+
+        --i_countdown;
+    }
+
+    return patch_indices;
 }
 
 

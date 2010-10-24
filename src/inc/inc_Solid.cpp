@@ -595,7 +595,7 @@ SoftSolidPtr SolidFactory::create_soft_container_from_convex_hull(
     } );
 
 	btSoftBody* soft_body = btSoftBodyHelpers::CreateFromConvexHull(
-        soft_body_world_info(),&pts[0],pts.size());
+        soft_body_world_info(),&pts[0],pts.size(), false);
 
     soft_body->m_materials[0]->m_kLST = 0.1;
     //soft_body->m_cfg.aeromodel = btSoftBody::eAeroModel::V_TwoSided;

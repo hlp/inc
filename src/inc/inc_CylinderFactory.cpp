@@ -39,20 +39,21 @@ CylinderFactory::~CylinderFactory() {
 SoftSolidPtr CylinderFactory::create_soft_cylinder(std::pair<ci::Vec3f, 
     ci::Vec3f> centers, float radius, int resolution) {
     // TODO: hook into slice and rotate res
-    /*
+    
     TriMeshPtr mesh = MeshCreator::instance().generate_bspline_revolve_mesh(
-        generate_cylinder_bspline(centers, radius), 20, 40);
+        generate_cylinder_bspline(centers, radius), 40, 15);
 
-    SoftSolidPtr ptr = SolidFactory::create_soft_mesh(mesh, ci::Vec3f::one(),
-        false);
-    */
+    SoftSolidPtr ptr = SolidFactory::create_soft_mesh(mesh);
+    
 
+    /*
     std::tr1::shared_ptr<std::vector<ci::Vec3f>> points = 
         MeshCreator::instance().generate_bspline_revolve_points(
         generate_cylinder_bspline(centers, radius), 20, 40);
 
     SoftSolidPtr ptr = 
         SolidFactory::instance().create_soft_container_from_convex_hull(points);
+    */
 
     Manager::instance().add_solid(ptr);
 
