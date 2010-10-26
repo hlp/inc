@@ -27,6 +27,30 @@
 
 namespace inc {
 
+class Light {
+public:
+    Light(int index) : index_(index) {
+        gl_index_ = gl_index();
+    }
+
+    virtual void draw() = 0;
+
+    GLenum gl_index();
+
+    void enable() { glEnable(gl_index()); }
+
+    // this is the unique OpenGL light index
+    int index_;
+    GLenum gl_index_;
+};
+
+class CameraLight : public Light {
+public:
+    CameraLight(int index) : Light(index) { }
+
+    void draw();
+};
+
 class Renderer : public Module {
 public:
     Renderer();
@@ -61,16 +85,24 @@ public:
     bool* enable_alpha_blending_ptr() { return &enable_alpha_blending_; }
     bool* enable_depth_read_ptr() { return &enable_depth_read_; }
     bool* enable_depth_write_ptr() { return &enable_depth_write_; }
+    bool* enable_lighting_ptr() { return &enable_lighting_; }
+    bool enable_lighting() { return enable_lighting_; }
 
     static Renderer& instance() { return *instance_; }
 
     // used for saving a higher resolution image
     void save_image(int width, std::string name);
 
+    // this must be called before the camera
+    void draw_lights();
+
 private:
     void begin3D();
     void draw_objects();
     void end3D();
+    
+
+    std::tr1::shared_ptr<CameraLight> cam_light_;
 
     ci::ColorA base_color_;
     ci::ColorA top_color_;
@@ -87,8 +119,11 @@ private:
     bool enable_alpha_blending_;
     bool enable_depth_read_;
     bool enable_depth_write_;
+    bool enable_lighting_;
 
     ci::ColorA background_color_;
 };
+
+
 
 }

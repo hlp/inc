@@ -29,6 +29,7 @@
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_LinkFactory.h>
+#include <inc/inc_CylinderFactory.h>
 
 IncApp::IncApp() {
     instance_ = this;

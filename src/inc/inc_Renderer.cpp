@@ -26,6 +26,7 @@
 #include <inc/inc_Manager.h>
 #include <inc/inc_Solid.h>
 #include <inc/inc_Camera.h>
+#include <inc/inc_SolidCreator.h>
 
 namespace inc {
 
@@ -35,6 +36,7 @@ Renderer::Renderer() {
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;
+    enable_lighting_ = true;
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -53,10 +55,12 @@ Renderer::~Renderer() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting Renderer" << std::endl;
 #endif
+
+    cam_light_.reset();
 }
 
 void Renderer::setup() {
-    // nothing here
+    cam_light_ = std::tr1::shared_ptr<CameraLight>(new CameraLight(0));
 }
 
 void Renderer::update() {
@@ -73,6 +77,9 @@ void Renderer::draw_init() {
     ci::gl::enableDepthWrite(enable_depth_write_);
 
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+    if (enable_lighting_)
+        draw_lights();
 }
 
 void Renderer::draw() {
@@ -82,7 +89,14 @@ void Renderer::draw() {
 }
 
 void Renderer::begin3D() {
-    // Nothing here
+    // nothing here
+}
+
+void Renderer::draw_lights() {
+    glEnable(GL_LIGHTING);
+
+    cam_light_->enable();
+    cam_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -103,7 +117,8 @@ void Renderer::draw_objects() {
 }
 
 void Renderer::end3D() {
-    // Nothing here
+    if (enable_lighting_)
+        glDisable(GL_LIGHTING);
 }
 
 Renderer* Renderer::instance_;
@@ -126,6 +141,26 @@ void Renderer::save_image(int width, std::string name) {
     ci::writeImage(name, tr.getSurface());
 
     IncApp::instance().set_draw_interface(true);
+}
+
+GLenum Light::gl_index() {
+    switch (index_) {
+        case 0:
+        default:
+            return GL_LIGHT0;
+    }
+
+    return GL_LIGHT0;
+}
+
+void CameraLight::draw() {
+    // set up a directional (sun-like) light far away from the model
+	GLfloat light_position[] = { 50.0f, 1.0f, 50.0f, 0.0f };
+    GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+    
+	glLightfv(gl_index_, GL_POSITION, light_position);
+    glLightfv(gl_index_, GL_DIFFUSE, white_light);
+    glLightfv(gl_index_, GL_SPECULAR, white_light);
 }
 
 }

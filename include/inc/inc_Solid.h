@@ -116,6 +116,7 @@ class DebugDraw;
 
 typedef std::tr1::shared_ptr<Solid> SolidPtr;
 typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
+typedef std::tr1::shared_ptr<SoftSolid> SoftSolidPtr;
 
 class SolidFactory : public Module {
 public:
@@ -138,7 +139,7 @@ public:
     void update_object_gravity(); // this applies any gravity changes to all objects
         
     static RigidSolidPtr create_rigid_sphere(ci::Vec3f position, ci::Vec3f radius);
-    static SolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
+    static SoftSolidPtr create_soft_sphere(ci::Vec3f position, ci::Vec3f radius);
     static std::tr1::shared_ptr<std::deque<SolidPtr> > create_linked_soft_spheres(
         ci::Vec3f pos, ci::Vec3f radius);
     static std::tr1::shared_ptr<std::deque<SolidPtr> > create_soft_sphere_matrix(
@@ -147,11 +148,12 @@ public:
         ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
     static std::tr1::shared_ptr<std::deque<SolidPtr> > create_rigid_sphere_spring_matrix(
         ci::Vec3f pos, ci::Vec3f radius, int w, int h, int d);
-    static SolidPtr create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh>,
-        ci::Vec3f scl = ci::Vec3f::one());
+    static SoftSolidPtr create_soft_mesh(std::tr1::shared_ptr<ci::TriMesh>,
+        ci::Vec3f scl = ci::Vec3f::one(), bool lock_base_vertices = true);
 
-    static SolidPtr create_rigid_sphere_container();
-    static SolidPtr create_soft_sphere_container();
+    SoftSolidPtr create_soft_container_from_convex_hull(
+        std::tr1::shared_ptr<std::vector<ci::Vec3f>> points, 
+        bool lock_base_vertices = true);
 
     // I don't use these
     static SolidPtr create_plane(ci::Vec3f dimensions, ci::Vec3f position);

@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include <cinder/TriMesh.h>
 #include <cinder/Vector.h>
 
@@ -27,6 +29,8 @@ namespace inc {
 class Solid;
 class MeshNetwork;
 
+typedef std::tr1::shared_ptr<ci::TriMesh> TriMeshPtr;
+
 class MeshCreator {
 public:
     MeshCreator();
@@ -34,17 +38,38 @@ public:
 
     void setup();
 
-    std::tr1::shared_ptr<ci::TriMesh> generate_circle_mesh(ci::Vec3f center,
+    // this creates a circular dome mesh
+    TriMeshPtr generate_circle_mesh(ci::Vec3f center,
         float radius);
-    std::tr1::shared_ptr<ci::TriMesh> generate_bspline_mesh(
-        std::tr1::shared_ptr<ci::BSpline3f> mesh, float height);
+    // this takes a closed bspline mesh and makes it into a dome
+    TriMeshPtr generate_bspline_dome_mesh(
+        std::shared_ptr<ci::BSpline3f> bspline, float height);
+    // this takes an open bspline mesh and revolves it (using the Ray between
+    // the first and last points as the axis)
+    // slice_res = the number of points to sample in the bspline
+    // rot_res = the number of times to rotate
+    TriMeshPtr generate_bspline_revolve_mesh(
+        std::tr1::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
+    // similar to above but only returns the points
+    std::tr1::shared_ptr<std::vector<ci::Vec3f>> generate_bspline_revolve_points(
+        std::shared_ptr<ci::BSpline3f> bspline, int slice_res, int rot_res);
+
+    TriMeshPtr increase_resolution(TriMeshPtr, 
+        std::shared_ptr<std::vector<int>> triangle_indices, int amount);
+
+    std::shared_ptr<std::vector<ci::Vec3<ci::Vec3f>>> split_triangle(
+        ci::Vec3<ci::Vec3f>, int amount);
 
     // creates a mesh, turns that into a soft body, and adds it to the scene
     void add_circle_mesh(ci::Vec3f center, float radius);
-    void add_bspline_mesh(std::tr1::shared_ptr<ci::BSpline3f>);
+    void add_bspline_mesh(std::shared_ptr<ci::BSpline3f>);
 
+    // loads an obj and creates a soft body mesh from it, and adds it 
+    // to the scene
     void add_obj_mesh(const std::string& file_name,
         ci::Vec3f scl = ci::Vec3f::one());
+
+    // these are utility methods that should be refactored
     void add_tripod_mesh();
     void add_anemone_mesh();
 
@@ -79,7 +104,7 @@ public:
     void set_current_mesh(std::tr1::shared_ptr<Solid> mesh);
 
 private:
-    
+    std::vector<ci::Vec3<int>> patch_cirle(const std::vector<int>& indices);
     std::tr1::shared_ptr<std::vector<ci::Vec3f> > make_half_circle(
         ci::Vec3f center, float radius, int res);
     // join two points with a vertical arc

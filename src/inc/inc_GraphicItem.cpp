@@ -196,6 +196,11 @@ float SphereGraphicItem::bounding_sphere_radius() {
 }
 
 
+
+bool SoftBodyGraphicItem::draw_face_normals_;
+float SoftBodyGraphicItem::face_normals_length_;
+ci::ColorA SoftBodyGraphicItem::face_normals_color_;
+
 SoftBodyGraphicItem::SoftBodyGraphicItem(btSoftBody* soft_body,
     ci::ColorA color) : soft_body_(soft_body), color_(color) {
 
@@ -208,29 +213,7 @@ SoftBodyGraphicItem::~SoftBodyGraphicItem() {
 
 // theres almost certainly a better way to implement this method
 void SoftBodyGraphicItem::draw() {
-    if (solid().selected())
-        glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    else
-        ci::gl::color(Renderer::instance().line_color());
-
-    glLineWidth(Renderer::instance().line_thickness());
-
-    glBegin(GL_LINES);
-
     int num_faces = soft_body_->m_faces.size();
-
-    for (int i = 0; i < num_faces; ++i) {
-        make_gl_vertex(i, 0);
-        make_gl_vertex(i, 1);
-
-        make_gl_vertex(i, 1);
-        make_gl_vertex(i, 2);
-
-        make_gl_vertex(i, 0);
-        make_gl_vertex(i, 2);
-    }
-
-    glEnd();
 
     ci::gl::color(Renderer::instance().base_color());
 
@@ -238,6 +221,7 @@ void SoftBodyGraphicItem::draw() {
 
     float num_verts = num_faces * 3;
     float v = 0.0f;
+    bool use_lighting = Renderer::instance().enable_lighting();
 
     float r1 = Renderer::instance().base_color().r;
     float g1 = Renderer::instance().base_color().g;
@@ -254,31 +238,65 @@ void SoftBodyGraphicItem::draw() {
     float curr_min_y = get_vertex_height(0, 0);
     float curr_max_y = get_vertex_height(0, 0);
 
+    GLfloat vert_color[4];
+
     for (int i = 0; i < num_faces; ++i) {
         vert_height = get_vertex_height(i, 0);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+            vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+            vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+            vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+            vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
 
         make_gl_vertex(i, 0);
 
         vert_height = get_vertex_height(i, 1);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+                vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+                vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+                vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+                vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
+
+
 
         make_gl_vertex(i, 1);
 
         vert_height = get_vertex_height(i, 2);
-        glColor4f(
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
-            ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+
+        if (use_lighting) {
+                vert_color[0] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2);
+                vert_color[1] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2);
+                vert_color[2] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2);
+                vert_color[3] = ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2);
+
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+        } else {
+            glColor4f(
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, r1, r2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, g1, g2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
+                ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
+        }
 
         make_gl_vertex(i, 2);
 
@@ -291,6 +309,72 @@ void SoftBodyGraphicItem::draw() {
 
     last_max_y_ = curr_max_y;
     last_min_y_ = curr_min_y;
+
+    glEnd();
+
+    ci::ColorA line_color;
+
+    if (solid().selected()) {
+        line_color = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);
+    } else {
+        line_color = Renderer::instance().line_color();
+    }
+
+    if (use_lighting) {
+        vert_color[0] = line_color.r;
+        vert_color[1] = line_color.g;
+        vert_color[2] = line_color.b;
+        vert_color[3] = line_color.a;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+    } else {
+        glColor4f(line_color);
+    }
+
+    glLineWidth(Renderer::instance().line_thickness());
+
+    glBegin(GL_LINES);
+    
+    for (int i = 0; i < num_faces; ++i) {
+        make_gl_vertex(i, 0);
+        make_gl_vertex(i, 1);
+
+        make_gl_vertex(i, 1);
+        make_gl_vertex(i, 2);
+
+        make_gl_vertex(i, 0);
+        make_gl_vertex(i, 2);
+    }
+
+    glEnd();
+
+    if (!draw_face_normals_)
+        return;
+
+    if (use_lighting) {
+        vert_color[0] = face_normals_color_.r;
+        vert_color[1] = face_normals_color_.g;
+        vert_color[2] = face_normals_color_.b;
+        vert_color[3] = face_normals_color_.a;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vert_color);
+    } else {
+        glColor4f(face_normals_color_);
+    }
+
+    glBegin(GL_LINES);
+
+    btVector3 normal_vec;
+    ci::Vec3f face_center;
+
+    for (int i = 0; i < num_faces; ++i) {
+        normal_vec = soft_body_->m_faces[i].m_normal;
+        face_center = get_face_center(i);
+        
+        glVertex3f(face_center);
+        glVertex3f(face_center + ci::Vec3f(normal_vec.x(), normal_vec.y(),
+            normal_vec.z()) * face_normals_length_);
+    }
 
     glEnd();
 }

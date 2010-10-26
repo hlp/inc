@@ -39,6 +39,8 @@ class RigidSolid;
 typedef std::tr1::shared_ptr<Solid> SolidPtr;
 typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
 
+class CylinderFactory;
+
 class SolidCreator : public Module {
 public:
     SolidCreator();
@@ -71,6 +73,9 @@ public:
 
 private:
     static SolidCreator* instance_;
+
+    // CylinderFactory is a singleton
+    std::tr1::shared_ptr<CylinderFactory> cylinder_factory_;
 
     std::tr1::shared_ptr<ControlPoint> creation_point_;
 
