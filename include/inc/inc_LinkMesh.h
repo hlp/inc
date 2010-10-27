@@ -81,6 +81,24 @@ typedef std::tr1::shared_ptr<SocketJoint> SocketJointPtr;
 
 class Exporter;
 
+// a link cell is an object needed more for rendering purposes 
+// a cell forms 6 triangles as follows:
+/*
+ *  solids_[0] -- joints_[0] -- solids_[1]
+ *      |      /     |      \      | 
+ *      |     /      |       \     | 
+ *  joints_[3]       |         joints_[1]
+ *      |     \      |       /     | 
+ *      |      \     |      /      | 
+ *  solids_[3] -- joints_[2] -- solids_[2]
+ *
+ */
+
+struct LinkCell {
+    std::vector<JointPtr> joints_;
+    std::vector<RigidSolidPtr> solids_;
+};
+
 class LinkMesh : public GraphicItem {
 public:
     LinkMesh(int w, int d, LinkFactory::LinkType,
@@ -108,5 +126,6 @@ private:
     int w_;
     int d_;
 };
+
 
 }
