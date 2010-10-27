@@ -84,19 +84,66 @@ class Exporter;
 // a link cell is an object needed more for rendering purposes 
 // a cell forms 6 triangles as follows:
 /*
- *  solids_[0] -- joints_[0] -- solids_[1]
+ *  solid ------- joints_[0] --- solid
  *      |      /     |      \      | 
  *      |     /      |       \     | 
  *  joints_[3]       |         joints_[1]
  *      |     \      |       /     | 
  *      |      \     |      /      | 
- *  solids_[3] -- joints_[2] -- solids_[2]
+ *  solid ------ joints_[2] ----- solid
  *
  */
 
-struct LinkCell {
+struct JointCell {
+    JointCell(std::vector<JointPtr> joints) 
+        : joints_(joints) {
+        color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 0.75f);
+    }
+
     std::vector<JointPtr> joints_;
-    std::vector<RigidSolidPtr> solids_;
+
+    ci::ColorA color_;
+
+    void draw() {
+        glColor4f(color_);
+
+        ci::Vec3f solid_1 = joints_[0]->a_position();
+        ci::Vec3f solid_2 = joints_[0]->b_position();
+        ci::Vec3f solid_3 = joints_[2]->a_position();
+        ci::Vec3f solid_4 = joints_[2]->b_position();
+        
+        glBegin(GL_TRIANGLES);
+
+        // draw the exterior triangles
+
+        glVertex3f(solid_1);
+        glVertex3f(joints_[0]->position());
+        glVertex3f(joints_[3]->position());
+
+        glVertex3f(solid_2);
+        glVertex3f(joints_[0]->position());
+        glVertex3f(joints_[1]->position());
+
+        glVertex3f(solid_3);
+        glVertex3f(joints_[1]->position());
+        glVertex3f(joints_[2]->position());
+
+        glVertex3f(solid_4);
+        glVertex3f(joints_[2]->position());
+        glVertex3f(joints_[3]->position());
+
+        // draw the interior triangles
+
+        glVertex3f(joints_[0]->position());
+        glVertex3f(joints_[2]->position());
+        glVertex3f(joints_[3]->position());
+
+        glVertex3f(joints_[0]->position());
+        glVertex3f(joints_[1]->position());
+        glVertex3f(joints_[2]->position());
+
+        glEnd();
+    }
 };
 
 class LinkMesh : public GraphicItem {
