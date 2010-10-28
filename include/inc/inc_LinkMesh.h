@@ -81,9 +81,9 @@ typedef std::tr1::shared_ptr<SocketJoint> SocketJointPtr;
 
 class Exporter;
 
-// a link cell is an object needed more for rendering purposes 
-// a cell forms 6 triangles as follows:
-/*
+/* a link cell is an object needed more for rendering purposes 
+ * a cell forms 6 triangles as follows:
+ *
  *  solid ------- joints_[0] --- solid
  *      |      /     |      \      | 
  *      |     /      |       \     | 
@@ -92,6 +92,7 @@ class Exporter;
  *      |      \     |      /      | 
  *  solid ------ joints_[2] ----- solid
  *
+ * Lines designate OpenGL triangles
  */
 
 struct JointCell {
@@ -116,14 +117,22 @@ struct JointCell {
 
         // draw the exterior triangles
 
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_1);
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[0]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
 
+        /*
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_2);
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[0]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[1]->position());
-
+        */
+        /*
         glVertex3f(solid_3);
         glVertex3f(joints_[1]->position());
         glVertex3f(joints_[2]->position());
@@ -131,6 +140,7 @@ struct JointCell {
         glVertex3f(solid_4);
         glVertex3f(joints_[2]->position());
         glVertex3f(joints_[3]->position());
+        
 
         // draw the interior triangles
 
@@ -141,10 +151,13 @@ struct JointCell {
         glVertex3f(joints_[0]->position());
         glVertex3f(joints_[1]->position());
         glVertex3f(joints_[2]->position());
+        */
 
         glEnd();
     }
 };
+
+typedef std::shared_ptr<JointCell> JointCellPtr;
 
 class LinkMesh : public GraphicItem {
 public:
@@ -169,7 +182,8 @@ public:
 
 private:
     std::vector<RigidSolidPtr> solids_;
-    std::tr1::shared_ptr<std::vector<JointPtr>> joints_;
+    std::shared_ptr<std::vector<JointPtr>> joints_;
+    std::shared_ptr<std::vector<JointCellPtr>>  joint_cells_;
     int w_;
     int d_;
 };

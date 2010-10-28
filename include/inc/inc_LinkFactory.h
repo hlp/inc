@@ -34,8 +34,10 @@ namespace inc {
 class Solid;
 class RigidSolid;
 class Joint;
-typedef std::tr1::shared_ptr<Joint> JointPtr;
-typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
+typedef std::shared_ptr<Joint> JointPtr;
+typedef std::shared_ptr<RigidSolid> RigidSolidPtr;
+class JointCell;
+typedef std::shared_ptr<JointCell> JointCellPtr;
 
 class LinkFactory {
 public:
@@ -57,10 +59,14 @@ public:
     btHingeConstraint* LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1, 
         btRigidBody& r2, const ci::Vec3f& p1, const ci::Vec3f& p2, const ci::Vec3f& axis);
 
+    // returned vector order:
+    // w0,d0  w0,d1  w0, d2 ... w1,d0  w1,d1  w1,d2 ...
     std::tr1::shared_ptr<std::vector<JointPtr>> link_rigid_body_matrix(
         int w, int d, LinkType link_type,
         std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, 
-        ci::Vec3f axis = ci::Vec3f::yAxis());
+        ci::Vec3f axis = ci::Vec3f::yAxis(),
+        std::shared_ptr<std::vector<JointCellPtr>> joint_cells = 
+        std::shared_ptr<std::vector<JointCellPtr>>(new std::vector<JointCellPtr>()));
 
     static LinkFactory& instance();
 

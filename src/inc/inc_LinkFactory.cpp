@@ -136,12 +136,13 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
     } );
 }
 
-std::tr1::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
+std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
     int w, int d, LinkType link_type,
-    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, ci::Vec3f axis) {
+    std::shared_ptr<std::deque<RigidSolidPtr>> solids, ci::Vec3f axis,
+    std::shared_ptr<std::vector<JointCellPtr>> joint_cells) {
 
-    std::tr1::shared_ptr<std::vector<JointPtr>> joints = 
-        std::tr1::shared_ptr<std::vector<JointPtr>>(
+    std::shared_ptr<std::vector<JointPtr>> joints = 
+        std::shared_ptr<std::vector<JointPtr>>(
         new std::vector<JointPtr>());
 
     // link rigid bodies together
@@ -168,7 +169,7 @@ std::tr1::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->position()))));
                     break;
                 }
-            }
+            } // end if (i > 0)
 
             if (k > 0) {
                 switch (link_type) {
@@ -191,6 +192,28 @@ std::tr1::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->position()))));
                 break;
                 }
+            } // end if (k > 0)
+
+            /* i0 -- k0, k1, k2 ...
+             * i1 -- k0, k1, k2 ...
+             * i2 -- k0, k1, k2 ...
+             * i3 -- k0, k1, k2 ...
+             */
+            std::vector<JointPtr> cell_vec;
+            // make a joint cell, refer to LinkMesh.h for description
+            if (i > 0 && k > 0) {
+                // [0] 
+                cell_vec.push_back(joints->at(joints->size() - 2 - d));
+                // [1] 
+                cell_vec.push_back(joints->at(joints->size() - 2));
+                // [2]
+                cell_vec.push_back(joints->at(joints->size() - 1));
+                // [3]
+                cell_vec.push_back(joints->at(joints->size() - 3));
+
+                joint_cells->push_back(std::shared_ptr<JointCell>(
+                    new JointCell(cell_vec)));
+                cell_vec.clear();
             }
         }
     }

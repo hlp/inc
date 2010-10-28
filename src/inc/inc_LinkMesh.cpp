@@ -51,9 +51,13 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
         solids_.push_back(ptr);
     } );
 
+    // create joint cells from joint array
+    joint_cells_ = std::shared_ptr<std::vector<JointCellPtr>>(
+        new std::vector<JointCellPtr>());
+        
     // link all the solids together based on the link type
     joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
-        type, solids, hinge_axis_);
+        type, solids, hinge_axis_, joint_cells_);
 
     // lock random points 
     ci::Rand rand;
@@ -71,7 +75,8 @@ LinkMesh::~LinkMesh() {
     std::for_each(joints_->begin(), joints_->end(), [=] (JointPtr ptr) {
         dw->removeConstraint(ptr->constraint_ptr());
     } );
-
+    
+    joints_.reset();
     solids_.clear();
 }
 
@@ -116,6 +121,11 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 void LinkMesh::draw() {
+    std::for_each(joint_cells_->begin(), joint_cells_->end(),
+        [] (JointCellPtr ptr) {
+            ptr->draw();
+    });
+
     glLineWidth(line_weight_);
 
     glColor3f(1.0f, 1.0f, 1.0f);

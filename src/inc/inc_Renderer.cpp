@@ -36,7 +36,7 @@ Renderer::Renderer() {
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;
-    enable_lighting_ = true;
+    enable_lighting_ = false;
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
