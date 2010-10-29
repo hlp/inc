@@ -25,6 +25,7 @@
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 
 #include <cinder/gl/gl.h>
+#include <cinder/app/App.h>
 
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_Solid.h>
@@ -203,13 +204,26 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
             // make a joint cell, refer to LinkMesh.h for description
             if (i > 0 && k > 0) {
                 // [0] 
-                cell_vec.push_back(joints->at(joints->size() - 2 - d));
+                // if i == 1, a different number of joints were added to the first
+                // row (one joint per solid) verses the second (usually two joints
+                // per solid. Hence the need for this nasty if
+                if (i > 1)
+                    cell_vec.push_back(joints->at(joints->size() - 1 - (d*2 - 1)));
+                else {
+                    int offset_upper = k * 2 + 1;
+                    int offset_lower = d - k - 1;
+                    cell_vec.push_back(joints->at(joints->size() - 1
+                        - (offset_upper + offset_lower)));
+                }
                 // [1] 
                 cell_vec.push_back(joints->at(joints->size() - 2));
                 // [2]
                 cell_vec.push_back(joints->at(joints->size() - 1));
                 // [3]
-                cell_vec.push_back(joints->at(joints->size() - 3));
+                if (k > 1)
+                    cell_vec.push_back(joints->at(joints->size() - 4));
+                else
+                    cell_vec.push_back(joints->at(joints->size() - 3));
 
                 joint_cells->push_back(std::shared_ptr<JointCell>(
                     new JointCell(cell_vec)));

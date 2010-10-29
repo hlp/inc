@@ -83,7 +83,8 @@ class Exporter;
 
 /* a link cell is an object needed more for rendering purposes 
  * a cell forms 6 triangles as follows:
- *
+ *  depth =>
+ *  
  *  solid ------- joints_[0] --- solid
  *      |      /     |      \      | 
  *      |     /      |       \     | 
@@ -91,7 +92,10 @@ class Exporter;
  *      |     \      |       /     | 
  *      |      \     |      /      | 
  *  solid ------ joints_[2] ----- solid
- *
+ *  
+ *  width
+ *   ||
+ *   \/
  * Lines designate OpenGL triangles
  */
 
@@ -110,8 +114,8 @@ struct JointCell {
 
         ci::Vec3f solid_1 = joints_[0]->a_position();
         ci::Vec3f solid_2 = joints_[0]->b_position();
-        ci::Vec3f solid_3 = joints_[2]->a_position();
-        ci::Vec3f solid_4 = joints_[2]->b_position();
+        ci::Vec3f solid_3 = joints_[2]->b_position();
+        ci::Vec3f solid_4 = joints_[2]->a_position();
         
         glBegin(GL_TRIANGLES);
 
@@ -131,23 +135,33 @@ struct JointCell {
         glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[1]->position());
 
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_3);
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[1]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[2]->position());
 
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_4);
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[2]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
         
-
         // draw the interior triangles
-
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(joints_[0]->position());
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[2]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
 
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(joints_[0]->position());
+        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[1]->position());
+        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[2]->position());
 
         glEnd();
