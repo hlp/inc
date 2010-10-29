@@ -124,15 +124,13 @@ struct JointCell {
         glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
 
-        /*
         glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_2);
         glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[0]->position());
         glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[1]->position());
-        */
-        /*
+
         glVertex3f(solid_3);
         glVertex3f(joints_[1]->position());
         glVertex3f(joints_[2]->position());
@@ -151,7 +149,6 @@ struct JointCell {
         glVertex3f(joints_[0]->position());
         glVertex3f(joints_[1]->position());
         glVertex3f(joints_[2]->position());
-        */
 
         glEnd();
     }
