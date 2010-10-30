@@ -60,11 +60,11 @@ Renderer::~Renderer() {
     ci::app::console() << "Deleting Renderer" << std::endl;
 #endif
 
-    cam_light_.reset();
+    sun_light_.reset();
 }
 
 void Renderer::setup() {
-    cam_light_ = std::tr1::shared_ptr<CameraLight>(new CameraLight(0));
+    sun_light_ = std::tr1::shared_ptr<SunLight>(new SunLight(0));
 }
 
 void Renderer::update() {
@@ -99,8 +99,8 @@ void Renderer::begin3D() {
 void Renderer::draw_lights() {
     glEnable(GL_LIGHTING);
 
-    cam_light_->enable();
-    cam_light_->draw();
+    sun_light_->enable();
+    sun_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -157,7 +157,7 @@ GLenum Light::gl_index() {
     return GL_LIGHT0;
 }
 
-void CameraLight::draw() {
+void SunLight::draw() {
     // set up a directional (sun-like) light far away from the model
 	GLfloat light_position[] = { 50.0f, 1.0f, 50.0f, 0.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };

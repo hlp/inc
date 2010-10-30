@@ -45,9 +45,9 @@ public:
     GLenum gl_index_;
 };
 
-class CameraLight : public Light {
+class SunLight : public Light {
 public:
-    CameraLight(int index) : Light(index) { }
+    SunLight(int index) : Light(index) { }
 
     void draw();
 };
@@ -104,7 +104,7 @@ private:
     
     std::shared_ptr<Color> color_system_;
 
-    std::shared_ptr<CameraLight> cam_light_;
+    std::shared_ptr<SunLight> sun_light_;
 
     ci::ColorA base_color_;
     ci::ColorA top_color_;
