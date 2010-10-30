@@ -230,6 +230,7 @@
     <ClInclude Include="..\include\inc\BunnyMesh.h" />
     <ClInclude Include="..\include\inc\inc_Button.h" />
     <ClInclude Include="..\include\inc\inc_Camera.h" />
+    <ClInclude Include="..\include\inc\inc_Color.h" />
     <ClInclude Include="..\include\inc\inc_CSG.h" />
     <ClInclude Include="..\include\inc\inc_CurveSketcher.h" />
     <ClInclude Include="..\include\inc\inc_CylinderFactory.h" />

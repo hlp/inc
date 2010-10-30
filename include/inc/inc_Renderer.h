@@ -23,6 +23,7 @@
 #include <cinder/Color.h>
 
 #include <inc/inc_Module.h>
+#include <inc/inc_Color.h>
 #include <incApp.h>
 
 namespace inc {
@@ -101,6 +102,7 @@ private:
     void draw_objects();
     void end3D();
     
+
 
     std::tr1::shared_ptr<CameraLight> cam_light_;
 

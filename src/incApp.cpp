@@ -102,11 +102,16 @@ void IncApp::shutdown() {
 
     mesh_creator_.reset();
 
-    solid_factory_->delete_constraints();
-
     // delete all objets in the scene
     manager_->clear_graphic_item_list();
     manager_->clear_solid_list();
+
+    // NOTE: Solids and GraphicItems will try to clean up all code associated
+    // with Bullet, deleting bodies and constraints. This code goes in and deletes 
+    // any objects that are left. That said, this must be calle after all the other
+    // objects have been deleted, therwise they will try deleting objects in Bullet
+    // that have already been deleted (a very bad thing indeed).
+    solid_factory_->delete_constraints();
 
     // remove other shared_ptr refs to modules
     manager_->clear_module_list();
