@@ -102,9 +102,9 @@ private:
     void draw_objects();
     void end3D();
     
+    std::shared_ptr<Color> color_system_;
 
-
-    std::tr1::shared_ptr<CameraLight> cam_light_;
+    std::shared_ptr<CameraLight> cam_light_;
 
     ci::ColorA base_color_;
     ci::ColorA top_color_;

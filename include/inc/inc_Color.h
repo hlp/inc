@@ -20,6 +20,8 @@
 // needs to keep track of how things are being rendered, either via lighting
 // (requiring materials) or vertex coloring
 
+// perhaps consider inlining some of these methods with performance analysis
+
 #pragma once
 
 #include <cinder/gl/gl.h>
@@ -56,35 +58,24 @@ class LightingColor : public ColorInterface {
 public:
     LightingColor() { }
 
-    virtual void set_color(GLfloat* c) {
-        set_color_a(c[0], c[1], c[2], 1.0f);
-    }
-
-    virtual void set_color(float r, float g, float b) {
-        set_color_a(r, g, b, 1.0f);
-    }
-
-    virtual void set_color(const ci::Color& c) {
-        set_color_a(c.r, c.g, c.b, 1.0f);
-    }
-
-    virtual void set_color_a(const ci::ColorA& c) { set_color_a(c.r, c.g, c.b, c.a); }   
-
+    virtual void set_color(GLfloat* c) { set_color_a(c[0], c[1], c[2], 1.0f); }
+    virtual void set_color(float r, float g, float b) { set_color_a(r, g, b, 1.0f); }
+    virtual void set_color(const ci::Color& c) { set_color_a(c.r, c.g, c.b, 1.0f); }
+    virtual void set_color_a(const ci::ColorA& c) { set_color_a(c.r, c.g, c.b, c.a); }
     virtual void set_color_a(float r, float g, float b, float a) {
-        colors[0] = r;
-        colors[1] = g;
-        colors[2] = b;
-        colors[3] = a;
+        colors_[0] = r;
+        colors_[1] = g;
+        colors_[2] = b;
+        colors_[3] = a;
 
-        set_color_a(&colors[0]);
+        set_color_a(colors_);
     }
-
     virtual void set_color_a(GLfloat* c) { 
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
     }
 
 private:
-    GLfloat colors[4];
+    static GLfloat colors_[4];
 };
 
 // Color is instantiated in inc::Renderer

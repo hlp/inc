@@ -33,6 +33,8 @@ namespace inc {
 Renderer::Renderer() {
     instance_ = this;
 
+    color_system_ = std::shared_ptr<Color>(new Color());
+
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;

@@ -279,8 +279,6 @@ void SoftBodyGraphicItem::draw() {
 
     glEnd();
 
-    return;
-
     ci::ColorA line_color;
 
     if (solid().selected()) {
