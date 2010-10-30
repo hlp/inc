@@ -188,6 +188,8 @@ public:
     DisplayMenu();
     virtual void setup();
 
+    bool lighting_changed(bool);
+
     std::string name() { return "DISPLAY"; }
 };
 

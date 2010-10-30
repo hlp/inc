@@ -33,10 +33,14 @@ namespace inc {
 Renderer::Renderer() {
     instance_ = this;
 
+    color_system_ = std::shared_ptr<Color>(new Color());
+
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;
-    enable_lighting_ = false;
+    // NOTE: make sure these two items are in sync
+    enable_lighting_ = true;
+    Color::use_lighting(true);
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 

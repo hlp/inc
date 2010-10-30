@@ -45,6 +45,7 @@
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_CylinderFactory.h>
+#include <inc/inc_Color.h>
 
 namespace inc {
 
@@ -699,6 +700,10 @@ void DisplayMenu::setup() {
         new GenericWidget<bool>(*this, "OpenGL enable lighting",
         Renderer::instance().enable_lighting_ptr()));
 
+    lighting->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::DisplayMenu::lighting_changed), 
+        this));
+
     add_widget(lighting);
 
     std::tr1::shared_ptr<GenericWidget<ci::ColorA> > base_color = 
@@ -759,6 +764,12 @@ void DisplayMenu::setup() {
     add_widget(normal_color);
 
     Menu::setup();
+}
+
+bool DisplayMenu::lighting_changed(bool l) {
+    Color::use_lighting(l);
+
+    return true;
 }
 
 
