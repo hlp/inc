@@ -26,6 +26,7 @@ namespace inc {
 
 class ColorInterface;
 
+// Color is instantiated in inc::Renderer
 class Color {
 public:
     Color() {
