@@ -20,60 +20,11 @@
 // needs to keep track of how things are being rendered, either via lighting
 // (requiring materials) or vertex coloring
 
+#pragma once
+
 #include <cinder/gl/gl.h>
 
 namespace inc {
-
-class ColorInterface;
-
-// Color is instantiated in inc::Renderer
-class Color {
-public:
-    Color() {
-        mode_ = LIGHTING;
-        color_interface_ = std::shared_ptr<ColorInterface>(new LightingColor());
-    }
-
-    static enum ColorMode {
-        FLAT = 0,
-        LIGHTING = 1
-    };
-
-    static void set_color_mode(ColorMode mode) {
-        if (mode_ == mode)
-            return;
-
-        mode_ = mode;
-
-        if (mode == FLAT)
-            color_interface_ = std::shared_ptr<ColorInterface>(new FlatColor());
-        else if (mode == LIGHTING)
-            color_interface_ = std::shared_ptr<ColorInterface>(new LightingColor());
-    }
-
-    static void set_color(float r, float g, float b) { 
-        color_interface_->set_color(r, g, b);
-    }
-
-    static void set_color(const ci::Color& c) {
-        color_interface_->set_color(c);
-    }
-
-    static void set_color_a(float r, float g, float b, float a) {
-        color_interface_->set_color_a(r, g, b, a);
-    }
-
-    static void set_color_a(const ci::ColorA& c) {
-        color_interface_->set_color_a(c);
-    }
-
-private:
-    static ColorMode mode_;
-    static std::shared_ptr<ColorInterface> color_interface_;
-};
-
-Color::ColorMode Color::mode_;
-std::shared_ptr<ColorInterface> Color::color_interface_;
 
 class ColorInterface {
 public:
@@ -125,7 +76,7 @@ public:
         colors[2] = b;
         colors[3] = a;
 
-        set_color(&colors[0]);
+        set_color_a(&colors[0]);
     }
 
     virtual void set_color_a(GLfloat* c) { 
@@ -134,6 +85,37 @@ public:
 
 private:
     GLfloat colors[4];
+};
+
+// Color is instantiated in inc::Renderer
+class Color {
+public:
+    Color() {
+        mode_ = LIGHTING;
+        color_interface_ = std::shared_ptr<ColorInterface>(new LightingColor());
+    }
+
+    static enum ColorMode {
+        FLAT = 0,
+        LIGHTING = 1
+    };
+
+    static void use_lighting(bool l) {
+        if (l)
+            set_color_mode(LIGHTING);
+        else
+            set_color_mode(FLAT);
+    }
+
+    static void set_color_mode(ColorMode mode);
+    static void set_color(float r, float g, float b);
+    static void set_color(const ci::Color& c);
+    static void set_color_a(float r, float g, float b, float a);
+    static void set_color_a(const ci::ColorA& c);
+
+private:
+    static ColorMode mode_;
+    static std::shared_ptr<ColorInterface> color_interface_;
 };
 
 }

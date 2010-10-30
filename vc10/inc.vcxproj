@@ -164,6 +164,7 @@
     <ClCompile Include="..\src\incApp.cpp" />
     <ClCompile Include="..\src\inc\inc_Button.cpp" />
     <ClCompile Include="..\src\inc\inc_Camera.cpp" />
+    <ClCompile Include="..\src\inc\inc_Color.cpp" />
     <ClCompile Include="..\src\inc\inc_CSG.cpp" />
     <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp" />
     <ClCompile Include="..\src\inc\inc_CylinderFactory.cpp" />
