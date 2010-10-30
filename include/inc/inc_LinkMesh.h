@@ -25,6 +25,7 @@
 #include <inc/inc_GraphicItem.h>
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_Solid.h>
+#include <inc/inc_Color.h>
 
 class btTypedConstraint;
 class btHingeConstraint;
@@ -102,7 +103,7 @@ class Exporter;
 struct JointCell {
     JointCell(std::vector<JointPtr> joints) 
         : joints_(joints) {
-        color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 0.75f);
+        color_ = ci::ColorA(0.9f, 0.9f, 0.9f, 1.0f);
     }
 
     std::vector<JointPtr> joints_;
@@ -110,7 +111,7 @@ struct JointCell {
     ci::ColorA color_;
 
     void draw() {
-        glColor4f(color_);
+        Color::set_color_a(color_);
 
         ci::Vec3f solid_1 = joints_[0]->a_position();
         ci::Vec3f solid_2 = joints_[0]->b_position();
@@ -121,47 +122,29 @@ struct JointCell {
 
         // draw the exterior triangles
 
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_1);
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[0]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
 
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_2);
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[0]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[1]->position());
 
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_3);
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[1]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[2]->position());
 
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(solid_4);
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[2]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
         
         // draw the interior triangles
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(joints_[0]->position());
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[2]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[3]->position());
 
-        glColor3f(1.0, 0.0, 0.0);
         glVertex3f(joints_[0]->position());
-        glColor3f(0.0, 1.0, 0.0);
         glVertex3f(joints_[1]->position());
-        glColor3f(0.0, 0.0, 1.0);
         glVertex3f(joints_[2]->position());
 
         glEnd();
