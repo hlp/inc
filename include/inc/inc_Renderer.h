@@ -52,6 +52,13 @@ public:
     void draw();
 };
 
+class PointLight : public Light {
+public:
+    PointLight(int index) : Light(index) { }
+
+    void draw();
+};
+
 class Renderer : public Module {
 public:
     Renderer();
@@ -105,6 +112,7 @@ private:
     std::shared_ptr<Color> color_system_;
 
     std::shared_ptr<SunLight> sun_light_;
+    std::shared_ptr<PointLight> point_light_;
 
     ci::ColorA base_color_;
     ci::ColorA top_color_;

@@ -61,10 +61,12 @@ Renderer::~Renderer() {
 #endif
 
     sun_light_.reset();
+    point_light_.reset();
 }
 
 void Renderer::setup() {
     sun_light_ = std::tr1::shared_ptr<SunLight>(new SunLight(0));
+    point_light_ = std::tr1::shared_ptr<PointLight>(new PointLight(1));
 }
 
 void Renderer::update() {
@@ -98,9 +100,13 @@ void Renderer::begin3D() {
 
 void Renderer::draw_lights() {
     glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
 
     sun_light_->enable();
     sun_light_->draw();
+
+    point_light_->enable();
+    point_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -149,9 +155,12 @@ void Renderer::save_image(int width, std::string name) {
 
 GLenum Light::gl_index() {
     switch (index_) {
-        case 0:
-        default:
-            return GL_LIGHT0;
+    case 1:
+        return GL_LIGHT1;
+        break;
+    case 0:
+    default:
+        return GL_LIGHT0;
     }
 
     return GL_LIGHT0;
@@ -159,7 +168,19 @@ GLenum Light::gl_index() {
 
 void SunLight::draw() {
     // set up a directional (sun-like) light far away from the model
-	GLfloat light_position[] = { 50.0f, 1.0f, 50.0f, 0.0f };
+	GLfloat light_position[] = { 5.0f, 1.0f, 5.0f, 0.0f };
+    GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    
+	glLightfv(gl_index_, GL_POSITION, light_position);
+    glLightfv(gl_index_, GL_DIFFUSE, white_light);
+    glLightfv(gl_index_, GL_SPECULAR, white_light);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+}
+
+
+void PointLight::draw() {
+	GLfloat light_position[] = { 1.0f, 7.0f, 0.0f, 0.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
     
 	glLightfv(gl_index_, GL_POSITION, light_position);

@@ -149,6 +149,8 @@ struct JointCell {
 
         glEnd();
     }
+
+    void save(Exporter& exporter);
 };
 
 typedef std::shared_ptr<JointCell> JointCellPtr;

@@ -149,6 +149,13 @@ void LinkMesh::draw() {
 }
 
 void LinkMesh::save(Exporter& exporter) {
+    std::for_each(joint_cells_->begin(), joint_cells_->end(),
+        [&] (JointCellPtr ptr) {
+            ptr->save(exporter);
+    });
+
+    exporter.add_layer();
+
     std::for_each(joints_->begin(), joints_->end(),
         [&] (JointPtr ptr) {
             ci::Vec3f a_pos = ptr->a_position();
@@ -202,6 +209,32 @@ ci::Vec3f SocketJoint::position() {
     return ci::Vec3f(pivot_in_a.x(), pivot_in_a.y(), pivot_in_a.z());
 }
 
+
+void JointCell::save(Exporter& exporter) {
+    ci::Vec3f solid_1 = joints_[0]->a_position();
+    ci::Vec3f solid_2 = joints_[0]->b_position();
+    ci::Vec3f solid_3 = joints_[2]->b_position();
+    ci::Vec3f solid_4 = joints_[2]->a_position();
+        
+    exporter.write_triangle(solid_1, joints_[0]->position(),
+        joints_[3]->position());
+
+    exporter.write_triangle(solid_2, joints_[0]->position(),
+        joints_[1]->position());
+
+    exporter.write_triangle(solid_3, joints_[1]->position(),
+        joints_[2]->position());
+        
+    exporter.write_triangle(solid_4, joints_[2]->position(),
+        joints_[3]->position());
+        
+    // draw the interior triangles
+    exporter.write_triangle(joints_[0]->position(), joints_[2]->position(),
+        joints_[3]->position());
+
+    exporter.write_triangle(joints_[0]->position(), joints_[1]->position(),
+        joints_[2]->position());
+}
 
 
 }
