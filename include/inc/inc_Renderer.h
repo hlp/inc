@@ -97,6 +97,11 @@ public:
     // this must be called before the camera
     void draw_lights();
 
+    static bool saving_high_res_;
+    static float high_res_scale_;
+
+    static void set_line_width(float);
+
 private:
     void begin3D();
     void draw_objects();

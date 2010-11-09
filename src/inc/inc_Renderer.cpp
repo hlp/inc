@@ -30,6 +30,9 @@
 
 namespace inc {
 
+bool Renderer::saving_high_res_;
+float Renderer::high_res_scale_;
+
 Renderer::Renderer() {
     instance_ = this;
 
@@ -41,6 +44,8 @@ Renderer::Renderer() {
     // NOTE: make sure these two items are in sync
     enable_lighting_ = true;
     Color::use_lighting(true);
+
+    saving_high_res_ = false;
 
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -132,19 +137,28 @@ void Renderer::save_image(int width, std::string name) {
     // tile renderer
     IncApp::instance().set_draw_interface(false);
 
-    ci::gl::TileRender tr(width, 
-        (float)width / (float)(IncApp::instance().getWindowWidth()) * 
+    high_res_scale_ = (float)width / (float)(IncApp::instance().getWindowWidth());
+
+    ci::gl::TileRender tr(width, high_res_scale_ * 
         (float)(IncApp::instance().getWindowHeight()));
 
 	tr.setMatrices(Camera::instance().cam().getCamera());
+
+    saving_high_res_ = true;
 
     while(tr.nextTile()) {
         IncApp::instance().draw();
     }
 
+    saving_high_res_ = false;
+
     ci::writeImage(name, tr.getSurface());
 
     IncApp::instance().set_draw_interface(true);
+}
+
+void Renderer::set_line_width(float w) {
+    saving_high_res_ ? glLineWidth(w * high_res_scale_) : glLineWidth(w);
 }
 
 GLenum Light::gl_index() {

@@ -27,6 +27,7 @@
 #include <inc/inc_Camera.h>
 #include <incApp.h>
 #include <inc/inc_MeshCreator.h>
+#include <inc/inc_Renderer.h>
 
 namespace inc {
 
@@ -77,7 +78,7 @@ void CurveSketcher::draw() {
     if ((control_points_.size() - 1) > (size_t)degree_) {
         // draw the b spline
         ci::gl::color(line_color_);
-        glLineWidth(line_thickness_);
+        Renderer::set_line_width(line_thickness_);
 
         glBegin(GL_LINE_STRIP);
 
@@ -469,7 +470,7 @@ void ControlPoint::draw() {
 
 void ControlPoint::draw_arrows() {
     ci::gl::color(arrow_color_);
-    glLineWidth(arrow_line_width_);
+    Renderer::set_line_width(arrow_line_width_);
 
     glBegin(GL_LINES);
 
