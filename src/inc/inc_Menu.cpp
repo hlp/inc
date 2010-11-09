@@ -667,6 +667,8 @@ DisplayMenu::DisplayMenu() {
     SoftBodyGraphicItem::draw_face_normals_ = false;
     SoftBodyGraphicItem::face_normals_length_ = 2.0f;
     SoftBodyGraphicItem::face_normals_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+
+    LightingColor::shinyness_ = 10.0f;
 }
 
 void DisplayMenu::setup() {
@@ -717,6 +719,22 @@ void DisplayMenu::setup() {
         Renderer::instance().top_color_ptr()));
 
     add_widget(top_color);
+
+    /*
+    std::tr1::shared_ptr<GenericWidget<float> > shiny = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Mesh shinyness",
+        &LightingColor::shinyness_, "min=0.0 step=0.1"));
+
+    add_widget(shiny);
+
+    std::tr1::shared_ptr<GenericWidget<ci::ColorA> > spec = 
+        std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(
+        new GenericWidget<ci::ColorA>(*this, "Mesh specular",
+        &LightingColor::specular_));
+
+    add_widget(spec);
+    */
 
     std::tr1::shared_ptr<GenericWidget<ci::ColorA> > line_color = 
         std::tr1::shared_ptr<GenericWidget<ci::ColorA> >(

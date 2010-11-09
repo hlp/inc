@@ -25,7 +25,8 @@
 namespace inc {
 
 GLfloat LightingColor::colors_[4];
-
+float LightingColor::shinyness_;
+ci::ColorA LightingColor::specular_;
 
 Color::ColorMode Color::mode_ = Color::ColorMode::LIGHTING;
 std::shared_ptr<ColorInterface> Color::color_interface_;

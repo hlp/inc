@@ -64,12 +64,10 @@ Renderer::~Renderer() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting Renderer" << std::endl;
 #endif
-
-    sun_light_.reset();
 }
 
 void Renderer::setup() {
-    sun_light_ = std::tr1::shared_ptr<SunLight>(new SunLight(0));
+    cam_light_ = std::tr1::shared_ptr<Light>(new CameraLight(0));
 }
 
 void Renderer::update() {
@@ -104,8 +102,8 @@ void Renderer::begin3D() {
 void Renderer::draw_lights() {
     glEnable(GL_LIGHTING);
 
-    sun_light_->enable();
-    sun_light_->draw();
+    cam_light_->enable();
+    cam_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -174,6 +172,18 @@ GLenum Light::gl_index() {
 void SunLight::draw() {
     // set up a directional (sun-like) light far away from the model
 	GLfloat light_position[] = { 50.0f, 1.0f, 50.0f, 0.0f };
+    GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+    
+	glLightfv(gl_index_, GL_POSITION, light_position);
+    glLightfv(gl_index_, GL_DIFFUSE, white_light);
+    glLightfv(gl_index_, GL_SPECULAR, white_light);
+}
+
+
+void CameraLight::draw() {
+    // set up a directional light centered at the camera
+    ci::Vec3f eye = Camera::instance().cam().getCamera().getEyePoint();
+	GLfloat light_position[] = { eye.x, eye.y, eye.z, 0.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
     
 	glLightfv(gl_index_, GL_POSITION, light_position);

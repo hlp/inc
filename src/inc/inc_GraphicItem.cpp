@@ -245,6 +245,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
         
+        make_gl_normal(i, 0);
         make_gl_vertex(i, 0);
 
         vert_height = get_vertex_height(i, 1);
@@ -255,6 +256,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
 
+        make_gl_normal(i, 1);
         make_gl_vertex(i, 1);
 
         vert_height = get_vertex_height(i, 2);
@@ -265,6 +267,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
 
+        make_gl_normal(i, 2);
         make_gl_vertex(i, 2);
 
         if (vert_height >= curr_max_y)
