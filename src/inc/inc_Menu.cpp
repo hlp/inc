@@ -666,7 +666,7 @@ bool MeshNetworkMenu::create_network(bool) {
 DisplayMenu::DisplayMenu() {
     SoftBodyGraphicItem::draw_face_normals_ = false;
     SoftBodyGraphicItem::face_normals_length_ = 2.0f;
-    SoftBodyGraphicItem::face_normals_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
+    SoftBodyGraphicItem::face_normals_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 0.3f);
 
     LightingColor::shinyness_ = 10.0f;
 }
