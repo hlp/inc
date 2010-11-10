@@ -71,15 +71,11 @@ public:
         set_color_a(colors_);
     }
     virtual void set_color_a(GLfloat* c) { 
-        GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-        GLfloat mat_shininess[] = { 50.0 };
-
-        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-        //glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
-        //glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 25.0);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, c);
     }
+
+    static float shinyness_;
+    static ci::ColorA specular_;
 
 private:
     static GLfloat colors_[4];

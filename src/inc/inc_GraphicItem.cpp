@@ -73,7 +73,7 @@ void OriginGraphicItem::draw() {
 
 void OriginGraphicItem::draw_axis() {
     glColor4f( 1.0f, 1.0f, 1.0f, 0.25f );
-    glLineWidth(2.0f);
+    Renderer::set_line_width(2.0f);
 #if ! defined( CINDER_GLES )
     glEnable( GL_LINE_STIPPLE );
     glLineStipple( 10, 0xAAAA );
@@ -98,7 +98,7 @@ void OriginGraphicItem::draw_axis() {
 
 void OriginGraphicItem::draw_grid_plane_lines() {
     glColor4f( .9019f, 0.4039f, 0.0f, 0.25f );
-    glLineWidth(0.5f);
+    Renderer::set_line_width(0.5f);
 
     int num_lines = 2*grid_plane_intervals_*4;
     float* line_verts = new float[3*num_lines];
@@ -143,7 +143,7 @@ BoxGraphicItem::BoxGraphicItem(ci::Vec3f dims) : dimensions_(dims) {
 
 void BoxGraphicItem::draw() {
     glColor4f(0.0f, 1.0f, 1.0f, 0.25f);
-    glLineWidth(3.0f);
+    Renderer::set_line_width(3.0f);
     ci::gl::enableWireframe();
     ci::gl::drawCube(ci::Vec3f::zero(), dimensions_);
 }
@@ -165,7 +165,7 @@ VboGraphicItem::VboGraphicItem(ci::gl::VboMesh& mesh, ci::Vec3f scale) {
 
 void VboGraphicItem::draw() {
     glColor4f(0.0f, 1.0f, 1.0f, 0.9f);
-    glLineWidth(0.9f);
+    Renderer::set_line_width(0.9f);
     ci::gl::enableWireframe();
     ci::gl::pushMatrices();
         ci::gl::scale(scale_);
@@ -186,7 +186,7 @@ void SphereGraphicItem::draw() {
     else
         glColor4f(1.0f, 1.0f, 1.0f, 0.4);
 
-    glLineWidth(0.9f);
+    Renderer::set_line_width(0.9f);
     ci::gl::enableWireframe();
     ci::gl::drawSphere(ci::Vec3f::zero(), radius_);
     ci::gl::disableWireframe();
@@ -245,6 +245,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
         
+        make_gl_normal(i, 0);
         make_gl_vertex(i, 0);
 
         vert_height = get_vertex_height(i, 1);
@@ -255,6 +256,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
 
+        make_gl_normal(i, 1);
         make_gl_vertex(i, 1);
 
         vert_height = get_vertex_height(i, 2);
@@ -265,6 +267,7 @@ void SoftBodyGraphicItem::draw() {
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, b1, b2),
             ci::lmap<float>(vert_height, last_min_y_, last_max_y_, a1, a2) );
 
+        make_gl_normal(i, 2);
         make_gl_vertex(i, 2);
 
         if (vert_height >= curr_max_y)
@@ -289,7 +292,7 @@ void SoftBodyGraphicItem::draw() {
 
     Color::set_color_a(line_color);
 
-    glLineWidth(Renderer::instance().line_thickness());
+    Renderer::set_line_width(Renderer::instance().line_thickness());
 
     glBegin(GL_LINES);
     

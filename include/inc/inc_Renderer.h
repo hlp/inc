@@ -52,9 +52,9 @@ public:
     void draw();
 };
 
-class PointLight : public Light {
+class CameraLight : public Light {
 public:
-    PointLight(int index) : Light(index) { }
+    CameraLight(int index) : Light(index) { }
 
     void draw();
 };
@@ -104,6 +104,11 @@ public:
     // this must be called before the camera
     void draw_lights();
 
+    static bool saving_high_res_;
+    static float high_res_scale_;
+
+    static void set_line_width(float);
+
 private:
     void begin3D();
     void draw_objects();
@@ -111,8 +116,7 @@ private:
     
     std::shared_ptr<Color> color_system_;
 
-    std::shared_ptr<SunLight> sun_light_;
-    std::shared_ptr<PointLight> point_light_;
+    std::shared_ptr<Light> cam_light_;
 
     ci::ColorA base_color_;
     ci::ColorA top_color_;

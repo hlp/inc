@@ -30,6 +30,9 @@
 
 namespace inc {
 
+bool Renderer::saving_high_res_;
+float Renderer::high_res_scale_;
+
 Renderer::Renderer() {
     instance_ = this;
 
@@ -42,12 +45,14 @@ Renderer::Renderer() {
     enable_lighting_ = true;
     Color::use_lighting(true);
 
+    saving_high_res_ = false;
+
     background_color_ = ci::ColorA(0.1f, 0.1f, 0.1f, 1.0f);
 
-    base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 0.85f);
-    top_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 0.85f);
+    base_color_ = ci::ColorA(1.0f, 0.0, 1.0f, 1.0f);
+    top_color_ = ci::ColorA(1.0f, 1.0f, 0.0f, 1.0f);
     line_color_ = ci::ColorA(0.0f, 0.0f, 0.0f, 0.4f);
-    line_thickness_ = 0.15f;
+    line_thickness_ = 0.75f;
 
     solids_base_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
     solids_top_color_ = ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f);
@@ -59,14 +64,10 @@ Renderer::~Renderer() {
 #ifdef TRACE_DTORS
     ci::app::console() << "Deleting Renderer" << std::endl;
 #endif
-
-    sun_light_.reset();
-    point_light_.reset();
 }
 
 void Renderer::setup() {
-    sun_light_ = std::tr1::shared_ptr<SunLight>(new SunLight(0));
-    point_light_ = std::tr1::shared_ptr<PointLight>(new PointLight(1));
+    cam_light_ = std::tr1::shared_ptr<Light>(new CameraLight(0));
 }
 
 void Renderer::update() {
@@ -102,11 +103,8 @@ void Renderer::draw_lights() {
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
 
-    sun_light_->enable();
-    sun_light_->draw();
-
-    point_light_->enable();
-    point_light_->draw();
+    cam_light_->enable();
+    cam_light_->draw();
 }
 
 void Renderer::draw_objects() {
@@ -138,19 +136,28 @@ void Renderer::save_image(int width, std::string name) {
     // tile renderer
     IncApp::instance().set_draw_interface(false);
 
-    ci::gl::TileRender tr(width, 
-        (float)width / (float)(IncApp::instance().getWindowWidth()) * 
+    high_res_scale_ = (float)width / (float)(IncApp::instance().getWindowWidth());
+
+    ci::gl::TileRender tr(width, high_res_scale_ * 
         (float)(IncApp::instance().getWindowHeight()));
 
 	tr.setMatrices(Camera::instance().cam().getCamera());
+
+    saving_high_res_ = true;
 
     while(tr.nextTile()) {
         IncApp::instance().draw();
     }
 
+    saving_high_res_ = false;
+
     ci::writeImage(name, tr.getSurface());
 
     IncApp::instance().set_draw_interface(true);
+}
+
+void Renderer::set_line_width(float w) {
+    saving_high_res_ ? glLineWidth(w * high_res_scale_) : glLineWidth(w);
 }
 
 GLenum Light::gl_index() {
@@ -178,9 +185,10 @@ void SunLight::draw() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 }
 
-
-void PointLight::draw() {
-	GLfloat light_position[] = { 1.0f, 7.0f, 0.0f, 0.0f };
+void CameraLight::draw() {
+    // set up a directional light centered at the camera
+    ci::Vec3f eye = Camera::instance().cam().getCamera().getEyePoint();
+	GLfloat light_position[] = { eye.x, eye.y, eye.z, 0.0f };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
     
 	glLightfv(gl_index_, GL_POSITION, light_position);

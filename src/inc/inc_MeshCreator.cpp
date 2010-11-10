@@ -27,6 +27,7 @@
 #include <inc/inc_Solid.h>
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshNetwork.h>
+#include <inc/inc_Renderer.h>
 
 namespace inc {
 
@@ -145,7 +146,7 @@ void MeshCreator::draw() {
     if (debug_mesh_.get() == NULL)
         return;
 
-    glLineWidth(1.0f);
+    Renderer::set_line_width(1.0f);
 
     glBegin(GL_LINES);
 

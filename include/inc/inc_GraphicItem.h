@@ -169,6 +169,13 @@ private:
             soft_body_->m_faces[index].m_n[2]->m_x.z()) / 3.0f);
     }
 
+    void make_gl_normal(int face, int node) {
+        glNormal3f(
+            soft_body_->m_faces[face].m_n[node]->m_n.x(),
+            soft_body_->m_faces[face].m_n[node]->m_n.y(),
+            soft_body_->m_faces[face].m_n[node]->m_n.z());
+    }
+
     void make_gl_vertex(int face, int node) {
         glVertex3f(
             soft_body_->m_faces[face].m_n[node]->m_x.x(),

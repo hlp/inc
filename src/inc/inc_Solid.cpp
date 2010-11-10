@@ -364,7 +364,7 @@ void SolidFactory::update() {
 
 void SolidFactory::draw() {
 #ifdef BULLET_DEBUG_DRAW
-    glLineWidth(0.9f);
+    Renderer::set_line_width(0.9f);
     glBegin(GL_LINES);
     dynamics_world_->debugDrawWorld();
     glEnd();
