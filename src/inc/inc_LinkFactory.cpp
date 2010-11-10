@@ -158,7 +158,11 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->rigid_body(),
                             solids->at((i-1)*d + k)->position(),
                             solids->at(i*d + k)->position(),
-                            axis))));
+                            // replace axis with a vector
+                            //((solids->at((i-1)*d + k)->position() + 
+                            //solids->at(i*d + k)->position()) / 2.0f).normalized()
+                            axis
+                            ))));
                     break;
                 case SOCKET:
                 default:
@@ -181,7 +185,11 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->rigid_body(),
                             solids->at(i*d + (k-1))->position(),
                             solids->at(i*d + k)->position(), 
-                            axis))));
+                            // replace axis with vector
+                            //((solids->at(i*d + k)->position() + 
+                            //solids->at(i*d + (k-1))->position()) / 2.0f).normalized()
+                            axis
+                            ))));
                 break;
                 case SOCKET:
                 default:
