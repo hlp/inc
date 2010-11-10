@@ -86,13 +86,13 @@ class Exporter;
  * a cell forms 6 triangles as follows:
  *  depth =>
  *  
- *  solid ------- joints_[0] --- solid
- *      |      /     |      \      | 
- *      |     /      |       \     | 
- *  joints_[3]       |         joints_[1]
- *      |     \      |       /     | 
- *      |      \     |      /      | 
- *  solid ------ joints_[2] ----- solid
+ *  solid_1 ------- joints_[0] --- solid_2
+ *      |        /     |      \      | 
+ *      |       /      |       \     | 
+ *  joints_[3]         |         joints_[1]
+ *      |       \      |       /     | 
+ *      |        \     |      /      | 
+ *  solid_4 ------ joints_[2] ----- solid_3
  *  
  *  width
  *   ||
@@ -117,35 +117,54 @@ struct JointCell {
         ci::Vec3f solid_2 = joints_[0]->b_position();
         ci::Vec3f solid_3 = joints_[2]->b_position();
         ci::Vec3f solid_4 = joints_[2]->a_position();
+
+        ci::Vec3f joint_0 = joints_[0]->position();
+        ci::Vec3f joint_1 = joints_[1]->position();
+        ci::Vec3f joint_2 = joints_[2]->position();
+        ci::Vec3f joint_3 = joints_[3]->position();
         
         glBegin(GL_TRIANGLES);
 
         // draw the exterior triangles
 
+        ci::Vec3f norm;
+
+        norm = (joint_0 - solid_1).cross(joint_3 - solid_1).normalized();
+        glNormal3f(norm);
         glVertex3f(solid_1);
-        glVertex3f(joints_[0]->position());
-        glVertex3f(joints_[3]->position());
+        glVertex3f(joint_0);
+        glVertex3f(joint_3);
 
+        norm = (joint_1 - solid_2).cross(joint_0 - solid_2).normalized();
+        glNormal3f(norm);
         glVertex3f(solid_2);
-        glVertex3f(joints_[0]->position());
-        glVertex3f(joints_[1]->position());
+        glVertex3f(joint_0);
+        glVertex3f(joint_1);
 
+        norm = (joint_2 - solid_3).cross(joint_1 - solid_3).normalized();
+        glNormal3f(norm);
         glVertex3f(solid_3);
-        glVertex3f(joints_[1]->position());
-        glVertex3f(joints_[2]->position());
+        glVertex3f(joint_1);
+        glVertex3f(joint_2);
 
+        norm = (joint_3 - solid_4).cross(joint_2 - solid_4).normalized();
+        glNormal3f(norm);
         glVertex3f(solid_4);
-        glVertex3f(joints_[2]->position());
-        glVertex3f(joints_[3]->position());
+        glVertex3f(joint_2);
+        glVertex3f(joint_3);
         
         // draw the interior triangles
-        glVertex3f(joints_[0]->position());
-        glVertex3f(joints_[2]->position());
-        glVertex3f(joints_[3]->position());
+        norm = (joint_0 - joint_3).cross(joint_2 - joint_3).normalized();
+        glNormal3f(norm);
+        glVertex3f(joint_0);
+        glVertex3f(joint_2);
+        glVertex3f(joint_3);
 
-        glVertex3f(joints_[0]->position());
-        glVertex3f(joints_[1]->position());
-        glVertex3f(joints_[2]->position());
+        norm = (joint_2 - joint_1).cross(joint_0 - joint_1).normalized();
+        glNormal3f(norm);
+        glVertex3f(joint_0);
+        glVertex3f(joint_1);
+        glVertex3f(joint_2);
 
         glEnd();
     }
