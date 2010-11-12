@@ -874,7 +874,6 @@ LinkNetworkMenu::LinkNetworkMenu() {
     LinkMesh::new_mesh_w_ = 10;
     LinkMesh::new_mesh_d_ = 10;
     LinkMesh::new_mesh_height_ = 5.0f;
-    LinkMesh::num_lock_points_ = 0;
     LinkMesh::hinge_axis_ = ci::Vec3f::yAxis();
     LinkMesh::line_weight_ = 1.0f;
     joint_type_ = 0; // 0 = HINGE, 1 = SOCKET
@@ -931,13 +930,6 @@ void LinkNetworkMenu::setup() {
         &LinkMesh::new_mesh_height_, "step=0.1"));
 
     add_widget(mesh_height);
-
-    std::tr1::shared_ptr<GenericWidget<int> > num_lock = 
-        std::tr1::shared_ptr<GenericWidget<int> >(
-        new GenericWidget<int>(*this, "Num lock points",
-        &LinkMesh::num_lock_points_, "min=0"));
-
-    add_widget(num_lock);
 
     std::tr1::shared_ptr<GenericWidget<ci::Vec3f> > hinge_axis = 
         std::tr1::shared_ptr<GenericWidget<ci::Vec3f> >(
@@ -1022,6 +1014,57 @@ bool LinkNetworkMenu::create_link_mesh(bool) {
 
     LinkMesh::create_link_mesh(LinkMesh::new_mesh_w_, LinkMesh::new_mesh_d_, 
         1.0f, joint_spacing_, type);
+
+    return true;
+}
+
+LinkNetworkMenu* LinkNetworkMenu::instance_;
+
+LinkNetworkMenu& LinkNetworkMenu::instance() {
+    return *instance_;
+}
+
+ImageMeshMenu::ImageMeshMenu() {
+    file_1_ = "data/image_w.png";
+    file_2_ = "data/image_d.png";
+}
+
+void ImageMeshMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(300, 200));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > load_mesh = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Load Mesh"));
+
+    load_mesh->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::ImageMeshMenu::load_images), this));
+
+    add_widget(load_mesh);
+
+    std::tr1::shared_ptr<GenericWidget<std::string> > image_w = 
+        std::tr1::shared_ptr<GenericWidget<std::string> >(
+        new GenericWidget<std::string>(*this, "File name full width",
+        &file_1_));
+
+    add_widget(image_w);
+
+    std::tr1::shared_ptr<GenericWidget<std::string> > image_d = 
+        std::tr1::shared_ptr<GenericWidget<std::string> >(
+        new GenericWidget<std::string>(*this, "File name full depth",
+        &file_2_));
+
+    add_widget(image_d);
+
+    Menu::setup();
+}
+
+bool ImageMeshMenu::load_images(bool) {
+    try {
+        LinkMesh::create_from_images(file_1_, file_2_, LinkFactory::instance().sphere_radius_,
+            LinkNetworkMenu::instance().joint_spacing_);
+    } catch (std::exception) {
+        ci::app::console() << "Oh noes!" << std::endl;
+    }
 
     return true;
 }
@@ -1215,6 +1258,7 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new LinkNetworkMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new MotorMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new ImageMeshMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DisplayMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new FileMenu()));
 }

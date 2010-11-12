@@ -65,12 +65,18 @@ public:
 
     // returned vector order:
     // w0,d0  w0,d1  w0, d2 ... w1,d0  w1,d1  w1,d2 ...
-    std::tr1::shared_ptr<std::vector<JointPtr>> link_rigid_body_matrix(
+    std::shared_ptr<std::vector<JointPtr>> link_rigid_body_matrix(
         int w, int d, LinkType link_type,
-        std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids, 
-        ci::Vec3f axis = ci::Vec3f::yAxis(),
-        std::shared_ptr<std::vector<JointCellPtr>> joint_cells = 
-        std::shared_ptr<std::vector<JointCellPtr>>(new std::vector<JointCellPtr>()));
+        std::shared_ptr<std::deque<RigidSolidPtr>> solids, 
+        std::shared_ptr<std::vector<JointCellPtr>>& joint_cells,
+        ci::Vec3f axis = ci::Vec3f::yAxis());
+
+    std::shared_ptr<std::vector<JointPtr>> link_rigid_body_matrix(
+        int w, int d, std::shared_ptr<std::deque<RigidSolidPtr>> solids, 
+        std::shared_ptr<std::vector<JointCellPtr>>& joint_cells,
+        std::vector<std::vector<ci::Vec3f>> axis_w, // matrix width = w
+        std::vector<std::vector<ci::Vec3f>> axis_d); // matrix depth = d
+
 
     void add_hinge_motor(HingeJointPtr ptr, float target_velocity,
         float max_motor_impulse);
@@ -89,14 +95,14 @@ public:
     float sphere_mass_;
     float link_gap_;
 
-    int link_counter_;
-
     std::shared_ptr<LinkMesh> last_mesh_;
 
 private:
-
-
     static LinkFactory* instance_;
+
+    void append_joint_cell(std::shared_ptr<std::vector<JointCellPtr>>
+        joint_cells, std::shared_ptr<std::vector<JointPtr>> joints, int d, 
+        int i, int k);
 
     std::vector<std::tr1::shared_ptr<Solid> > current_matrix_;
 };

@@ -18,6 +18,7 @@
  */
 
 #include <memory>
+#include <stdexcept>
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
@@ -28,6 +29,7 @@
 #include <cinder/gl/gl.h>
 #include <cinder/Rand.h>
 #include <cinder/TriMesh.h>
+#include <cinder/ImageIo.h>
 
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_SolidCreator.h>
@@ -41,7 +43,6 @@ namespace inc {
 int LinkMesh::new_mesh_w_;
 int LinkMesh::new_mesh_d_;
 float LinkMesh::new_mesh_height_;
-int LinkMesh::num_lock_points_;
 ci::Vec3f LinkMesh::hinge_axis_;
 float LinkMesh::line_weight_;
 
@@ -53,33 +54,40 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     std::for_each(solids->begin(), solids->end(), [&] (RigidSolidPtr ptr) {
         solids_.push_back(ptr);
     } );
-
-    // create joint cells from joint array
-    joint_cells_ = std::shared_ptr<std::vector<JointCellPtr>>(
-        new std::vector<JointCellPtr>());
         
     // link all the solids together based on the link type
     joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
-        type, solids, hinge_axis_, joint_cells_);
+        type, solids, joint_cells_, hinge_axis_);
 
+    isolate_hinges();
+}
+
+LinkMesh::LinkMesh(int w, int d, std::shared_ptr<std::deque<RigidSolidPtr>> 
+    solids, std::vector<std::vector<ci::Vec3f>> axis_w,
+    std::vector<std::vector<ci::Vec3f>> axis_d) : w_(w), d_(d) {
+
+    // copy the deque into a more efficient vector
+    std::for_each(solids->begin(), solids->end(), [&] (RigidSolidPtr ptr) {
+        solids_.push_back(ptr);
+    } );
+        
+    // hinge link all the solids together based on the axes
+    joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
+        solids, joint_cells_, axis_w, axis_d);
+
+    isolate_hinges();
+}
+
+// isolate out all the hinges
+void LinkMesh::isolate_hinges() {
     hinge_joints_ = std::shared_ptr<std::vector<HingeJointPtr>>(
         new std::vector<HingeJointPtr>());
 
-    // isolate out all the hinges
     std::for_each(joints_->begin(), joints_->end(),
         [=] (JointPtr ptr) {
             if (dynamic_cast<HingeJoint*>(ptr.get()) != NULL)
                 hinge_joints_->push_back(std::dynamic_pointer_cast<HingeJoint>(ptr));
     } );
-
-    // lock random points 
-    ci::Rand rand;
-    rand.seed(IncApp::instance().getElapsedFrames());
-    int range = w_ * d_;
-    for (int i = 0; i < num_lock_points_; ++i) {
-        solids_[rand.nextInt(range)]->rigid_body().setMassProps(
-            0.0f, btVector3(0.0, 0.0, 0.0));
-    }
 }
 
 LinkMesh::~LinkMesh() {
@@ -93,35 +101,13 @@ LinkMesh::~LinkMesh() {
     solids_.clear();
 }
 
-std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
+std::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     float sphere_radius, float spacing_scale, LinkFactory::LinkType type) {
-
     ci::Vec3f offset = SolidCreator::instance().creation_point();
-    
-    float height = new_mesh_height_;
     // create solids
-    std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids =
-        std::tr1::shared_ptr<std::deque<RigidSolidPtr>>(
-        new std::deque<RigidSolidPtr>());
-
-    float axis_dist = (sphere_radius * 2 + sphere_radius*spacing_scale);
-
-    ci::Vec3f r_pos;
-
-    for (int i = 0; i < w; ++i) {
-        for (int j = 0; j < d; ++j) {
-            r_pos = offset + ci::Vec3f(i * axis_dist, 0.0f, j * axis_dist);
-            r_pos.y = height;
-
-            RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(r_pos,
-                ci::Vec3f::one() * sphere_radius);
-
-            // make sure that the solids aren't being drawn
-            s->set_visible(false);
-
-            solids->push_back(s);
-        }
-    }
+    std::shared_ptr<std::deque<RigidSolidPtr>> solids = create_mesh_solids(
+        w, d, sphere_radius, spacing_scale, 
+        ci::Vec3f(offset.x, new_mesh_height_, offset.z));
 
     // create new link mesh using solids
 
@@ -133,6 +119,105 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
     LinkFactory::instance().last_mesh_ = mesh_ptr;
 
     return mesh_ptr;
+}
+
+std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1,
+    const std::string& file_2, float sphere_radius, float spacing_scale) throw(std::exception) {
+
+    ci::Surface axes_w = ci::loadImage(file_1); // has full width
+    ci::Surface axes_d = ci::loadImage(file_2); // has full depth
+
+    if (axes_w.getWidth() != axes_d.getWidth() + 1 || 
+        axes_w.getHeight() + 1 != axes_d.getHeight())
+        throw(std::runtime_error("incorrect image sizes"));
+
+    int w = axes_w.getWidth();
+    int d = axes_d.getHeight();
+
+    ci::Surface::Iter it = axes_w.getIter();
+
+    std::vector<std::vector<ci::Vec3f>> values_w;
+
+    while(it.line()) {
+        values_w.push_back(std::vector<ci::Vec3f>());
+        int j = 0;
+		while(it.pixel()) {
+            ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
+            values_w[j].push_back(v);
+            j++;
+		}
+	}
+
+    if (values_w.size() != w || values_w[0].size() != d - 1)
+        throw(std::runtime_error("incorrect image sizes"));
+
+    std::vector<std::vector<ci::Vec3f>> values_d;
+    it = axes_d.getIter();
+
+    while(it.line()) {
+        values_d.push_back(std::vector<ci::Vec3f>());
+        int j = 0;
+		while(it.pixel()) {
+            ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
+            values_w[j].push_back(v);
+            j++;
+		}
+	}
+
+    if (values_d.size() != w - 1 || values_d[0].size() != d)
+        throw(std::runtime_error("incorrect image sizes"));
+
+    ci::Vec3f offset = SolidCreator::instance().creation_point();
+
+    std::shared_ptr<std::deque<RigidSolidPtr>> solids = create_mesh_solids(
+        w, d, sphere_radius, spacing_scale, 
+        ci::Vec3f(offset.x, new_mesh_height_, offset.z));
+
+    // create new link mesh using solids
+
+    std::tr1::shared_ptr<LinkMesh> mesh_ptr = 
+        std::tr1::shared_ptr<LinkMesh>(new LinkMesh(w, d, solids,
+        values_w, values_d));
+
+    Manager::instance().add_graphic_item(mesh_ptr);
+
+    LinkFactory::instance().last_mesh_ = mesh_ptr;
+
+    return mesh_ptr;
+}
+
+std::shared_ptr<std::deque<RigidSolidPtr>> LinkMesh::create_mesh_solids(int w, int d, 
+    float sphere_rad, float spacing, ci::Vec3f origin) {
+    std::shared_ptr<std::deque<RigidSolidPtr>> solids =
+        std::shared_ptr<std::deque<RigidSolidPtr>>(new std::deque<RigidSolidPtr>());
+
+    float axis_dist = (sphere_rad * 2 + sphere_rad*spacing);
+
+    ci::Vec3f r_pos = origin;
+
+    for (int i = 0; i < w; ++i) {
+        for (int j = 0; j < d; ++j) {
+            r_pos = origin + ci::Vec3f(i * axis_dist, 0.0f, j * axis_dist);
+
+            RigidSolidPtr s = SolidCreator::instance().create_rigid_sphere(r_pos,
+                ci::Vec3f::one() * sphere_rad);
+            
+            // todo check that this works
+            btVector3 inertia(0,0,0);
+	        float mass = LinkFactory::instance().sphere_mass_;
+            s->rigid_body_ptr()->getCollisionShape()->calculateLocalInertia(mass, 
+                inertia);
+            s->rigid_body_ptr()->setMassProps(LinkFactory::instance().sphere_mass_,
+                inertia);
+
+            // make sure that the solids aren't being drawn
+            s->set_visible(false);
+
+            solids->push_back(s);
+        }
+    }
+
+    return solids;
 }
 
 void LinkMesh::draw() {

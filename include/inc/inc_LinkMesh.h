@@ -133,11 +133,21 @@ typedef std::shared_ptr<JointCell> JointCellPtr;
 class LinkMesh : public GraphicItem {
 public:
     LinkMesh(int w, int d, LinkFactory::LinkType,
-        std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids);
+        std::shared_ptr<std::deque<RigidSolidPtr>> solids);
+    // form a link mesh with hinges oriented according to vectors
+    LinkMesh(int w, int d, std::shared_ptr<std::deque<RigidSolidPtr>> 
+        solids, std::vector<std::vector<ci::Vec3f>> axis_w,
+        std::vector<std::vector<ci::Vec3f>> axis_d);
+
+    void isolate_hinges(); // parse throught joints_ and places hinges in hinge_joints_
+
     virtual ~LinkMesh();
 
     static std::shared_ptr<LinkMesh> create_link_mesh(int w, int d,
         float radius, float spacing_scale, LinkFactory::LinkType);
+    static std::shared_ptr<LinkMesh> create_from_images(const std::string& file_1,
+        const std::string& file_2, float sphere_radius, float spacing_scale) 
+        throw(std::exception);
 
     virtual void draw();
 
@@ -147,7 +157,6 @@ public:
     static int new_mesh_w_;
     static int new_mesh_d_;
     static float new_mesh_height_;
-    static int num_lock_points_;
     static ci::Vec3f hinge_axis_;
     static float line_weight_;
 
@@ -156,6 +165,10 @@ public:
     std::shared_ptr<std::vector<HingeJointPtr>> hinge_joints_;
 
 private:
+    static std::shared_ptr<std::deque<RigidSolidPtr>> create_mesh_solids(
+        int w, int d, float sphere_rad, float spacing, ci::Vec3f origin);
+
+
     std::vector<RigidSolidPtr> solids_;
     std::shared_ptr<std::vector<JointPtr>> joints_;
     std::shared_ptr<std::vector<JointCellPtr>>  joint_cells_;

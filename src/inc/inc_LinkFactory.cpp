@@ -147,14 +147,16 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
 
 std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
     int w, int d, LinkType link_type,
-    std::shared_ptr<std::deque<RigidSolidPtr>> solids, ci::Vec3f axis,
-    std::shared_ptr<std::vector<JointCellPtr>> joint_cells) {
+    std::shared_ptr<std::deque<RigidSolidPtr>> solids, 
+    std::shared_ptr<std::vector<JointCellPtr>>& joint_cells, ci::Vec3f axis) {
+
+    // create joint cells from joint array
+    joint_cells = std::shared_ptr<std::vector<JointCellPtr>>(
+        new std::vector<JointCellPtr>());
 
     std::shared_ptr<std::vector<JointPtr>> joints = 
         std::shared_ptr<std::vector<JointPtr>>(
         new std::vector<JointPtr>());
-    
-    link_counter_ = 0;
 
     // link rigid bodies together
     for (int i = 0; i < w; ++i) {
@@ -168,12 +170,7 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->rigid_body(),
                             solids->at((i-1)*d + k)->position(),
                             solids->at(i*d + k)->position(),
-                            // replace axis with a vector
-                            //((solids->at((i-1)*d + k)->position() + 
-                            //solids->at(i*d + k)->position()) / 2.0f).normalized()
-                            axis
-                            ))));
-                    link_counter_++;
+                            axis))));
                     break;
                 case SOCKET:
                 default:
@@ -196,12 +193,7 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             solids->at(i*d + k)->rigid_body(),
                             solids->at(i*d + (k-1))->position(),
                             solids->at(i*d + k)->position(), 
-                            // replace axis with vector
-                            //((solids->at(i*d + k)->position() + 
-                            //solids->at(i*d + (k-1))->position()) / 2.0f).normalized()
-                            axis
-                            ))));
-                    link_counter_++;
+                            axis))));
                 break;
                 case SOCKET:
                 default:
@@ -215,46 +207,92 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                 }
             } // end if (k > 0)
 
-            
-
-            /* i0 -- k0, k1, k2 ...
-             * i1 -- k0, k1, k2 ...
-             * i2 -- k0, k1, k2 ...
-             * i3 -- k0, k1, k2 ...
-             */
-            std::vector<JointPtr> cell_vec;
-            // make a joint cell, refer to LinkMesh.h for description
-            if (i > 0 && k > 0) {
-                // [0] 
-                // if i == 1, a different number of joints were added to the first
-                // row (one joint per solid) verses the second (usually two joints
-                // per solid. Hence the need for this nasty if
-                if (i > 1)
-                    cell_vec.push_back(joints->at(joints->size() - 1 - (d*2 - 1)));
-                else {
-                    int offset_upper = k * 2 + 1;
-                    int offset_lower = d - k - 1;
-                    cell_vec.push_back(joints->at(joints->size() - 1
-                        - (offset_upper + offset_lower)));
-                }
-                // [1] 
-                cell_vec.push_back(joints->at(joints->size() - 2));
-                // [2]
-                cell_vec.push_back(joints->at(joints->size() - 1));
-                // [3]
-                if (k > 1)
-                    cell_vec.push_back(joints->at(joints->size() - 4));
-                else
-                    cell_vec.push_back(joints->at(joints->size() - 3));
-
-                joint_cells->push_back(std::shared_ptr<JointCell>(
-                    new JointCell(cell_vec)));
-                cell_vec.clear();
-            }
+            append_joint_cell(joint_cells, joints, d, i, k);
         }
     }
 
     return joints;
+}
+
+std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
+    int w, int d, std::shared_ptr<std::deque<RigidSolidPtr>> solids, 
+    std::shared_ptr<std::vector<JointCellPtr>>& joint_cells,
+    std::vector<std::vector<ci::Vec3f>> axis_w,
+    std::vector<std::vector<ci::Vec3f>> axis_d) {
+
+    // create joint cells from joint array
+    joint_cells = std::shared_ptr<std::vector<JointCellPtr>>(
+        new std::vector<JointCellPtr>());
+
+    std::shared_ptr<std::vector<JointPtr>> joints = 
+        std::shared_ptr<std::vector<JointPtr>>(
+        new std::vector<JointPtr>());
+
+    // link rigid bodies together
+    for (int i = 0; i < w; ++i) {
+        for (int k = 0; k < d; ++k) {
+            if (i > 0) {
+                joints->push_back(HingeJointPtr(
+                    new HingeJoint(hinge_link_rigid_bodies(
+                        solids->at((i-1)*d + k)->rigid_body(),
+                        solids->at(i*d + k)->rigid_body(),
+                        solids->at((i-1)*d + k)->position(),
+                        solids->at(i*d + k)->position(),
+                        axis_d[i-1][k]))));
+            } // end if (i > 0)
+
+            if (k > 0) {
+                joints->push_back(HingeJointPtr(
+                    new HingeJoint(hinge_link_rigid_bodies(
+                        solids->at(i*d + (k-1))->rigid_body(),
+                        solids->at(i*d + k)->rigid_body(),
+                        solids->at(i*d + (k-1))->position(),
+                        solids->at(i*d + k)->position(), 
+                        axis_w[i][k-1]))));
+            } // end if (k > 0)
+
+            append_joint_cell(joint_cells, joints, d, i, k);
+        }
+    }
+
+    return joints;
+}
+
+void LinkFactory::append_joint_cell(std::shared_ptr<std::vector<JointCellPtr>>
+    joint_cells, std::shared_ptr<std::vector<JointPtr>> joints, int d, int i, int k) {
+    /* i0 -- k0, k1, k2 ...
+     * i1 -- k0, k1, k2 ...
+     * i2 -- k0, k1, k2 ...
+     * i3 -- k0, k1, k2 ...
+    */
+    std::vector<JointPtr> cell_vec;
+    // make a joint cell, refer to LinkMesh.h for description
+    if (i > 0 && k > 0) {
+        // [0] 
+        // if i == 1, a different number of joints were added to the first
+        // row (one joint per solid) verses the second (usually two joints
+        // per solid. Hence the need for this nasty if
+        if (i > 1)
+            cell_vec.push_back(joints->at(joints->size() - 1 - (d*2 - 1)));
+        else {
+            int offset_upper = k * 2 + 1;
+            int offset_lower = d - k - 1;
+            cell_vec.push_back(joints->at(joints->size() - 1
+                - (offset_upper + offset_lower)));
+        }
+        // [1] 
+        cell_vec.push_back(joints->at(joints->size() - 2));
+        // [2]
+        cell_vec.push_back(joints->at(joints->size() - 1));
+        // [3]
+        if (k > 1)
+            cell_vec.push_back(joints->at(joints->size() - 4));
+        else
+            cell_vec.push_back(joints->at(joints->size() - 3));
+
+        joint_cells->push_back(std::shared_ptr<JointCell>(
+            new JointCell(cell_vec)));
+    }
 }
 
 void LinkFactory::socket_link_soft_bodies(btSoftBody& s1,

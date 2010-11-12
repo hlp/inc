@@ -213,12 +213,18 @@ public:
 
     std::string name() { return "LINK"; }
 
+    float joint_spacing_;
+
+    static LinkNetworkMenu& instance();
+
 private:
+    static LinkNetworkMenu* instance_;
+
     ci::Vec3f hinge_axis_;
     int matrix_x_;
     int matrix_y_;
     int joint_type_;
-    float joint_spacing_;
+
 };
 
 class MotorMenu : public Menu {
@@ -236,6 +242,20 @@ private:
     float max_motor_impulse_;
     float motor_target_;
     float target_scale_;
+};
+
+class ImageMeshMenu : public Menu {
+public:
+    ImageMeshMenu();
+    virtual void setup();
+
+    std::string name() { return "IMAGEMESH"; }
+
+    bool load_images(bool);
+
+private:
+    std::string file_1_;
+    std::string file_2_;
 };
 
 class FileMenu : public Menu {
