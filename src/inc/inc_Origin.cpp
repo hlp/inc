@@ -52,17 +52,22 @@ void Origin::setup() {
         origin_graphic_item_->grid_plane_intervals_ptr(), "");
     */
 
-    if (create_ground_plane_) {
-        Manager::instance().solids().push_back(
-            SolidFactory::create_static_solid_box(
-            ci::Vec3f(2000.f, 0.1f, 2000.f), 
-            ci::Vec3f().zero()));
-    }
+    create_ground_plane();
 
     /*
     Manager::instance().solids().push_back(
         SolidFactory::create_soft_sphere_container());
         */
+}
+
+void Origin::create_ground_plane() {
+    if (!create_ground_plane_)
+        return;
+
+    Manager::instance().solids().push_back(
+        SolidFactory::create_static_solid_box(
+        ci::Vec3f(2000.f, 0.1f, 2000.f), 
+        ci::Vec3f().zero()));
 }
 
 void Origin::update() {

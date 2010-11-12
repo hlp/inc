@@ -56,6 +56,7 @@ public:
     ci::Vec3f position();
 
     btTypedConstraint* constraint_ptr() { return hinge_; }
+    btHingeConstraint* hinge_ptr() { return hinge_; }
 
 private:
     btHingeConstraint* hinge_;
@@ -73,6 +74,7 @@ public:
     ci::Vec3f position();
 
     btTypedConstraint* constraint_ptr() { return socket_; }
+    btPoint2PointConstraint* socket_ptr() { return socket_; }
 
 private:
     btPoint2PointConstraint* socket_;

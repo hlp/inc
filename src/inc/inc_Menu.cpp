@@ -111,6 +111,8 @@ void MainMenu::setup() {
 bool MainMenu::reset(bool) {
     Manager::instance().reset();
 
+    Origin::instance().create_ground_plane();
+
     return true;
 }
 
@@ -795,7 +797,7 @@ LinkNetworkMenu::LinkNetworkMenu() {
     LinkMesh::new_mesh_w_ = 10;
     LinkMesh::new_mesh_d_ = 10;
     LinkMesh::new_mesh_height_ = 5.0f;
-    LinkMesh::num_lock_points_ = 4;
+    LinkMesh::num_lock_points_ = 0;
     LinkMesh::hinge_axis_ = ci::Vec3f::yAxis();
     LinkMesh::line_weight_ = 1.0f;
     joint_type_ = 0; // 0 = HINGE, 1 = SOCKET

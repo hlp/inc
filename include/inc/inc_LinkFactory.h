@@ -79,6 +79,8 @@ public:
     float sphere_radius_;
     float link_gap_;
 
+    int link_counter_;
+
 private:
 
 

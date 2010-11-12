@@ -26,6 +26,7 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/app/App.h>
+#include <cinder/Rand.h>
 
 #include <inc/inc_LinkFactory.h>
 #include <inc/inc_Solid.h>
@@ -145,6 +146,8 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
     std::shared_ptr<std::vector<JointPtr>> joints = 
         std::shared_ptr<std::vector<JointPtr>>(
         new std::vector<JointPtr>());
+    
+    link_counter_ = 0;
 
     // link rigid bodies together
     for (int i = 0; i < w; ++i) {
@@ -163,6 +166,7 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             //solids->at(i*d + k)->position()) / 2.0f).normalized()
                             axis
                             ))));
+                    link_counter_++;
                     break;
                 case SOCKET:
                 default:
@@ -190,6 +194,7 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                             //solids->at(i*d + (k-1))->position()) / 2.0f).normalized()
                             axis
                             ))));
+                    link_counter_++;
                 break;
                 case SOCKET:
                 default:
@@ -202,6 +207,8 @@ std::shared_ptr<std::vector<JointPtr>> LinkFactory::link_rigid_body_matrix(
                 break;
                 }
             } // end if (k > 0)
+
+            
 
             /* i0 -- k0, k1, k2 ...
              * i1 -- k0, k1, k2 ...
@@ -284,6 +291,13 @@ btHingeConstraint* LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1,
 
     btHingeConstraint* hinge = 
         new btHingeConstraint(r1, r2, mid, -mid, bt_axis, bt_axis);
+
+    if (link_counter_ % 15 == 0) {
+        float target_velocity = 10.f;
+        float max_motor_impulse = 1.0f;
+	    hinge->enableAngularMotor(true, target_velocity, max_motor_impulse);
+        hinge->setMotorTarget(ci::Rand::randFloat(100, 360.0f), 1.0f);
+    }
     
     SolidFactory::instance().dynamics_world()->addConstraint(hinge);
 

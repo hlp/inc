@@ -36,6 +36,8 @@ public:
     void update();
     void draw();
 
+    void create_ground_plane();
+
     bool* draw_grid_ptr() { return &draw_grid_; }
 
     static Origin& instance() { return *instance_; }
