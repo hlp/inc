@@ -55,7 +55,7 @@ void Origin::setup() {
     if (create_ground_plane_) {
         Manager::instance().solids().push_back(
             SolidFactory::create_static_solid_box(
-            ci::Vec3f(200.f, 0.1f, 200.f), 
+            ci::Vec3f(2000.f, 0.1f, 2000.f), 
             ci::Vec3f().zero()));
     }
 
