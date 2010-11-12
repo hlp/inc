@@ -102,7 +102,8 @@ class Exporter;
  * Lines designate OpenGL triangles
  */
 
-struct JointCell {
+class JointCell {
+public:
     JointCell(std::vector<JointPtr> joints) 
         : joints_(joints) {
         color_ = ci::ColorA(0.9f, 0.9f, 0.9f, 1.0f);
@@ -135,7 +136,7 @@ public:
         std::tr1::shared_ptr<std::deque<RigidSolidPtr>> solids);
     virtual ~LinkMesh();
 
-    static std::tr1::shared_ptr<LinkMesh> create_link_mesh(int w, int d,
+    static std::shared_ptr<LinkMesh> create_link_mesh(int w, int d,
         float radius, float spacing_scale, LinkFactory::LinkType);
 
     virtual void draw();
@@ -149,6 +150,10 @@ public:
     static int num_lock_points_;
     static ci::Vec3f hinge_axis_;
     static float line_weight_;
+
+    void activate();
+
+    std::shared_ptr<std::vector<HingeJointPtr>> hinge_joints_;
 
 private:
     std::vector<RigidSolidPtr> solids_;

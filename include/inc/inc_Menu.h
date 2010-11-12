@@ -221,6 +221,23 @@ private:
     float joint_spacing_;
 };
 
+class MotorMenu : public Menu {
+public:
+    MotorMenu();
+    virtual void setup();
+
+    std::string name() { return "MOTORS"; }
+
+    bool activate_hinge(bool);
+
+private:
+    int target_hinge_;
+    float target_velocity_;
+    float max_motor_impulse_;
+    float motor_target_;
+    float target_scale_;
+};
+
 class FileMenu : public Menu {
 public:
     FileMenu();
@@ -272,9 +289,11 @@ public:
         ANEMONE_MESH = 4,
         MESH_NETWORK = 5,
         SOLID = 6,
-        DISPLAY = 7,
-        FILE = 8,
-        FORCE = 9
+        LINK = 7,
+        MOTOR = 8,
+        DISPLAY = 9,
+        FILE = 10,
+        FORCE = 11
     };
 
 private:

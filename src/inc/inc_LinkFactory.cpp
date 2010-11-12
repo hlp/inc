@@ -49,6 +49,11 @@ LinkFactory::LinkFactory() {
     link_gap_ = sphere_radius_ * 2.0f;
 }
 
+LinkFactory::~LinkFactory() {
+    // TODO: remove this line. Probably the best way is to create a LinkMeshFactory 
+    last_mesh_.reset();
+}
+
 void LinkFactory::setup() {
     // nothing here
 }
@@ -291,17 +296,21 @@ btHingeConstraint* LinkFactory::hinge_link_rigid_bodies(btRigidBody& r1,
 
     btHingeConstraint* hinge = 
         new btHingeConstraint(r1, r2, mid, -mid, bt_axis, bt_axis);
-
-    if (link_counter_ % 15 == 0) {
-        float target_velocity = 10.f;
-        float max_motor_impulse = 1.0f;
-	    hinge->enableAngularMotor(true, target_velocity, max_motor_impulse);
-        hinge->setMotorTarget(ci::Rand::randFloat(100, 360.0f), 1.0f);
-    }
     
     SolidFactory::instance().dynamics_world()->addConstraint(hinge);
 
     return hinge;
+}
+
+void LinkFactory::add_hinge_motor(HingeJointPtr ptr, float target_velocity, 
+    float max_motor_impulse) {
+    ptr->hinge_ptr()->enableAngularMotor(true, target_velocity, max_motor_impulse);
+}
+
+void LinkFactory::add_hinge_motor(HingeJointPtr ptr, float target_velocity, 
+    float max_motor_impulse, float motor_target, float target_scale) {
+    ptr->hinge_ptr()->enableAngularMotor(true, target_velocity, max_motor_impulse);
+    ptr->hinge_ptr()->setMotorTarget(motor_target, target_scale);
 }
 
 LinkFactory* LinkFactory::instance_;

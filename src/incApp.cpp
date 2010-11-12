@@ -110,6 +110,8 @@ void IncApp::shutdown() {
     manager_->clear_graphic_item_list();
     manager_->clear_solid_list();
 
+    link_factory_.reset();
+
     // NOTE: Solids and GraphicItems will try to clean up all code associated
     // with Bullet, deleting bodies and constraints. This code goes in and deletes 
     // any objects that are left. That said, this must be calle after all the other

@@ -38,10 +38,14 @@ typedef std::shared_ptr<Joint> JointPtr;
 typedef std::shared_ptr<RigidSolid> RigidSolidPtr;
 class JointCell;
 typedef std::shared_ptr<JointCell> JointCellPtr;
+class HingeJoint;
+typedef std::shared_ptr<HingeJoint> HingeJointPtr;
+class LinkMesh;
 
 class LinkFactory {
 public:
     LinkFactory();
+    ~LinkFactory();
     void setup();
 
     enum LinkType {
@@ -68,6 +72,11 @@ public:
         std::shared_ptr<std::vector<JointCellPtr>> joint_cells = 
         std::shared_ptr<std::vector<JointCellPtr>>(new std::vector<JointCellPtr>()));
 
+    void add_hinge_motor(HingeJointPtr ptr, float target_velocity,
+        float max_motor_impulse);
+    void add_hinge_motor(HingeJointPtr ptr, float target_velocity,
+        float max_motor_impulse, float motor_target, float target_scale);
+
     static LinkFactory& instance();
 
     float tau_;
@@ -80,6 +89,8 @@ public:
     float link_gap_;
 
     int link_counter_;
+
+    std::shared_ptr<LinkMesh> last_mesh_;
 
 private:
 

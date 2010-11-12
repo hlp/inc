@@ -206,6 +206,83 @@ MeshMenu& MeshMenu::instance() {
 }
 
 
+MotorMenu::MotorMenu() {
+    //use zero targetVelocity and a small maxMotorImpulse to simulate joint friction
+    target_velocity_ = 1.0f;
+    max_motor_impulse_ = 1.0f;
+    motor_target_ = 0.0f;
+    target_scale_ = 1.0f;
+    target_hinge_ = 10;
+}
+
+void MotorMenu::setup() {
+    interface_ = ci::params::InterfaceGl(name(), ci::Vec2i(380, 320));
+
+    std::tr1::shared_ptr<GenericWidget<bool> > activate_ran = 
+        std::tr1::shared_ptr<GenericWidget<bool> >(
+        new GenericWidget<bool>(*this, "Activate hinge"));
+
+    activate_ran->value_changed().registerCb(
+        std::bind1st(std::mem_fun(&inc::MotorMenu::activate_hinge), 
+        this));
+
+    add_widget(activate_ran);
+
+    std::tr1::shared_ptr<GenericWidget<int> > tar_hinge = 
+        std::tr1::shared_ptr<GenericWidget<int> >(
+        new GenericWidget<int>(*this, "Target hinge index",
+        &target_hinge_, "min=0"));
+
+    add_widget(tar_hinge);
+
+    std::tr1::shared_ptr<GenericWidget<float> > target_vel = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Target velocity",
+        &target_velocity_, "step=0.01"));
+
+    add_widget(target_vel);
+
+    std::tr1::shared_ptr<GenericWidget<float> > max_imp = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Max motor impulse",
+        &max_motor_impulse_, "step=0.01"));
+
+    add_widget(max_imp);
+
+    std::tr1::shared_ptr<GenericWidget<float> > motor_target = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Motor target",
+        &motor_target_, "step=0.01"));
+
+    add_widget(motor_target);
+
+    std::tr1::shared_ptr<GenericWidget<float> > target_scale = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Motor target scale?",
+        &target_scale_, "step=0.01"));
+
+    add_widget(target_scale);
+    
+
+    Menu::setup();
+}
+
+bool MotorMenu::activate_hinge(bool) {
+    int num_hinges = LinkFactory::instance().last_mesh_->hinge_joints_->size();
+
+    if (target_hinge_ >= num_hinges)
+        return true;
+
+    LinkFactory::instance().add_hinge_motor(
+        LinkFactory::instance().last_mesh_->hinge_joints_->at(target_hinge_),
+        target_velocity_, max_motor_impulse_, motor_target_,
+        target_scale_);
+
+    LinkFactory::instance().last_mesh_->activate();
+
+    return true;
+}
+
 
 SolidMenu::SolidMenu() {
     instance_ = this;
@@ -1130,6 +1207,7 @@ void MenuManager::create_menus() {
     menus_.push_back(std::tr1::shared_ptr<Menu>(new MeshNetworkMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new SolidMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new LinkNetworkMenu()));
+    menus_.push_back(std::tr1::shared_ptr<Menu>(new MotorMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new DisplayMenu()));
     menus_.push_back(std::tr1::shared_ptr<Menu>(new FileMenu()));
 }

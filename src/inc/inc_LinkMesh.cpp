@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <memory>
+
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
@@ -59,6 +61,16 @@ LinkMesh::LinkMesh(int w, int d, LinkFactory::LinkType type,
     // link all the solids together based on the link type
     joints_ = LinkFactory::instance().link_rigid_body_matrix(w, d, 
         type, solids, hinge_axis_, joint_cells_);
+
+    hinge_joints_ = std::shared_ptr<std::vector<HingeJointPtr>>(
+        new std::vector<HingeJointPtr>());
+
+    // isolate out all the hinges
+    std::for_each(joints_->begin(), joints_->end(),
+        [=] (JointPtr ptr) {
+            if (dynamic_cast<HingeJoint*>(ptr.get()) != NULL)
+                hinge_joints_->push_back(std::dynamic_pointer_cast<HingeJoint>(ptr));
+    } );
 
     // lock random points 
     ci::Rand rand;
@@ -118,6 +130,8 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 
     Manager::instance().add_graphic_item(mesh_ptr);
 
+    LinkFactory::instance().last_mesh_ = mesh_ptr;
+
     return mesh_ptr;
 }
 
@@ -168,6 +182,18 @@ void LinkMesh::save(Exporter& exporter) {
             exporter.write_line(pos, b_pos);
     } );
 }
+
+void LinkMesh::activate() {
+    std::for_each(solids_.begin(), solids_.end(), 
+        [] (RigidSolidPtr ptr) {
+            ptr->rigid_body_ptr()->activate();
+    } );
+}
+
+
+
+
+
 
 ci::Vec3f HingeJoint::a_position() {
     btVector3 vec = hinge_->getRigidBodyA().getWorldTransform().getOrigin();
