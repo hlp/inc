@@ -147,7 +147,7 @@ public:
         float radius, float spacing_scale, LinkFactory::LinkType);
     static std::shared_ptr<LinkMesh> create_from_images(const std::string& file_1,
         const std::string& file_2, float sphere_radius, float spacing_scale) 
-        throw(std::exception);
+        throw(std::runtime_error);
 
     virtual void draw();
 

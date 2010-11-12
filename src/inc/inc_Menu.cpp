@@ -871,6 +871,7 @@ bool DisplayMenu::lighting_changed(bool l) {
 
 
 LinkNetworkMenu::LinkNetworkMenu() {
+    instance_ = this;
     LinkMesh::new_mesh_w_ = 10;
     LinkMesh::new_mesh_d_ = 10;
     LinkMesh::new_mesh_height_ = 5.0f;
@@ -1062,8 +1063,8 @@ bool ImageMeshMenu::load_images(bool) {
     try {
         LinkMesh::create_from_images(file_1_, file_2_, LinkFactory::instance().sphere_radius_,
             LinkNetworkMenu::instance().joint_spacing_);
-    } catch (std::exception) {
-        ci::app::console() << "Oh noes!" << std::endl;
+    } catch (std::runtime_error er) {
+        ci::app::console() << er.what() << std::endl;
     }
 
     return true;

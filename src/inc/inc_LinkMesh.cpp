@@ -19,6 +19,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
@@ -122,14 +123,14 @@ std::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1,
-    const std::string& file_2, float sphere_radius, float spacing_scale) throw(std::exception) {
+    const std::string& file_2, float sphere_radius, float spacing_scale) throw(std::runtime_error) {
 
     ci::Surface axes_w = ci::loadImage(file_1); // has full width
     ci::Surface axes_d = ci::loadImage(file_2); // has full depth
 
     if (axes_w.getWidth() != axes_d.getWidth() + 1 || 
         axes_w.getHeight() + 1 != axes_d.getHeight())
-        throw(std::runtime_error("incorrect image sizes"));
+        throw(std::runtime_error("incorrect initial image sizes"));
 
     int w = axes_w.getWidth();
     int d = axes_d.getHeight();
@@ -138,34 +139,63 @@ std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1
 
     std::vector<std::vector<ci::Vec3f>> values_w;
 
-    while(it.line()) {
+    int i;
+
+    for (i = 0; i < w; ++i) {
         values_w.push_back(std::vector<ci::Vec3f>());
+        values_w[i].resize(d-1);
+    }
+
+    i = 0;
+    while(it.line()) {
         int j = 0;
 		while(it.pixel()) {
             ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
-            values_w[j].push_back(v);
+            values_w[j][i] = v;
             j++;
 		}
+        ++i;
 	}
 
-    if (values_w.size() != w || values_w[0].size() != d - 1)
-        throw(std::runtime_error("incorrect image sizes"));
+    if (values_w.size() != w || values_w[0].size() != d - 1) {
+        std::stringstream ss;
+        ss << "Unable to parse 1st image\n";
+        ss << "Expected width = " << w << "\n";
+        ss << "Actual width = " << values_w.size() << "\n";
+        ss << "Expected depth = " << d - 1 << "\n";
+        ss << "Actual depth = " << values_w[0].size() << "\n";
+        throw(std::runtime_error(ss.str()));
+    }
 
     std::vector<std::vector<ci::Vec3f>> values_d;
+
+    for (i = 0; i < w-1; ++i) {
+        values_d.push_back(std::vector<ci::Vec3f>());
+        values_d[i].resize(d);
+    }
+
     it = axes_d.getIter();
 
+    i = 0;
     while(it.line()) {
-        values_d.push_back(std::vector<ci::Vec3f>());
         int j = 0;
 		while(it.pixel()) {
             ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
-            values_w[j].push_back(v);
+            values_d[j][i] = v;
             j++;
 		}
+        ++i;
 	}
 
-    if (values_d.size() != w - 1 || values_d[0].size() != d)
-        throw(std::runtime_error("incorrect image sizes"));
+    if (values_d.size() != w - 1 || values_d[0].size() != d) {
+        std::stringstream ss;
+        ss << "Unable to parse 2nd image\n";
+        ss << "Expected width = " << w - 1 << "\n";
+        ss << "Actual width = " << values_d.size() << "\n";
+        ss << "Expected depth = " << d << "\n";
+        ss << "Actual depth = " << values_d[0].size() << "\n";
+        throw(std::runtime_error(ss.str()));
+    }
 
     ci::Vec3f offset = SolidCreator::instance().creation_point();
 
