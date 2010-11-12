@@ -946,6 +946,13 @@ void LinkNetworkMenu::setup() {
 
     add_widget(hinge_axis);
 
+    std::tr1::shared_ptr<GenericWidget<float> > mass = 
+        std::tr1::shared_ptr<GenericWidget<float> >(
+        new GenericWidget<float>(*this, "Sphere mass",
+        &(LinkFactory::instance().sphere_mass_), "min=0.0 step=0.1"));
+
+    add_widget(mass);
+
     std::tr1::shared_ptr<GenericWidget<float> > tau = 
         std::tr1::shared_ptr<GenericWidget<float> >(
         new GenericWidget<float>(*this, "Tau",

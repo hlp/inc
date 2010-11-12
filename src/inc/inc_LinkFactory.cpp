@@ -46,6 +46,7 @@ LinkFactory::LinkFactory() {
 	impulse_clamp_ = 0.0f;
 
     sphere_radius_ = 1.0f;
+    sphere_mass_ = 1.0f;
     link_gap_ = sphere_radius_ * 2.0f;
 }
 
@@ -90,8 +91,9 @@ void LinkFactory::create_link_matrix(LinkType link_type, int w, int d,
                 ci::Vec3f p = position + xgap * i + zgap * k +
                     xdiam * i + zdiam * k;
                 positions[i][k] = p;
-                r_bodies[i][k] = 
-                    SolidFactory::create_bullet_rigid_sphere(p, r);
+                btRigidBody* body = SolidFactory::create_bullet_rigid_sphere(p, r);
+                body->setMassProps(sphere_mass_, btVector3(0,0,0));
+                r_bodies[i][k] = body;
 
                 d_ptr->push_back(RigidSolidPtr(new RigidSolid(
                     new SphereGraphicItem(r), r_bodies[i][k], 

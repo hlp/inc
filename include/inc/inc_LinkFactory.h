@@ -86,6 +86,7 @@ public:
     float soft_erp_;
 
     float sphere_radius_;
+    float sphere_mass_;
     float link_gap_;
 
     int link_counter_;
