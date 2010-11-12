@@ -25,6 +25,7 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/Rand.h>
+#include <cinder/TriMesh.h>
 
 #include <inc/inc_LinkMesh.h>
 #include <inc/inc_SolidCreator.h>
@@ -123,6 +124,7 @@ std::tr1::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 void LinkMesh::draw() {
     std::for_each(joint_cells_->begin(), joint_cells_->end(),
         [] (JointCellPtr ptr) {
+            ptr->calculate_triangles();
             ptr->draw();
     });
 
@@ -209,6 +211,70 @@ ci::Vec3f SocketJoint::position() {
     return ci::Vec3f(pivot_in_a.x(), pivot_in_a.y(), pivot_in_a.z());
 }
 
+
+void JointCell::calculate_triangles() {
+    ci::Vec3f solid_1 = joints_[0]->a_position();
+    ci::Vec3f solid_2 = joints_[0]->b_position();
+    ci::Vec3f solid_3 = joints_[2]->b_position();
+    ci::Vec3f solid_4 = joints_[2]->a_position();
+
+    ci::Vec3f joint_0 = joints_[0]->position();
+    ci::Vec3f joint_1 = joints_[1]->position();
+    ci::Vec3f joint_2 = joints_[2]->position();
+    ci::Vec3f joint_3 = joints_[3]->position();
+        
+    // calculate the exterior triangles
+
+    normals_[0] = (joint_0 - solid_1).cross(joint_3 - solid_1).normalized();
+    triangles_[0][0] = solid_1;
+    triangles_[0][1] = joint_0;
+    triangles_[0][2] = joint_3;
+
+    normals_[1] = (joint_1 - solid_2).cross(joint_0 - solid_2).normalized();
+    triangles_[1][0] = solid_2;
+    triangles_[1][1] = joint_0;
+    triangles_[1][2] = joint_1;
+
+    normals_[2] = (joint_2 - solid_3).cross(joint_1 - solid_3).normalized();
+    triangles_[2][0] = solid_3;
+    triangles_[2][1] = joint_1;
+    triangles_[2][2] = joint_2;
+
+    normals_[3] = (joint_3 - solid_4).cross(joint_2 - solid_4).normalized();
+    triangles_[3][0] = solid_4;
+    triangles_[3][1] = joint_2;
+    triangles_[3][2] = joint_3;
+
+    // calculate the interior triangles
+
+    normals_[4] = (joint_0 - joint_3).cross(joint_2 - joint_3).normalized();
+    triangles_[4][0] = joint_0;
+    triangles_[4][1] = joint_2;
+    triangles_[4][2] = joint_3;
+
+    normals_[5] = (joint_2 - joint_1).cross(joint_0 - joint_1).normalized();
+    triangles_[5][0] = joint_0;
+    triangles_[5][1] = joint_1;
+    triangles_[5][2] = joint_2;
+}
+
+void JointCell::draw() {
+    Color::set_color_a(color_);
+
+    glBegin(GL_TRIANGLES);
+
+    std::vector<ci::Vec3f>::const_iterator norm_it = normals_.begin();
+    for (std::vector<std::vector<ci::Vec3f>>::const_iterator it = triangles_.begin();
+        it != triangles_.end(); ++it) {
+        glNormal3f(*norm_it);
+        glVertex3f(it->at(0));
+        glVertex3f(it->at(1));
+        glVertex3f(it->at(2));
+        ++norm_it;
+    }
+
+    glEnd();
+}
 
 void JointCell::save(Exporter& exporter) {
     ci::Vec3f solid_1 = joints_[0]->a_position();

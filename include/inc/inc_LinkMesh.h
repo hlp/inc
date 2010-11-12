@@ -104,70 +104,23 @@ struct JointCell {
     JointCell(std::vector<JointPtr> joints) 
         : joints_(joints) {
         color_ = ci::ColorA(0.9f, 0.9f, 0.9f, 1.0f);
+        for (int i = 0; i < 6; ++i) {
+            triangles_.push_back(std::vector<ci::Vec3f>());
+            triangles_[i].resize(3);
+        }
+        normals_.resize(6);
     }
 
     std::vector<JointPtr> joints_;
 
     ci::ColorA color_;
 
-    void draw() {
-        Color::set_color_a(color_);
+    std::vector<std::vector<ci::Vec3f>> triangles_;
+    std::vector<ci::Vec3f> normals_;
 
-        ci::Vec3f solid_1 = joints_[0]->a_position();
-        ci::Vec3f solid_2 = joints_[0]->b_position();
-        ci::Vec3f solid_3 = joints_[2]->b_position();
-        ci::Vec3f solid_4 = joints_[2]->a_position();
+    void calculate_triangles();
 
-        ci::Vec3f joint_0 = joints_[0]->position();
-        ci::Vec3f joint_1 = joints_[1]->position();
-        ci::Vec3f joint_2 = joints_[2]->position();
-        ci::Vec3f joint_3 = joints_[3]->position();
-        
-        glBegin(GL_TRIANGLES);
-
-        // draw the exterior triangles
-
-        ci::Vec3f norm;
-
-        norm = (joint_0 - solid_1).cross(joint_3 - solid_1).normalized();
-        glNormal3f(norm);
-        glVertex3f(solid_1);
-        glVertex3f(joint_0);
-        glVertex3f(joint_3);
-
-        norm = (joint_1 - solid_2).cross(joint_0 - solid_2).normalized();
-        glNormal3f(norm);
-        glVertex3f(solid_2);
-        glVertex3f(joint_0);
-        glVertex3f(joint_1);
-
-        norm = (joint_2 - solid_3).cross(joint_1 - solid_3).normalized();
-        glNormal3f(norm);
-        glVertex3f(solid_3);
-        glVertex3f(joint_1);
-        glVertex3f(joint_2);
-
-        norm = (joint_3 - solid_4).cross(joint_2 - solid_4).normalized();
-        glNormal3f(norm);
-        glVertex3f(solid_4);
-        glVertex3f(joint_2);
-        glVertex3f(joint_3);
-        
-        // draw the interior triangles
-        norm = (joint_0 - joint_3).cross(joint_2 - joint_3).normalized();
-        glNormal3f(norm);
-        glVertex3f(joint_0);
-        glVertex3f(joint_2);
-        glVertex3f(joint_3);
-
-        norm = (joint_2 - joint_1).cross(joint_0 - joint_1).normalized();
-        glNormal3f(norm);
-        glVertex3f(joint_0);
-        glVertex3f(joint_1);
-        glVertex3f(joint_2);
-
-        glEnd();
-    }
+    void draw();
 
     void save(Exporter& exporter);
 };
