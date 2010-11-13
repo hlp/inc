@@ -157,7 +157,8 @@ std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1
     while(it.line()) {
         int j = 0;
 		while(it.pixel()) {
-            ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
+            ci::Vec3f v = ci::Vec3f(0.5f - it.r() / 255.0f, 0.5f - it.g() / 255.0f, 
+                0.5f - it.b() / 255.0f);
             values_w[j][i] = v;
             j++;
 		}
@@ -187,7 +188,8 @@ std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1
     while(it.line()) {
         int j = 0;
 		while(it.pixel()) {
-            ci::Vec3f v = ci::Vec3f(it.r() / 255.0f, it.g() / 255.0f, it.b() / 255.0f);
+            ci::Vec3f v = ci::Vec3f(0.5f - it.r() / 255.0f, 0.5f - it.g() / 255.0f, 
+                0.5f - it.b() / 255.0f);
             values_d[j][i] = v;
             j++;
 		}
