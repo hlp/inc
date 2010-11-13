@@ -56,6 +56,7 @@
 #include <inc/inc_Menu.h>
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_Renderer.h>
+#include <inc/inc_Color.h>
 
 namespace inc {
 
@@ -1196,7 +1197,7 @@ DebugDraw::DebugDraw() : mode_(DBG_NoDebug) {
 
 void DebugDraw::drawLine(const btVector3& from, const btVector3& to, 
     const btVector3& color) {
-    glColor4f(color.x(), color.y(), color.z(), 0.9f);
+    Color::set_color_a(color.x(), color.y(), color.z(), 0.9f);
     glVertex3f(from.x(), from.y(), from.z());
     glVertex3f(to.x(), to.y(), to.z());
 }
