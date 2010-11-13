@@ -55,8 +55,7 @@
 #include <inc/inc_DxfSaver.h>
 #include <inc/inc_Menu.h>
 #include <inc/inc_MeshCreator.h>
-
-//#define BULLET_DEBUG_DRAW 1
+#include <inc/inc_Renderer.h>
 
 namespace inc {
 
@@ -309,6 +308,8 @@ SolidFactory::SolidFactory() {
     sphere_kDP_ = 0.001;
     sphere_kPR_ = 2500;
     sphere_total_mass_ = 1000.0f;
+
+    draw_bullet_debug_ = false;
 }
 
 void SolidFactory::setup() {
@@ -336,13 +337,11 @@ void SolidFactory::init_physics() {
 
     soft_body_world_info_.m_sparsesdf.Initialize();
 
-#ifdef BULLET_DEBUG_DRAW
     debug_draw_ = new DebugDraw();
     debug_draw_->setDebugMode(
         btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawConstraints);
         //btIDebugDraw::DBG_DrawAabb);
     dynamics_world_->setDebugDrawer(debug_draw_);
-#endif
 }
 
 void SolidFactory::update() {
@@ -362,12 +361,12 @@ void SolidFactory::update() {
 }
 
 void SolidFactory::draw() {
-#ifdef BULLET_DEBUG_DRAW
-    Renderer::set_line_width(0.9f);
-    glBegin(GL_LINES);
-    dynamics_world_->debugDrawWorld();
-    glEnd();
-#endif
+    if (draw_bullet_debug_) {
+        Renderer::set_line_width(0.9f);
+        glBegin(GL_LINES);
+        dynamics_world_->debugDrawWorld();
+        glEnd();
+    }
 }
 
 SolidFactory::~SolidFactory() {
@@ -381,9 +380,7 @@ SolidFactory::~SolidFactory() {
 
     soft_body_world_info_.m_sparsesdf.Reset();
 
-#ifdef BULLET_DEBUG_DRAW
     delete debug_draw_;
-#endif
     delete dynamics_world_;
     delete solver_;
     delete dispatcher_;

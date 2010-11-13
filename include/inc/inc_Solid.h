@@ -193,6 +193,8 @@ public:
     float* sphere_kPR_ptr() { return &sphere_kPR_; }
     float* sphere_total_mass_ptr() { return &sphere_total_mass_; }
 
+    bool draw_bullet_debug_;
+
 private:
     void init_physics();
     bool physics_param_changed();
@@ -247,6 +249,8 @@ private:
     static float sphere_total_mass_;
 
     static SolidFactory* instance_;
+
+    
 };
 
 /*
