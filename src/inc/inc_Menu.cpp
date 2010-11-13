@@ -104,6 +104,13 @@ void MainMenu::setup() {
 
     add_widget(reset_scene);
 
+    std::tr1::shared_ptr<GenericWidget<bool>> debug_draw = 
+        std::tr1::shared_ptr<GenericWidget<bool>>(
+        new GenericWidget<bool>(*this, "Draw physics debugging",
+        &SolidFactory::instance().draw_bullet_debug_));
+
+    add_widget(debug_draw);
+
     // this calls setup() on the widgets and adds them to the tweek bar
     Menu::setup();
 }

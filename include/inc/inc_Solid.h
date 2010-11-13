@@ -164,6 +164,8 @@ public:
     static SolidPtr create_rigid_mesh(ci::TriMesh&, 
         ci::Vec3f position, 
         ci::Vec3f scale, float mass);
+    static btRigidBody* create_bullet_rigid_sphere(ci::Vec3f position,
+        float radius);
 
     static SolidFactory& instance();
     static SolidFactory* instance_ptr();
@@ -193,18 +195,19 @@ public:
     float* sphere_kPR_ptr() { return &sphere_kPR_; }
     float* sphere_total_mass_ptr() { return &sphere_total_mass_; }
 
+    bool draw_bullet_debug_;
+
+private:
+    void init_physics();
+    bool physics_param_changed();
+        
     static btSoftBody* create_bullet_soft_sphere(ci::Vec3f position, 
         ci::Vec3f radius, float res);
     static void socket_link_soft_spheres(btSoftBody* s1, btSoftBody* s2,
         const ci::Vec3f& p1, const ci::Vec3f& p2);
     static void spring_link_rigid_spheres(btRigidBody* r1, btRigidBody* r2,
         const ci::Vec3f& p1, const ci::Vec3f& p2);
-    static btRigidBody* create_bullet_rigid_sphere(ci::Vec3f position,
-        float radius);
 
-private:
-    void init_physics();
-    bool physics_param_changed();
 
     static std::tr1::shared_ptr<ci::TriMesh> remove_mesh_duplicates(
         const ci::TriMesh& mesh);
@@ -247,6 +250,8 @@ private:
     static float sphere_total_mass_;
 
     static SolidFactory* instance_;
+
+    
 };
 
 /*
