@@ -123,7 +123,7 @@ std::shared_ptr<LinkMesh> LinkMesh::create_link_mesh(int w, int d,
 }
 
 std::shared_ptr<LinkMesh> LinkMesh::create_from_images(const std::string& file_1,
-    const std::string& file_2, float sphere_radius, float spacing_scale) throw(std::runtime_error) {
+    const std::string& file_2, float sphere_radius, float spacing_scale) {
 
     ci::Surface axes_w;
     ci::Surface axes_d;
