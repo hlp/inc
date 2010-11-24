@@ -303,9 +303,6 @@
     <ClCompile Include="..\src\inc\inc_SolidCreator.cpp">
       <Filter>Source Files\inc</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\inc\inc_MeshDeVoxelizer.cpp">
-      <Filter>Source Files\inc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_HashIsoSurface.cpp">
       <Filter>Source Files\toxi\volume</Filter>
     </ClCompile>
@@ -534,9 +531,6 @@
       <Filter>Header Files\inc</Filter>
     </ClInclude>
     <ClInclude Include="..\include\inc\inc_Widget.h">
-      <Filter>Header Files\inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_MeshDeVoxelizer.h">
       <Filter>Header Files\inc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_IsoSurface.h">

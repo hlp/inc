@@ -180,7 +180,6 @@
     <ClCompile Include="..\src\inc\inc_Manager.cpp" />
     <ClCompile Include="..\src\inc\inc_Menu.cpp" />
     <ClCompile Include="..\src\inc\inc_MeshCreator.cpp" />
-    <ClCompile Include="..\src\inc\inc_MeshDeVoxelizer.cpp" />
     <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp" />
     <ClCompile Include="..\src\inc\inc_Origin.cpp" />
     <ClCompile Include="..\src\inc\inc_Renderer.cpp" />
@@ -257,7 +256,6 @@
     <ClInclude Include="..\include\inc\inc_Manager.h" />
     <ClInclude Include="..\include\inc\inc_Menu.h" />
     <ClInclude Include="..\include\inc\inc_MeshCreator.h" />
-    <ClInclude Include="..\include\inc\inc_MeshDeVoxelizer.h" />
     <ClInclude Include="..\include\inc\inc_MeshNetwork.h" />
     <ClInclude Include="..\include\inc\inc_Module.h" />
     <ClInclude Include="..\include\inc\inc_Origin.h" />
