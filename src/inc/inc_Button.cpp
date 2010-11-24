@@ -17,6 +17,8 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#if 0
+
 #include <cinder/gl/gl.h>
 #include <cinder/Text.h>
 #include <cinder/Rect.h>
@@ -24,8 +26,6 @@
 #include <inc/inc_Button.h>
 #include <inc/inc_Menu.h>
 #include <incApp.h>
-
-#if 0
 
 namespace inc {
 

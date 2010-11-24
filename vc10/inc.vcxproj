@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;TRACE_DTORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\toxiclibs--\include;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\inc\include;C:\dev\Cinder\include;C:\dev\Cinder\boost;C:\dev\Cinder\blocks\bullet\bullet\src;C:\dev\Cinder;C:\dev\toxiclibs--\include;C:\dev\inc\include\csg</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UndefinePreprocessorDefinitions>
@@ -93,6 +93,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_BoxBrush.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_HashIsoSurface.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MarchingCubesIndex.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_RoundBrush.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricBrush.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpace.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpaceVector.cpp" />
     <ClCompile Include="..\src\csg\BooleanModeller.cpp" />
     <ClCompile Include="..\src\csg\Bound.cpp" />
     <ClCompile Include="..\src\csg\ColorSet.cpp" />
@@ -173,14 +180,24 @@
     <ClCompile Include="..\src\inc\inc_Manager.cpp" />
     <ClCompile Include="..\src\inc\inc_Menu.cpp" />
     <ClCompile Include="..\src\inc\inc_MeshCreator.cpp" />
+    <ClCompile Include="..\src\inc\inc_MeshDeVoxelizer.cpp" />
     <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp" />
     <ClCompile Include="..\src\inc\inc_Origin.cpp" />
     <ClCompile Include="..\src\inc\inc_Renderer.cpp" />
     <ClCompile Include="..\src\inc\inc_Solid.cpp" />
     <ClCompile Include="..\src\inc\inc_SolidCreator.cpp" />
+    <ClCompile Include="..\src\inc\inc_VolumePainter.cpp" />
     <ClCompile Include="..\src\inc\inc_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_BoxBrush.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_HashIsoSurface.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_IsoSurface.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MarchingCubesIndex.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_RoundBrush.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricBrush.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpace.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpaceVector.h" />
     <ClInclude Include="..\include\csg\BooleanModeller.h" />
     <ClInclude Include="..\include\csg\Bound.h" />
     <ClInclude Include="..\include\csg\ColorSet.h" />
@@ -240,6 +257,7 @@
     <ClInclude Include="..\include\inc\inc_Manager.h" />
     <ClInclude Include="..\include\inc\inc_Menu.h" />
     <ClInclude Include="..\include\inc\inc_MeshCreator.h" />
+    <ClInclude Include="..\include\inc\inc_MeshDeVoxelizer.h" />
     <ClInclude Include="..\include\inc\inc_MeshNetwork.h" />
     <ClInclude Include="..\include\inc\inc_Module.h" />
     <ClInclude Include="..\include\inc\inc_Origin.h" />
@@ -247,6 +265,7 @@
     <ClInclude Include="..\include\inc\inc_Solid.h" />
     <ClInclude Include="..\include\inc\inc_SolidCreator.h" />
     <ClInclude Include="..\include\inc\inc_Units.h" />
+    <ClInclude Include="..\include\inc\inc_VolumePainter.h" />
     <ClInclude Include="..\include\inc\inc_Widget.h" />
     <ClInclude Include="..\src\csg\og_internal.h" />
   </ItemGroup>

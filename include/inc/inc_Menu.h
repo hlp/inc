@@ -26,6 +26,8 @@
 #include <cinder/gl/Texture.h>
 #include <cinder/app/KeyEvent.h>
 #include <cinder/app/App.h>
+#include <cinder/app/AppBasic.h>
+#include <cinder/params/Params.h>
 
 #include <inc/inc_Module.h>
 #include <inc/inc_Widget.h>

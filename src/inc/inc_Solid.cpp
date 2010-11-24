@@ -30,6 +30,7 @@
 #include <BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
 
 // Required for CinderBullet.h
+#include <cinder/gl/gl.h>
 #include <cinder/app/AppBasic.h>
 #include <cinder/Surface.h>
 #include <cinder/gl/Material.h>

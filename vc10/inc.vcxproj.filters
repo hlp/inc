@@ -19,6 +19,24 @@
     <Filter Include="Source Files\csg">
       <UniqueIdentifier>{f2dc75fc-eae4-48b6-8924-c6f92aea4e6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\toxi">
+      <UniqueIdentifier>{eefed54d-d353-4995-b3e4-cd037f9523c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\toxi\volume">
+      <UniqueIdentifier>{b6cb9ffe-1ba4-41c0-a42e-092e335f5745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toxi">
+      <UniqueIdentifier>{51fc20eb-c6d1-4af0-a9e6-9862462f5bf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toxi\volume">
+      <UniqueIdentifier>{9a4c3084-fbe8-4c8f-805d-f8a48b02a9cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\inc">
+      <UniqueIdentifier>{7ae0981b-54d0-4e21-a2de-5d50dca3208b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\inc">
+      <UniqueIdentifier>{aabba205-80bf-4e60-9aea-6047750ddcbc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\csg\BooleanModeller.cpp">
@@ -216,59 +234,86 @@
     <ClCompile Include="..\src\csg\og_callbacks.c">
       <Filter>Source Files\csg</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_CSG.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_DxfSaver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_GraphicItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Menu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_MeshCreator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Origin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Solid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_SolidCreator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\inc\inc_Widget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\incApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\inc\inc_CylinderFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpace.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpaceVector.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricBrush.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_RoundBrush.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_BoxBrush.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Button.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Widget.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Camera.cpp">
+      <Filter>Source Files\inc</Filter>
     </ClCompile>
     <ClCompile Include="..\src\inc\inc_Color.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_CSG.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_CylinderFactory.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_DxfSaver.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_GraphicItem.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Manager.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Menu.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_MeshCreator.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_MeshNetwork.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Origin.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Renderer.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Solid.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_SolidCreator.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_MeshDeVoxelizer.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_HashIsoSurface.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MarchingCubesIndex.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\inc\inc_VolumePainter.cpp">
+      <Filter>Source Files\inc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -416,65 +461,95 @@
     <ClInclude Include="..\src\csg\og_internal.h">
       <Filter>Source Files\csg</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_CSG.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_CurveSketcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_DxfSaver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_GraphicItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Menu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_MeshCreator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_MeshNetwork.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Origin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Solid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_SolidCreator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Units.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\inc\inc_Widget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\incApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\inc\inc_CylinderFactory.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpace.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpaceVector.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricBrush.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_RoundBrush.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_BoxBrush.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Button.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Units.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Camera.h">
+      <Filter>Header Files\inc</Filter>
     </ClInclude>
     <ClInclude Include="..\include\inc\inc_Color.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_CSG.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_CurveSketcher.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_CylinderFactory.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_DxfSaver.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_GraphicItem.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Manager.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Menu.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_MeshCreator.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_MeshNetwork.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Module.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Origin.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Renderer.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Solid.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_SolidCreator.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Widget.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_MeshDeVoxelizer.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_IsoSurface.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_HashIsoSurface.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MarchingCubesIndex.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_VolumePainter.h">
+      <Filter>Header Files\inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
