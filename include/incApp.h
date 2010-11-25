@@ -32,6 +32,7 @@ namespace inc {
     class SolidCreator;
     class MeshCreator;
     class CurveSketcher;
+    class VolumePainter;
 }
 
 class IncApp : public ci::app::AppBasic {
@@ -53,15 +54,16 @@ class IncApp : public ci::app::AppBasic {
 
     private:
         // Access these with T::instance()
-        std::tr1::shared_ptr<inc::SolidFactory> solid_factory_;
-        std::tr1::shared_ptr<inc::Renderer> renderer_;
-        std::tr1::shared_ptr<inc::Manager> manager_;
-        std::tr1::shared_ptr<inc::Camera> camera_;
-        std::tr1::shared_ptr<inc::MenuManager> menu_manager_;
-        std::tr1::shared_ptr<inc::Origin> origin_;
-        std::tr1::shared_ptr<inc::SolidCreator> solid_creator_;
-        std::tr1::shared_ptr<inc::MeshCreator> mesh_creator_;
-        std::tr1::shared_ptr<inc::CurveSketcher> curve_sketcher_;
+        std::shared_ptr<inc::SolidFactory> solid_factory_;
+        std::shared_ptr<inc::Renderer> renderer_;
+        std::shared_ptr<inc::Manager> manager_;
+        std::shared_ptr<inc::Camera> camera_;
+        std::shared_ptr<inc::MenuManager> menu_manager_;
+        std::shared_ptr<inc::Origin> origin_;
+        std::shared_ptr<inc::SolidCreator> solid_creator_;
+        std::shared_ptr<inc::MeshCreator> mesh_creator_;
+        std::shared_ptr<inc::CurveSketcher> curve_sketcher_;
+        std::shared_ptr<inc::VolumePainter> volume_painter_;
 
         bool draw_interface_;
 

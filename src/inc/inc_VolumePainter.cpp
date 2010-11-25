@@ -1,5 +1,6 @@
 
 #include <cinder/gl/gl.h>
+#include <cinder/app/App.h>
 
 #include <toxi/volume/toxi_volume_VolumetricSpaceVector.h>
 #include <toxi/volume/toxi_volume_RoundBrush.h>
@@ -19,12 +20,18 @@ void VolumePainter::setup() {
     // nothing here
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
         toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 10.0f,
-        100.0f, 100.0f, 100.0f));
+        10.0f, 10.0f, 10.0f));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
 
     // draw some stuff
+    float d = 3.0f;
+    brush_->drawAtAbsolutePos(ci::Vec3f::zero(), d);
+    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 0.0f), d);
+    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 1.0f, 0.0f), d);
+    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 1.0f), d);
+    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 1.0f), d);
 
     convert_volume_to_mesh();
 }
@@ -36,6 +43,8 @@ void VolumePainter::convert_volume_to_mesh() {
     volume_mesh_ = std::shared_ptr<ci::TriMesh>(new ci::TriMesh());
 
     iso_surface_->computeSurfaceMesh(volume_mesh_, iso_compute_);
+
+    ci::app::console() << "Mesh tris = " << volume_mesh_->getNumTriangles() << std::endl;
 }
 
 void VolumePainter::update() {
@@ -43,6 +52,9 @@ void VolumePainter::update() {
 }
 
 void VolumePainter::draw() {
+    if (volume_mesh_.get() == NULL)
+        return;
+
     ci::gl::draw(*(volume_mesh_.get()));
 }
 

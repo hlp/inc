@@ -29,6 +29,7 @@
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_CylinderFactory.h>
+#include <inc/inc_VolumePainter.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -69,13 +70,14 @@ void IncApp::setup() {
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
 
+    volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
+    manager_->add_module(volume_painter_);
+
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
     mesh_creator_->setup();
 
     manager_->setup_modules();
-
-    
 }
 
 void IncApp::update() {
