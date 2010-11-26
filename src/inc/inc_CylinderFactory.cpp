@@ -78,7 +78,7 @@ SoftSolidPtr CylinderFactory::create_soft_cylinder(std::pair<ci::Vec3f,
 SoftSolidPtr CylinderFactory::create_soft_cylinder_network(std::vector<
     std::pair<ci::Vec3f, ci::Vec3f>>, float radius, int resolution) {
     
-    return SolidFactory::create_soft_sphere(ci::Vec3f(), ci::Vec3f::one());
+    return SolidFactory::create_soft_sphere(ci::Vec3f::zero(), ci::Vec3f::one());
 }
 
 std::tr1::shared_ptr<ci::BSpline3f> CylinderFactory::generate_cylinder_bspline(std::pair<

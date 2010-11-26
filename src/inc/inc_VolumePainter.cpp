@@ -27,7 +27,9 @@ void VolumePainter::setup() {
 
     // draw some stuff
     float d = 3.0f;
+
     brush_->drawAtAbsolutePos(ci::Vec3f::zero(), d);
+    
     brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 0.0f), d);
     brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 1.0f, 0.0f), d);
     brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 1.0f), d);
@@ -35,7 +37,6 @@ void VolumePainter::setup() {
 
     brush_->drawAtGridPos(1.0f, 1.0f, 1.0f, 1.0f);
     brush_->drawAtGridPos(1.0f, 0.0f, 1.0f, 1.0f);
-
 
     convert_volume_to_mesh();
 }
@@ -59,6 +60,11 @@ void VolumePainter::draw() {
     if (volume_mesh_.get() == NULL)
         return;
 
+    // cinder was throwing an error when drawing an empty mesh
+    if (volume_mesh_->getNumTriangles() == 0)
+        return;
+
+    ci::gl::color(ci::Color::white());
     ci::gl::draw(*(volume_mesh_.get()));
 }
 
