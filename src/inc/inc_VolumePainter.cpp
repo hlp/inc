@@ -11,32 +11,38 @@
 namespace inc {
 
 VolumePainter::VolumePainter() {
-    brush_radius_ = 50.0f;
+    brush_radius_ = 1.0f;
     iso_density_ = 1.0f;
     iso_compute_ = 3.0f * 0.001f;
 }
 
 void VolumePainter::setup() {
-    // nothing here
+    // 1st param is the bounding box that the VolumetricSpace covers
+    // it is mirrored into the negative axis
+    // 2nd, 3rd, 4th params are the resolution along each axis
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
-        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 400.0f,
-        18.0f, 18.0f, 18.0f));
+        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 50.0f,
+        45.f, 45.0f, 45.0f));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
 
-    // draw some stuff
     float d = 3.0f;
 
-    brush_->drawAtAbsolutePos(ci::Vec3f::zero(), d);
-    
-    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 0.0f), d);
-    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 1.0f, 0.0f), d);
-    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 1.0f), d);
-    brush_->drawAtAbsolutePos(ci::Vec3f(1.0f, 0.0f, 1.0f), d);
+    /*
+    for (float f = -20.0f; f < 30.0f; f += 30.0f) {
+        brush_->drawAtAbsolutePos(ci::Vec3f::one() * f, d);
+    }
+    */
 
-    brush_->drawAtGridPos(1.0f, 1.0f, 1.0f, 1.0f);
-    brush_->drawAtGridPos(1.0f, 0.0f, 1.0f, 1.0f);
+    brush_->drawAtAbsolutePos(ci::Vec3f::one() * -20.0f, d);
+    brush_->drawAtAbsolutePos(ci::Vec3f::one() * 20.0f, d);
+    brush_->drawAtAbsolutePos(ci::Vec3f(20, 10, 5), d);
+    //brush_->drawAtAbsolutePos(ci::Vec3f(50.0f, 0.f, 0.f), d);
+    //brush_->drawAtAbsolutePos(ci::Vec3f(-50.0f, 0.f, 0.f), d);
+
+    //brush_->drawAtGridPos(90, 180, 90, d);
+    //brush_->drawAtGridPos(90, 0, 90, d);
 
     convert_volume_to_mesh();
 }
@@ -48,8 +54,6 @@ void VolumePainter::convert_volume_to_mesh() {
     volume_mesh_ = std::shared_ptr<ci::TriMesh>(new ci::TriMesh());
 
     iso_surface_->computeSurfaceMesh(volume_mesh_, iso_compute_);
-
-    ci::app::console() << "Mesh triangles = " << volume_mesh_->getNumTriangles() << std::endl;
 }
 
 void VolumePainter::update() {
@@ -64,8 +68,12 @@ void VolumePainter::draw() {
     if (volume_mesh_->getNumTriangles() == 0)
         return;
 
+    renderer_.drawVolume(*(volume_.get()));
+    
+    ci::gl::enableWireframe();
     ci::gl::color(ci::Color::white());
     ci::gl::draw(*(volume_mesh_.get()));
+    ci::gl::disableWireframe();
 }
 
 }

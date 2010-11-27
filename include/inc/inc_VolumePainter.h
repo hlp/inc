@@ -3,6 +3,8 @@
 
 #include <cinder/TriMesh.h>
 
+#include <toxi/volume/toxi_volume_VolumetricRenderer.h>
+
 #include <inc/inc_Module.h>
 
 namespace toxi {
@@ -35,6 +37,8 @@ private:
     std::shared_ptr<toxi::volume::RoundBrush> brush_;
     std::shared_ptr<toxi::volume::HashIsoSurface> iso_surface_;
     std::shared_ptr<ci::TriMesh> volume_mesh_;
+
+    toxi::volume::VolumetricRenderer renderer_;
 };
 
 }

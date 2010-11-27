@@ -56,7 +56,7 @@ void Origin::setup() {
         Manager::instance().solids().push_back(
             SolidFactory::create_static_solid_box(
             ci::Vec3f(2000.0f, 10.0f, 2000.0f), 
-            ci::Vec3f().zero()));
+            ci::Vec3f()::zero()));
     }
     */
     /*

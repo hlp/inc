@@ -98,6 +98,7 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MarchingCubesIndex.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_RoundBrush.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricBrush.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricRenderer.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpace.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricSpaceVector.cpp" />
     <ClCompile Include="..\src\csg\BooleanModeller.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MarchingCubesIndex.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_RoundBrush.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricBrush.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricRenderer.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpace.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricSpaceVector.h" />
     <ClInclude Include="..\include\csg\BooleanModeller.h" />
