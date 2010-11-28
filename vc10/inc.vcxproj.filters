@@ -315,6 +315,9 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricRenderer.cpp">
       <Filter>Source Files\toxi\volume</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MeshVoxelizer.cpp">
+      <Filter>Source Files\toxi\volume</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -549,6 +552,9 @@
       <Filter>Header Files\inc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricRenderer.h">
+      <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MeshVoxelizer.h">
       <Filter>Header Files\toxi\volume</Filter>
     </ClInclude>
   </ItemGroup>

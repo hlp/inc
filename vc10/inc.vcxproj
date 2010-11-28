@@ -96,6 +96,7 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_BoxBrush.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_HashIsoSurface.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MarchingCubesIndex.cpp" />
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MeshVoxelizer.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_RoundBrush.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricBrush.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_VolumetricRenderer.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_HashIsoSurface.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_IsoSurface.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MarchingCubesIndex.h" />
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MeshVoxelizer.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_RoundBrush.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricBrush.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_VolumetricRenderer.h" />
