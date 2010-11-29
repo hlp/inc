@@ -188,6 +188,7 @@
     <ClCompile Include="..\src\inc\inc_Solid.cpp" />
     <ClCompile Include="..\src\inc\inc_SolidCreator.cpp" />
     <ClCompile Include="..\src\inc\inc_VolumePainter.cpp" />
+    <ClCompile Include="..\src\inc\inc_VoronoiSurface.cpp" />
     <ClCompile Include="..\src\inc\inc_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +269,7 @@
     <ClInclude Include="..\include\inc\inc_SolidCreator.h" />
     <ClInclude Include="..\include\inc\inc_Units.h" />
     <ClInclude Include="..\include\inc\inc_VolumePainter.h" />
+    <ClInclude Include="..\include\inc\inc_VoronoiSurface.h" />
     <ClInclude Include="..\include\inc\inc_Widget.h" />
     <ClInclude Include="..\src\csg\og_internal.h" />
   </ItemGroup>

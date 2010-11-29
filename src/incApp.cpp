@@ -29,7 +29,7 @@
 #include <inc/inc_CurveSketcher.h>
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_CylinderFactory.h>
-#include <inc/inc_VolumePainter.h>
+#include <inc/inc_VoronoiSurface.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -42,7 +42,7 @@ void IncApp::prepareSettings(Settings* settings) {
 	settings->setFrameRate(60.0f);
 	settings->setResizable(true);
 	settings->setFullScreen(false);
-    settings->setTitle("MOS Ball");
+    settings->setTitle("Deck");
 }
 
 void IncApp::setup() {
@@ -70,8 +70,8 @@ void IncApp::setup() {
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
 
-    volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
-    manager_->add_module(volume_painter_);
+    voronoi_surface_ = std::tr1::shared_ptr<inc::VoronoiSurface>(new inc::VoronoiSurface());
+    manager_->add_module(voronoi_surface_);
 
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
