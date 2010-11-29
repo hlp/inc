@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <utility> // for pair
+#include <deque>
 
+#include <cinder/app/AppBasic.h>
 #include <cinder/Vector.h>
 #include <cinder/Rand.h>
 
@@ -17,10 +19,13 @@ typedef std::vector<Line> LineVector;
 class VoronoiSurface : public Module {
 public:
     VoronoiSurface();
+    ~VoronoiSurface();
 
     void setup();
     void update();
     void draw();
+
+    virtual bool mouse_down(ci::app::MouseEvent);
 
 private:
     void init();
@@ -33,9 +38,11 @@ private:
     void raise_post_points_lmap();
 
     void bredth_first_raise_point(int index, ci::Vec2i coord);
-    void raise_point_recurse(ci::Vec2i coord);
+    void raise_point_recurse(int index, ci::Vec2i coord);
     
     void loft_lines(Line line1, Line line2);
+
+    void reset();
 
     std::vector<float> last_height_;
     std::vector<ci::Vec2i> coord_queue_;
@@ -47,6 +54,10 @@ private:
     int grid_width_;
     int grid_depth_;
     int loft_res_; // number of lines to loft with
+
+    std::deque<ci::Vec2i> bfs_queue_;
+    std::deque<ci::Vec2i>::iterator bfs_it;
+    std::deque<ci::Vec2i> bfs_last_coord_;
 
     std::vector<ci::Vec2i> starting_coords_;
     std::vector<ci::Color> coord_colors_;
@@ -63,7 +74,15 @@ private:
     std::vector<std::vector<ci::Vec3f>> post_points_;
     std::vector<std::vector<bool>> grid_touched_;
 
+    bool is_valid_coord(ci::Vec2i vec) {
+        return vec.x >= 0 && vec.x < grid_width_ && vec.y >= 0 && vec.y < grid_depth_;
+    }
+
+    ci::Vec3f last_intersect_;
+
     ci::Rand rand;
+
+    ci::CallbackId mouse_down_cb_id_;
 };
 
 }
