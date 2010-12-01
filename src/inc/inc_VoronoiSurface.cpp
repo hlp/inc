@@ -81,11 +81,7 @@ void VoronoiSurface::init() {
 }
 
 void VoronoiSurface::load_random_points(int num_points) {
-    boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
-    boost::posix_time::ptime now(boost::posix_time::second_clock::universal_time());
-    unsigned int seed = (now - epoch).total_seconds();
-        
-    rand.seed(seed);
+    rand.randomize();
 
     for (int i = 0; i < num_points; ++i) {
         starting_coords_.push_back(ci::Vec2i(rand.randInt(grid_width_),
