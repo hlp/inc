@@ -37,6 +37,24 @@
     <Filter Include="Source Files\inc">
       <UniqueIdentifier>{aabba205-80bf-4e60-9aea-6047750ddcbc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\toxi\math">
+      <UniqueIdentifier>{edef0492-85bc-4543-8e1b-6276361c0e21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\toxi\math">
+      <UniqueIdentifier>{f2bc5ebd-1ce6-4a3c-99a0-223622264b01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\toxi\util">
+      <UniqueIdentifier>{feded69d-26e6-4908-93e1-571c9d63f7d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\toxi\util\datatypes">
+      <UniqueIdentifier>{fae76079-d83d-4fdd-bd42-e01b40423a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toxi\util">
+      <UniqueIdentifier>{76a15c25-33d0-4001-83a8-9b80f7d580fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toxi\util\datatypes">
+      <UniqueIdentifier>{b47954b7-4aec-4479-bfb9-4b695319174e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\csg\BooleanModeller.cpp">
@@ -318,6 +336,15 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\volume\toxi_volume_MeshVoxelizer.cpp">
       <Filter>Source Files\toxi\volume</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\util\datatypes\toxi_util_datatypes_DoubleRange.cpp">
+      <Filter>Source Files\toxi\util\datatypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\math\toxi_math_ScaleMap.cpp">
+      <Filter>Source Files\toxi\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\math\toxi_math_MathUtils.cpp">
+      <Filter>Source Files\toxi\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -556,6 +583,21 @@
     </ClInclude>
     <ClInclude Include="..\..\toxiclibs--\include\toxi\volume\toxi_volume_MeshVoxelizer.h">
       <Filter>Header Files\toxi\volume</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_ScaleMap.h">
+      <Filter>Header Files\toxi\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\util\datatypes\toxi_util_datatypes_DoubleRange.h">
+      <Filter>Header Files\toxi\util\datatypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_InterpolateStrategy.h">
+      <Filter>Header Files\toxi\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_LinearInterpolation.h">
+      <Filter>Header Files\toxi\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_MathUtils.h">
+      <Filter>Header Files\toxi\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
