@@ -55,6 +55,12 @@
     <Filter Include="Source Files\toxi\util\datatypes">
       <UniqueIdentifier>{b47954b7-4aec-4479-bfb9-4b695319174e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\toxi\geom">
+      <UniqueIdentifier>{21bc27c5-cb2c-403d-aec6-47f9389cad08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\toxi\geom">
+      <UniqueIdentifier>{ea19a142-bccc-4dac-accf-7987f9bb8ae9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\csg\BooleanModeller.cpp">
@@ -345,6 +351,9 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\math\toxi_math_MathUtils.cpp">
       <Filter>Source Files\toxi\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\geom\toxi_geom_AABB.cpp">
+      <Filter>Source Files\toxi\geom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -598,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_MathUtils.h">
       <Filter>Header Files\toxi\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\geom\toxi_geom_AABB.h">
+      <Filter>Header Files\toxi\geom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

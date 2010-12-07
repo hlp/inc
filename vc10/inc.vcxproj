@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\toxiclibs--\src\toxi\geom\toxi_geom_AABB.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\math\toxi_math_MathUtils.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\math\toxi_math_ScaleMap.cpp" />
     <ClCompile Include="..\..\toxiclibs--\src\toxi\util\datatypes\toxi_util_datatypes_DoubleRange.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\src\inc\inc_Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\toxiclibs--\include\toxi\geom\toxi_geom_AABB.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_InterpolateStrategy.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_LinearInterpolation.h" />
     <ClInclude Include="..\..\toxiclibs--\include\toxi\math\toxi_math_MathUtils.h" />
