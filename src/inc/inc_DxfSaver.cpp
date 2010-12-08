@@ -180,6 +180,18 @@ void DxfSaver::write_trimesh(const ci::TriMesh& mesh) {
     }
 }
 
+void DxfSaver::write_trimesh_wireframe(const ci::TriMesh& mesh) {
+    ci::Vec3f a, b, c;
+
+    for (int i = 0; i < mesh.getNumTriangles(); ++i) {
+        mesh.getTriangleVertices(i, &a, &b, &c);
+
+        write_line(a, b);
+        write_line(b, c);
+        write_line(c, a);
+    }
+}
+
 
 
 

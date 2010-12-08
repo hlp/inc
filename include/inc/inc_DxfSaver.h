@@ -41,6 +41,7 @@ public:
     virtual void write_triangle(const ci::Vec3f& v1,
         const ci::Vec3f& v2, const ci::Vec3f& v3) = 0;
     virtual void write_trimesh(const ci::TriMesh&) = 0;
+    virtual void write_trimesh_wireframe(const ci::TriMesh&) = 0;
 
     virtual void set_layer(int) = 0;
     virtual void add_layer() = 0;
@@ -53,7 +54,7 @@ public:
 
     void set_path(const std::string&);
     
-    void input_soft_solid(SoftSolid& solid);
+    virtual void input_soft_solid(SoftSolid& solid);
 
     void begin();
     void end();
@@ -63,10 +64,11 @@ public:
 
     //void write_file();
 
-    void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2);
-    void write_triangle(const ci::Vec3f& v1,
+    virtual void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2);
+    virtual void write_triangle(const ci::Vec3f& v1,
         const ci::Vec3f& v2, const ci::Vec3f& v3);
-    void write_trimesh(const ci::TriMesh& mesh);
+    virtual void write_trimesh(const ci::TriMesh& mesh);
+    virtual void write_trimesh_wireframe(const ci::TriMesh& mesh);
 
 private:
     void write_header();
