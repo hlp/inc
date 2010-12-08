@@ -41,9 +41,11 @@ Renderer::Renderer() {
     enable_alpha_blending_ = true;
     enable_depth_read_ = true;
     enable_depth_write_ = true;
+
+    // TODO: fix this code
     // NOTE: make sure these two items are in sync
-    enable_lighting_ = true;
-    Color::use_lighting(true);
+    enable_lighting_ = false;
+    Color::use_lighting(enable_lighting_);
 
     saving_high_res_ = false;
 

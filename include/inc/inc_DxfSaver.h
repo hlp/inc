@@ -25,6 +25,7 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/Vector.h>
+#include <cinder/TriMesh.h>
 
 namespace inc {
 
@@ -39,6 +40,7 @@ public:
     virtual void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2) = 0;
     virtual void write_triangle(const ci::Vec3f& v1,
         const ci::Vec3f& v2, const ci::Vec3f& v3) = 0;
+    virtual void write_trimesh(const ci::TriMesh&) = 0;
 
     virtual void set_layer(int) = 0;
     virtual void add_layer() = 0;
@@ -64,6 +66,7 @@ public:
     void write_line(const ci::Vec3f& v1, const ci::Vec3f& v2);
     void write_triangle(const ci::Vec3f& v1,
         const ci::Vec3f& v2, const ci::Vec3f& v3);
+    void write_trimesh(const ci::TriMesh& mesh);
 
 private:
     void write_header();

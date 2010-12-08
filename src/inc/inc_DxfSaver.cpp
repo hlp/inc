@@ -17,15 +17,14 @@
  *  along with INC.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * 
- * Based on the original DXF writer from Simon Greenwold, February 2004.
- * Updated for Processing 0070 by Ben Fry in September 2004,
- * and again for Processing beta in April 2005.
- * Rewritten to support beginRaw/endRaw by Ben Fry in February 2006.
- * Updated again for inclusion as a core library in March 2006.
- * Constructor modifications in September 2008 as we approach 1.0.
- * Ported to C++ September 2010 by Patrick Tierney
+ *  Based on the original DXF writer from Simon Greenwold, February 2004.
+ *  Updated for Processing 0070 by Ben Fry in September 2004,
+ *  and again for Processing beta in April 2005.
+ *  Rewritten to support beginRaw/endRaw by Ben Fry in February 2006.
+ *  Updated again for inclusion as a core library in March 2006.
+ *  Constructor modifications in September 2008 as we approach 1.0.
+ *  Ported to C++ September 2010 by Patrick Tierney
  */
-
 
 
 #include <inc/inc_DxfSaver.h>
@@ -169,6 +168,16 @@ void DxfSaver::write_triangle(float v1x, float v1y, float v1z,
     write("13", v3x + INC_EPSILON);
     write("23", v3y + INC_EPSILON);
     write("33", v3z + INC_EPSILON);
+}
+
+void DxfSaver::write_trimesh(const ci::TriMesh& mesh) {
+    ci::Vec3f a, b, c;
+
+    for (int i = 0; i < mesh.getNumTriangles(); ++i) {
+        mesh.getTriangleVertices(i, &a, &b, &c);
+
+        write_triangle(a, b, c);
+    }
 }
 
 

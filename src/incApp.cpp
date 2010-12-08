@@ -107,6 +107,7 @@ void IncApp::shutdown() {
 #endif
 
     contextualizer_.reset();
+    volume_painter_.reset();
 
     mesh_creator_.reset();
 

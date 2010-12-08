@@ -29,10 +29,11 @@ void Contextualizer::load_model(std::string model_name) {
 
     std::shared_ptr<ShadedMesh> shaded = std::shared_ptr<ShadedMesh>(
         new ShadedMesh(load_mesh));
+    shaded->set_save(false);
 
     shaded_meshes_.push_back(shaded);
     
-    //Manager::instance().add_graphic_item(shaded);
+    Manager::instance().add_graphic_item(shaded);
 }
 
 void Contextualizer::load_model(const ci::TriMesh& mesh) {
@@ -42,10 +43,11 @@ void Contextualizer::load_model(const ci::TriMesh& mesh) {
 
     std::shared_ptr<ShadedMesh> shaded = std::shared_ptr<ShadedMesh>(
         new ShadedMesh(load_mesh));
+    shaded->set_save(false);
 
     shaded_meshes_.push_back(shaded);
 
-    //Manager::instance().add_graphic_item(shaded);
+    Manager::instance().add_graphic_item(shaded);
 }
 
 
@@ -54,7 +56,7 @@ void Contextualizer::setup() {
     scale_ = ci::Vec3f::one();
     rotation_ = ci::Vec3f::zero();
 
-    load_model("/data/context6.obj");
+    load_model("/data/context7.obj");
 }
 
 void Contextualizer::update() {

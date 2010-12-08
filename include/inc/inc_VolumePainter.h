@@ -17,9 +17,12 @@ class HashIsoSurface;
 
 namespace inc {
 
+class ShadedMesh;
+
 class VolumePainter : public Module {
 public:
     VolumePainter();
+    virtual ~VolumePainter();
 
     void setup();
     void update();
@@ -41,6 +44,7 @@ private:
     std::shared_ptr<toxi::volume::RoundBrush> brush_;
     std::shared_ptr<toxi::volume::HashIsoSurface> iso_surface_;
     std::shared_ptr<ci::TriMesh> volume_mesh_;
+    std::shared_ptr<ShadedMesh> shaded_mesh_;
 
     toxi::volume::VolumetricRenderer renderer_;
 };

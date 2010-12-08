@@ -28,6 +28,7 @@
 #include <inc/inc_Solid.h>
 #include <inc/inc_Renderer.h>
 #include <inc/inc_Color.h>
+#include <inc/inc_DxfSaver.h>
 
 namespace inc {
 
@@ -370,9 +371,13 @@ ShadedMesh::ShadedMesh(std::shared_ptr<ci::TriMesh> mesh) {
 
 void ShadedMesh::init() {
     shade_ = true;
+    draw_wireframe_ = false;
+    save_ = true;
+
     color_ = ci::ColorA(0.65f, 0.65f, 0.65f, 0.9);
 
-    build_normals();
+    if (shade_ && !draw_wireframe_)
+        build_normals();
 }
 
 void ShadedMesh::build_normals() {
@@ -405,21 +410,38 @@ void ShadedMesh::set_color(const ci::ColorA& c) {
 void ShadedMesh::draw() {
     Color::set_color_a(color_);
 
-    glBegin(GL_TRIANGLES);
+    if (draw_wireframe_)
+        glBegin(GL_LINES);
+    else
+        glBegin(GL_TRIANGLES);
 
     for (int i = 0; i < mesh_.getNumTriangles(); ++i) {
-        if (shade_)
+        if (shade_ && !draw_wireframe_)
             glNormal3f(normals_[i]);
 
         mesh_.getTriangleVertices(i, &a_, &b_, &c_);
 
-        glVertex3f(a_);
-        glVertex3f(b_);
-        glVertex3f(c_);
+        if (draw_wireframe_) {
+            glVertex3f(a_); glVertex3f(b_);
+            glVertex3f(b_); glVertex3f(c_);
+            glVertex3f(c_); glVertex3f(a_);
+        } else {
+            glVertex3f(a_);
+            glVertex3f(b_);
+            glVertex3f(c_);
+        }
     }
 
     glEnd();
 }
+
+void ShadedMesh::save(Exporter& exporter) {
+    if (!save_)
+        return;
+
+    exporter.write_trimesh(mesh_);
+}
+
 
 }
 

@@ -10,6 +10,8 @@
 #include <toxi/volume/toxi_volume_HashIsoSurface.h>
 
 #include <inc/inc_VolumePainter.h>
+#include <inc/inc_GraphicItem.h>
+#include <inc/inc_Manager.h>
 
 namespace inc {
 
@@ -25,8 +27,8 @@ void VolumePainter::setup() {
     // it is mirrored into the negative axis
     // 2nd, 3rd, 4th params are the resolution along each axis
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
-        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 500.0f,
-        400.f, 400.0f, 400.0f));
+        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 1000.0f,
+        500.f, 500.0f, 500.0f));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
@@ -36,6 +38,24 @@ void VolumePainter::setup() {
     //brush_->drawAtAbsolutePos(ci::Vec3f::one() * -20.0f, default_weight_);
 
     convert_volume_to_mesh();
+
+    if (volume_mesh_.get() == NULL)
+        return;
+
+    // cinder was throwing an error when drawing an empty mesh
+    if (volume_mesh_->getNumTriangles() == 0)
+        return;
+
+    shaded_mesh_ = std::shared_ptr<ShadedMesh>(new ShadedMesh(volume_mesh_));
+    shaded_mesh_->set_shade(false);
+    shaded_mesh_->set_draw_wireframe(true);
+    shaded_mesh_->set_color(ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f));
+
+    Manager::instance().add_graphic_item(shaded_mesh_);
+}
+
+VolumePainter::~VolumePainter() {
+    Manager::instance().remove_graphic_item(shaded_mesh_);
 }
 
 void VolumePainter::convert_volume_to_mesh() {
@@ -52,19 +72,7 @@ void VolumePainter::update() {
 }
 
 void VolumePainter::draw() {
-    if (volume_mesh_.get() == NULL)
-        return;
-
-    // cinder was throwing an error when drawing an empty mesh
-    if (volume_mesh_->getNumTriangles() == 0)
-        return;
-
-    //renderer_.drawVolume(*(volume_.get()));
-    
-    ci::gl::enableWireframe();
-    ci::gl::color(ci::Color::white());
-    ci::gl::draw(*(volume_mesh_.get()));
-    ci::gl::disableWireframe();
+    // nothing here
 }
 
 
@@ -98,7 +106,7 @@ void VolumePainter::load_points_from_file(const std::string& file_name, float w)
             points.push_back(ci::Vec3f(
                 boost::lexical_cast<float>(string_points[0]),
                 boost::lexical_cast<float>(string_points[2]),
-                boost::lexical_cast<float>(string_points[1])));
+                -boost::lexical_cast<float>(string_points[1])));
         } catch (...) {
             ci::app::console() << "Invalid point input" << std::endl;
         }
