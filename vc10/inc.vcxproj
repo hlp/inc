@@ -178,6 +178,7 @@
     <ClCompile Include="..\src\inc\inc_Button.cpp" />
     <ClCompile Include="..\src\inc\inc_Camera.cpp" />
     <ClCompile Include="..\src\inc\inc_Color.cpp" />
+    <ClCompile Include="..\src\inc\inc_Contextualizer.cpp" />
     <ClCompile Include="..\src\inc\inc_CSG.cpp" />
     <ClCompile Include="..\src\inc\inc_CurveSketcher.cpp" />
     <ClCompile Include="..\src\inc\inc_CylinderFactory.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="..\include\inc\inc_Button.h" />
     <ClInclude Include="..\include\inc\inc_Camera.h" />
     <ClInclude Include="..\include\inc\inc_Color.h" />
+    <ClInclude Include="..\include\inc\inc_Contextualizer.h" />
     <ClInclude Include="..\include\inc\inc_CSG.h" />
     <ClInclude Include="..\include\inc\inc_CurveSketcher.h" />
     <ClInclude Include="..\include\inc\inc_CylinderFactory.h" />

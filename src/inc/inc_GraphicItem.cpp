@@ -357,4 +357,69 @@ bool SoftBodyGraphicItem::detect_selection(ci::Ray r) {
     return false;
 }
 
+
+ShadedMesh::ShadedMesh(const ci::TriMesh& mesh) {
+    mesh_ = ci::TriMesh(mesh);
+    init();
 }
+
+ShadedMesh::ShadedMesh(std::shared_ptr<ci::TriMesh> mesh) {
+    mesh_ = ci::TriMesh(*(mesh.get()));
+    init();
+}
+
+void ShadedMesh::init() {
+    shade_ = true;
+    color_ = ci::ColorA(0.65f, 0.65f, 0.65f, 0.9);
+
+    build_normals();
+}
+
+void ShadedMesh::build_normals() {
+    ci::Vec3f d1, d2, center;
+
+    normals_.clear();
+
+    for (int i = 0; i < mesh_.getNumTriangles(); ++i) {
+        mesh_.getTriangleVertices(i, &a_, &b_, &c_);
+        
+        d1 = a_ - b_;
+        d2 = a_ - c_;
+
+        center = (a_ + b_ + c_) / 3.0f;
+
+        normals_.push_back(d1.cross(d2).normalized() + center);
+    }
+}
+
+void ShadedMesh::flip() {
+    std::for_each(normals_.begin(), normals_.end(), [] (ci::Vec3f& v) {
+        v *= -1.0f;
+    } );
+}
+
+void ShadedMesh::set_color(const ci::ColorA& c) {
+    color_ = c;
+}
+
+void ShadedMesh::draw() {
+    Color::set_color_a(color_);
+
+    glBegin(GL_TRIANGLES);
+
+    for (int i = 0; i < mesh_.getNumTriangles(); ++i) {
+        if (shade_)
+            glNormal3f(normals_[i]);
+
+        mesh_.getTriangleVertices(i, &a_, &b_, &c_);
+
+        glVertex3f(a_);
+        glVertex3f(b_);
+        glVertex3f(c_);
+    }
+
+    glEnd();
+}
+
+}
+

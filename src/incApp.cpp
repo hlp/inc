@@ -30,6 +30,7 @@
 #include <inc/inc_MeshCreator.h>
 #include <inc/inc_CylinderFactory.h>
 #include <inc/inc_VolumePainter.h>
+#include <inc/inc_Contextualizer.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -73,6 +74,9 @@ void IncApp::setup() {
     volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
     manager_->add_module(volume_painter_);
 
+    contextualizer_ = std::shared_ptr<inc::Contextualizer>(new inc::Contextualizer());
+    manager_->add_module(contextualizer_);
+
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
     mesh_creator_->setup();
@@ -101,6 +105,8 @@ void IncApp::shutdown() {
 #ifdef TRACE_DTORS
     console() << "IncApp Shutdown" << std::endl;
 #endif
+
+    contextualizer_.reset();
 
     mesh_creator_.reset();
 

@@ -354,6 +354,9 @@
     <ClCompile Include="..\..\toxiclibs--\src\toxi\geom\toxi_geom_AABB.cpp">
       <Filter>Source Files\toxi\geom</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\inc\inc_Contextualizer.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -610,6 +613,9 @@
     </ClInclude>
     <ClInclude Include="..\..\toxiclibs--\include\toxi\geom\toxi_geom_AABB.h">
       <Filter>Header Files\toxi\geom</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_Contextualizer.h">
+      <Filter>Header Files\inc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

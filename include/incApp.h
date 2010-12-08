@@ -33,6 +33,7 @@ namespace inc {
     class MeshCreator;
     class CurveSketcher;
     class VolumePainter;
+    class Contextualizer;
 }
 
 class IncApp : public ci::app::AppBasic {
@@ -64,6 +65,7 @@ class IncApp : public ci::app::AppBasic {
         std::shared_ptr<inc::MeshCreator> mesh_creator_;
         std::shared_ptr<inc::CurveSketcher> curve_sketcher_;
         std::shared_ptr<inc::VolumePainter> volume_painter_;
+        std::shared_ptr<inc::Contextualizer> contextualizer_;
 
         bool draw_interface_;
 

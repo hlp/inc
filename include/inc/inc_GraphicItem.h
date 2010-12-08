@@ -194,4 +194,33 @@ private:
     float last_max_y_;
 };
 
+// TODO: create smooth mesh, with per vertex normals
+
+class ShadedMesh : public GraphicItem {
+public:
+    ShadedMesh(const ci::TriMesh& mesh);
+    ShadedMesh(std::shared_ptr<ci::TriMesh> mesh);
+
+    void draw();
+
+    void set_color(const ci::ColorA& c);
+
+    // flips the directions of the normals
+    void flip();
+
+private:
+    void init();
+    void build_normals();
+
+    ci::TriMesh mesh_;
+    std::vector<ci::Vec3f> normals_;
+
+    ci::ColorA color_;
+
+    bool shade_;
+
+    ci::Vec3f a_, b_, c_;
+
+};
+
 }

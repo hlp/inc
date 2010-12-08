@@ -28,9 +28,9 @@ namespace inc {
 class Solid;
 class GraphicItem;
 
-typedef std::deque< std::tr1::shared_ptr<Module> > ModuleList;
-typedef std::deque< std::tr1::shared_ptr<Solid> > SolidList;
-typedef std::deque< std::tr1::shared_ptr<GraphicItem> > GraphicItemList;
+typedef std::deque< std::shared_ptr<Module> > ModuleList;
+typedef std::deque< std::shared_ptr<Solid> > SolidList;
+typedef std::deque< std::shared_ptr<GraphicItem> > GraphicItemList;
 
 class Manager : public Module {
 public:
@@ -42,12 +42,12 @@ public:
     void setup_modules();
     void update_modules();
     void draw_modules();
-    void add_module(std::tr1::shared_ptr<Module>);
-    void remove_module(std::tr1::shared_ptr<Module>);
-    void add_solid(std::tr1::shared_ptr<Solid>);
-    void remove_solid(std::tr1::shared_ptr<Solid>);
-    void add_graphic_item(std::tr1::shared_ptr<GraphicItem>);
-    void remove_graphic_item(std::tr1::shared_ptr<GraphicItem>);
+    void add_module(std::shared_ptr<Module>);
+    void remove_module(std::shared_ptr<Module>);
+    void add_solid(std::shared_ptr<Solid>);
+    void remove_solid(std::shared_ptr<Solid>);
+    void add_graphic_item(std::shared_ptr<GraphicItem>);
+    void remove_graphic_item(std::shared_ptr<GraphicItem>);
         
     void setup();
     void update();
@@ -57,10 +57,10 @@ public:
     void clear_solid_list();
     void clear_graphic_item_list();
 
-    void register_for_selection(std::tr1::shared_ptr<Solid>);
+    void register_for_selection(std::shared_ptr<Solid>);
 
     SolidList& get_selectable(); // returns the items the camera should check
-    void deselect_other_solids(std::tr1::shared_ptr<Solid>);
+    void deselect_other_solids(std::shared_ptr<Solid>);
 
     //ci::params::InterfaceGl& interface();
 
