@@ -25,9 +25,13 @@ public:
     void update();
     void draw();
 
+    void load_points_from_file(const std::string& file_name);
+    void load_points_from_file(const std::string& file_name, float weigth);
+
     float brush_radius_;
     float iso_density_;
     float iso_compute_;
+    float default_weight_;
 
 private:
     void draw_volume();

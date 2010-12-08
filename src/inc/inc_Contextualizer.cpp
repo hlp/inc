@@ -32,7 +32,7 @@ void Contextualizer::load_model(std::string model_name) {
 
     shaded_meshes_.push_back(shaded);
     
-    Manager::instance().add_graphic_item(shaded);
+    //Manager::instance().add_graphic_item(shaded);
 }
 
 void Contextualizer::load_model(const ci::TriMesh& mesh) {
@@ -45,7 +45,7 @@ void Contextualizer::load_model(const ci::TriMesh& mesh) {
 
     shaded_meshes_.push_back(shaded);
 
-    Manager::instance().add_graphic_item(shaded);
+    //Manager::instance().add_graphic_item(shaded);
 }
 
 
@@ -54,7 +54,7 @@ void Contextualizer::setup() {
     scale_ = ci::Vec3f::one();
     rotation_ = ci::Vec3f::zero();
 
-    load_model("/data/context3.obj");
+    load_model("/data/context6.obj");
 }
 
 void Contextualizer::update() {
