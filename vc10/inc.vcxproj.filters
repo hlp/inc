@@ -357,6 +357,9 @@
     <ClCompile Include="..\src\inc\inc_Contextualizer.cpp">
       <Filter>Source Files\inc</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\inc\inc_MeshVideo.cpp">
+      <Filter>Source Files\inc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\inc\BunnyMesh.h">
@@ -615,6 +618,9 @@
       <Filter>Header Files\toxi\geom</Filter>
     </ClInclude>
     <ClInclude Include="..\include\inc\inc_Contextualizer.h">
+      <Filter>Header Files\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\inc\inc_MeshVideo.h">
       <Filter>Header Files\inc</Filter>
     </ClInclude>
   </ItemGroup>

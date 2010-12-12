@@ -31,6 +31,7 @@
 #include <inc/inc_CylinderFactory.h>
 #include <inc/inc_VolumePainter.h>
 #include <inc/inc_Contextualizer.h>
+#include <inc/inc_MeshVideo.h>
 
 IncApp::IncApp() {
     instance_ = this;
@@ -71,16 +72,21 @@ void IncApp::setup() {
     curve_sketcher_ = std::tr1::shared_ptr<inc::CurveSketcher>(new inc::CurveSketcher());
     manager_->add_module(curve_sketcher_);
 
-    volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
-    manager_->add_module(volume_painter_);
+    // something is wrong with these modules that is preventing the program from running
+    //volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
+    //manager_->add_module(volume_painter_);
 
-    contextualizer_ = std::shared_ptr<inc::Contextualizer>(new inc::Contextualizer());
-    manager_->add_module(contextualizer_);
+    //contextualizer_ = std::shared_ptr<inc::Contextualizer>(new inc::Contextualizer());
+    //manager_->add_module(contextualizer_);
+
+    mesh_video_ = std::shared_ptr<inc::MeshVideo>(new inc::MeshVideo());
+    manager_->add_module(mesh_video_);
 
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
     mesh_creator_->setup();
 
+    ci::app::console() << "Setting up modules" << std::endl;
     manager_->setup_modules();
 }
 
