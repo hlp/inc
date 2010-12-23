@@ -23,6 +23,8 @@ private:
     // Ignores z coordinate at the moment
     ci::Vec2i model_to_video(ci::Vec3f model_point);
     void set_bounds(const ci::TriMesh& mesh);
+    void build_normals();
+
 
     ci::Capture capture_;
     ci::Surface surface_;
@@ -39,6 +41,8 @@ private:
     int surf_height_;
 
     bool first_frame_;
+
+    std::vector<ci::Vec3f> normals_;
 
     // for draw()
     ci::Vec3f a_, b_, c_;

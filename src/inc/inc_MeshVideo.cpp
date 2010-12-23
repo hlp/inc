@@ -43,6 +43,7 @@ void MeshVideo::setup() {
     loader.load(mesh_.get(), true);
 
     set_bounds(*(mesh_.get()));
+    build_normals();
 }
 
 void MeshVideo::update() {
@@ -116,6 +117,23 @@ void MeshVideo::set_bounds(const ci::TriMesh& mesh) {
 
     bound_min_ = min;
     bound_max_ = max;
+}
+
+void MeshVideo::build_normals() {
+    ci::Vec3f d1, d2, center;
+
+    normals_.clear();
+
+    for (int i = 0; i < mesh_->getNumTriangles(); ++i) {
+        mesh_->getTriangleVertices(i, &a_, &b_, &c_);
+        
+        d1 = a_ - b_;
+        d2 = a_ - c_;
+
+        center = (a_ + b_ + c_) / 3.0f;
+
+        normals_.push_back(d1.cross(d2).normalized() + center);
+    }
 }
 
 }
