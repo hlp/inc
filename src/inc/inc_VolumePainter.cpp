@@ -16,7 +16,7 @@
 namespace inc {
 
 VolumePainter::VolumePainter() {
-    brush_radius_ = 20.0f;
+    brush_radius_ = 2.0f;
     iso_density_ = 1.0f;
     iso_compute_ = 3.0f * 0.001f;
     default_weight_ = 3.0f;
@@ -27,13 +27,13 @@ void VolumePainter::setup() {
     // it is mirrored into the negative axis
     // 2nd, 3rd, 4th params are the resolution along each axis
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
-        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 1000.0f,
-        500.f, 500.0f, 500.0f));
+        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 20.0f,
+        50.0f, 50.0f, 50.0f));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
 
-    load_points_from_file("/data/points5.txt");
+    load_points_from_file("/data/points6.txt");
 
     //brush_->drawAtAbsolutePos(ci::Vec3f::one() * -20.0f, default_weight_);
 
@@ -63,7 +63,7 @@ void VolumePainter::convert_volume_to_mesh() {
         new toxi::volume::HashIsoSurface(*(volume_.get())));
 
     volume_mesh_ = std::shared_ptr<ci::TriMesh>(new ci::TriMesh());
-
+    
     iso_surface_->computeSurfaceMesh(volume_mesh_, iso_compute_);
 }
 

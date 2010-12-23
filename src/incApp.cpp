@@ -74,8 +74,8 @@ void IncApp::setup() {
     volume_painter_ = std::tr1::shared_ptr<inc::VolumePainter>(new inc::VolumePainter());
     manager_->add_module(volume_painter_);
 
-    contextualizer_ = std::shared_ptr<inc::Contextualizer>(new inc::Contextualizer());
-    manager_->add_module(contextualizer_);
+    //contextualizer_ = std::shared_ptr<inc::Contextualizer>(new inc::Contextualizer());
+    //manager_->add_module(contextualizer_);
 
     // other object
     mesh_creator_ = std::tr1::shared_ptr<inc::MeshCreator>(new inc::MeshCreator());
