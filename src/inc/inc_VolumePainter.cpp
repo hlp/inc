@@ -161,6 +161,11 @@ bool VolumePainter::mouse_drag(ci::app::MouseEvent evt) {
     return false;
 }
 
+////////////////////////////
+// NOTE: I think the problem is with toxi_geom_AABB, in that it is returning
+// false positives in voxel.intersectsTriangle(), in MeshVoxelizer
+////////////////////////////
+
 bool VolumePainter::mouse_up(ci::app::MouseEvent evt) {
     if (dragged_) {
         dragged_ = false;
