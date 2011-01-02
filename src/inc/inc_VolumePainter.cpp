@@ -12,14 +12,15 @@
 #include <inc/inc_VolumePainter.h>
 #include <inc/inc_GraphicItem.h>
 #include <inc/inc_Manager.h>
+#include <inc/inc_Solid.h>
 
 namespace inc {
 
 VolumePainter::VolumePainter() {
-    brush_radius_ = 2.0f;
+    brush_radius_ = 8.0f;
     iso_density_ = 1.0f;
     iso_compute_ = 3.0f * 0.001f;
-    default_weight_ = 3.0f;
+    default_weight_ = 5.0f;
 }
 
 void VolumePainter::setup() {
@@ -27,8 +28,8 @@ void VolumePainter::setup() {
     // it is mirrored into the negative axis
     // 2nd, 3rd, 4th params are the resolution along each axis
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
-        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 20.0f,
-        50.0f, 50.0f, 50.0f));
+        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 100.0f,
+        100.0f, 100.0f, 100.0f));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
@@ -46,12 +47,22 @@ void VolumePainter::setup() {
     if (volume_mesh_->getNumTriangles() == 0)
         return;
 
+    // create new bullet object from trimesh
+
+    SoftSolidPtr soft_mesh = SolidFactory::create_soft_mesh(
+        volume_mesh_);
+
+    Manager::instance().add_solid(soft_mesh);
+
+    /*
+
     shaded_mesh_ = std::shared_ptr<ShadedMesh>(new ShadedMesh(volume_mesh_));
     shaded_mesh_->set_shade(false);
     shaded_mesh_->set_draw_wireframe(true);
-    shaded_mesh_->set_color(ci::ColorA(1.0f, 1.0f, 1.0f, 1.0f));
+    shaded_mesh_->set_color(ci::ColorA(0.6f, 0.6f, 0.6f, 1.0f));
 
     Manager::instance().add_graphic_item(shaded_mesh_);
+    */
 }
 
 VolumePainter::~VolumePainter() {
