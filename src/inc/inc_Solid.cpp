@@ -284,6 +284,35 @@ void SoftSolid::select() {
     }
 }
 
+std::shared_ptr<ci::TriMesh> SoftSolid::get_mesh() {
+    btSoftBody& sb = soft_body();
+
+    int num_faces = sb.m_faces.size();
+
+    std::shared_ptr<ci::TriMesh> mesh_ptr(new ci::TriMesh());
+
+    for (int i = 0; i < num_faces; ++i) {
+        mesh_ptr->appendVertex(ci::Vec3f(
+            sb.m_faces[i].m_n[0]->m_x.x(),
+            sb.m_faces[i].m_n[0]->m_x.y(),
+            sb.m_faces[i].m_n[0]->m_x.z()));
+
+        mesh_ptr->appendVertex(ci::Vec3f(
+            sb.m_faces[i].m_n[1]->m_x.x(),
+            sb.m_faces[i].m_n[1]->m_x.y(),
+            sb.m_faces[i].m_n[1]->m_x.z()));
+
+        mesh_ptr->appendVertex(ci::Vec3f(
+            sb.m_faces[i].m_n[2]->m_x.x(),
+            sb.m_faces[i].m_n[2]->m_x.y(),
+            sb.m_faces[i].m_n[2]->m_x.z()));
+
+        mesh_ptr->appendTriangle(i * 3, i * 3 + 1, i * 3 + 2);
+    }
+
+    return mesh_ptr;
+}
+
 
 std::deque<btTriangleMesh*> SolidFactory::mesh_cleanup_;
 ci::ColorA SolidFactory::sphere_color_;

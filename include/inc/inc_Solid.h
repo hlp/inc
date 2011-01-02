@@ -103,6 +103,8 @@ public:
     virtual btSoftBody& soft_body();
     virtual btSoftBody* soft_body_ptr();
 
+    std::shared_ptr<ci::TriMesh> get_mesh();
+
     // Override
     virtual void set_selected(bool);
     // Override
@@ -114,9 +116,9 @@ public:
 
 class DebugDraw;
 
-typedef std::tr1::shared_ptr<Solid> SolidPtr;
-typedef std::tr1::shared_ptr<RigidSolid> RigidSolidPtr;
-typedef std::tr1::shared_ptr<SoftSolid> SoftSolidPtr;
+typedef std::shared_ptr<Solid> SolidPtr;
+typedef std::shared_ptr<RigidSolid> RigidSolidPtr;
+typedef std::shared_ptr<SoftSolid> SoftSolidPtr;
 
 class SolidFactory : public Module {
 public:
