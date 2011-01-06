@@ -79,7 +79,7 @@ void VolumePainter::setup() {
         v *= rand.randFloat(0.90f, 1.1f);
         
         particles_.addParticle(v, brush_radius_ * 
-            rand.randFloat(0.9f, 1.7f), ci::Color::white());
+            rand.randFloat(0.8f, 2.5f), ci::Color::white());
     }
 
     int gridSize = 64;
