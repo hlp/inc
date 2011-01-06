@@ -4,6 +4,8 @@
 #include <cinder/TriMesh.h>
 #include <cinder/app/App.h>
 
+#include <CiIso.h>
+
 #include <toxi/volume/toxi_volume_VolumetricRenderer.h>
 
 #include <inc/inc_Module.h>
@@ -56,9 +58,12 @@ private:
     std::shared_ptr<toxi::volume::VolumetricRenderer> volumetric_renderer_;
     std::shared_ptr<ci::TriMesh> volume_mesh_;
     std::shared_ptr<ShadedMesh> shaded_mesh_;
-     std::shared_ptr<SoftSolid> soft_solid_;
+    std::shared_ptr<SoftSolid> soft_solid_;
 
     toxi::volume::VolumetricRenderer renderer_;
+
+    CiIsoParticleSysf   particles_;
+	CiIsoPolygonizerf   polygonizer_;
 
     // Click stuff
     bool dragged_;

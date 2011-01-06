@@ -50,6 +50,10 @@ bool GraphicItem::visible() {
     return visible_;
 }
 
+SolidGraphicItem::SolidGraphicItem() {
+    flip_normals_ = false;
+}
+
 SolidGraphicItem::~SolidGraphicItem() { 
 }
 
@@ -325,8 +329,13 @@ void SoftBodyGraphicItem::draw() {
         face_center = get_face_center(i);
         
         glVertex3f(face_center);
-        glVertex3f(face_center + ci::Vec3f(normal_vec.x(), normal_vec.y(),
-            normal_vec.z()) * face_normals_length_);
+        if (flip_normals_) {
+            glVertex3f(face_center - ci::Vec3f(normal_vec.x(), normal_vec.y(),
+                normal_vec.z()) * face_normals_length_);
+        } else {
+            glVertex3f(face_center + ci::Vec3f(normal_vec.x(), normal_vec.y(),
+                normal_vec.z()) * face_normals_length_);
+        }
     }
 
     glEnd();

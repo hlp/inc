@@ -4,11 +4,14 @@
 
 #include <cinder/gl/gl.h>
 #include <cinder/app/App.h>
+#include <cinder/Rand.h>
 
 #include <toxi/volume/toxi_volume_VolumetricSpaceVector.h>
 #include <toxi/volume/toxi_volume_RoundBrush.h>
 #include <toxi/volume/toxi_volume_HashIsoSurface.h>
 #include <toxi/volume/toxi_volume_MeshVoxelizer.h>
+
+#include <CiIso.h>
 
 #include <inc/inc_VolumePainter.h>
 #include <inc/inc_GraphicItem.h>
@@ -20,10 +23,10 @@
 namespace inc {
 
 VolumePainter::VolumePainter() {
-    brush_radius_ = 8.0f;
+    brush_radius_ = 1.75f;
     iso_density_ = 1.0f;
     iso_compute_ = 3.0f * 0.001f;
-    default_weight_ = 5.0f;
+    default_weight_ = 1.f;
 
     dragged_ = false;
 }
@@ -53,8 +56,8 @@ void VolumePainter::setup() {
     // it is mirrored into the negative axis
     // 2nd, 3rd, 4th params are the resolution along each axis
     volume_ = std::shared_ptr<toxi::volume::VolumetricSpaceVector>(new 
-        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 100.0f,
-        40, 40, 40));
+        toxi::volume::VolumetricSpaceVector(ci::Vec3f::one() * 45.0f,
+        60, 60, 60));
 
     brush_ = std::shared_ptr<toxi::volume::RoundBrush>(new
         toxi::volume::RoundBrush(*(volume_.get()), brush_radius_));
@@ -62,13 +65,50 @@ void VolumePainter::setup() {
     mesh_voxelizer_ = std::shared_ptr<toxi::volume::MeshVoxelizer>(
         new toxi::volume::MeshVoxelizer(40));
 
-    load_points_from_file("/data/points6.txt");
+
+
+    //load_points_from_file("/data/points6.txt");
 
     //brush_->drawAtAbsolutePos(ci::Vec3f::one() * -20.0f, default_weight_);
 
+    ci::Rand rand;
+    rand.randomize();
+    float radius = 15.0f;
+
+    for (int i = 0; i < 650; ++i) {
+        /*
+        ci::Quatf q(rand.nextFloat(M_PI * 2.0f),
+            rand.nextFloat(M_PI * 2.0f),
+            rand.nextFloat(M_PI * 2.0f));
+        */
+        ci::Vec3f v(radius, 0.0f, 0.0f);
+
+        v.rotateX(rand.randFloat(M_PI * 2.0f));
+        v.rotateY(rand.randFloat(M_PI * 2.0f));
+        v.rotateZ(rand.randFloat(M_PI * 2.0f));
+
+        v *= rand.randFloat(0.90f, 1.1f);
+        
+        particles_.addParticle(v, brush_radius_ * 
+            rand.randFloat(0.9f, 1.7f), ci::Color::white());
+        /*
+         brush_->drawAtAbsolutePos(v, default_weight_ * 
+             rand.randFloat(0.9f, 1.7f));
+             */
+    }
+
+    int gridSize = 64;
+	polygonizer_.setGridSize(gridSize);
+	polygonizer_.setParticles(&particles_);
+	polygonizer_.setFieldFunc(CINDER_ISO_FIELDFUNC_BLINN);
+
     volume_mesh_ = std::shared_ptr<ci::TriMesh>(new ci::TriMesh());
 
+    polygonizer_.polygonize(volume_mesh_.get());
+   
+    /*
     convert_volume_to_mesh(volume_, volume_mesh_);
+    */
 
     if (volume_mesh_.get() == NULL)
         return;
@@ -78,18 +118,20 @@ void VolumePainter::setup() {
         return;
 
     // create new bullet object from trimesh
+    soft_solid_ = SolidFactory::create_soft_mesh(volume_mesh_);
 
-    soft_solid_ = SolidFactory::create_soft_mesh(
-        volume_mesh_);
+    soft_solid_->set_flip_normals(true);
 
     Manager::instance().add_solid(soft_solid_);
 
+    /*
     shaded_mesh_ = std::shared_ptr<ShadedMesh>(new ShadedMesh(soft_solid_->get_mesh()));
     shaded_mesh_->set_shade(false);
     shaded_mesh_->set_draw_wireframe(true);
     shaded_mesh_->set_color(ci::ColorA(0.6f, 0.6f, 0.6f, 1.0f));
 
     Manager::instance().add_graphic_item(shaded_mesh_);
+    */
     
 }
 
@@ -106,6 +148,8 @@ void VolumePainter::update() {
 }
 
 void VolumePainter::draw() {
+    return;
+
     if (volume_.get() == NULL)
         return;
 
@@ -167,6 +211,8 @@ bool VolumePainter::mouse_drag(ci::app::MouseEvent evt) {
 ////////////////////////////
 
 bool VolumePainter::mouse_up(ci::app::MouseEvent evt) {
+    return false;
+
     if (dragged_) {
         dragged_ = false;
         return false;

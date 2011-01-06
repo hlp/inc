@@ -112,6 +112,8 @@ public:
 
     // Override
     virtual bool detect_selection(ci::Ray);
+
+    void set_flip_normals(bool f) { graphic_item_->flip_normals_ = true; }
 };
 
 class DebugDraw;

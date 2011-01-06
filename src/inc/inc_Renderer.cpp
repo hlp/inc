@@ -44,7 +44,7 @@ Renderer::Renderer() {
 
     // TODO: fix this code
     // NOTE: make sure these two items are in sync
-    enable_lighting_ = false;
+    enable_lighting_ = true;
     Color::use_lighting(enable_lighting_);
 
     saving_high_res_ = false;

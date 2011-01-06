@@ -33,7 +33,7 @@ namespace inc {
         instance_ = this;
         
         zoom_speed_ = 30.0f;
-        far_clip_ = 10000.0f;
+        far_clip_ = 1000.0f;
     }
 
     Camera::~Camera() {

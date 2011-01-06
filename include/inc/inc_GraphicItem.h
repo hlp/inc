@@ -53,6 +53,7 @@ class Solid;
 
 class SolidGraphicItem : public GraphicItem {
 public:
+    SolidGraphicItem();
     virtual ~SolidGraphicItem();
 
     Solid& solid();
@@ -62,6 +63,8 @@ public:
     virtual float bounding_sphere_radius() { return 0.0f; }
 
     virtual bool detect_selection(ci::Ray) { return false; }
+
+    bool flip_normals_;
 
 private:
     Solid* solid_;
@@ -170,10 +173,17 @@ private:
     }
 
     void make_gl_normal(int face, int node) {
-        glNormal3f(
-            soft_body_->m_faces[face].m_n[node]->m_n.x(),
-            soft_body_->m_faces[face].m_n[node]->m_n.y(),
-            soft_body_->m_faces[face].m_n[node]->m_n.z());
+        if (flip_normals_) {
+            glNormal3f(
+                -soft_body_->m_faces[face].m_n[node]->m_n.x(),
+                -soft_body_->m_faces[face].m_n[node]->m_n.y(),
+                -soft_body_->m_faces[face].m_n[node]->m_n.z());
+        } else { 
+            glNormal3f(
+                soft_body_->m_faces[face].m_n[node]->m_n.x(),
+                soft_body_->m_faces[face].m_n[node]->m_n.y(),
+                soft_body_->m_faces[face].m_n[node]->m_n.z());
+        }
     }
 
     void make_gl_vertex(int face, int node) {
