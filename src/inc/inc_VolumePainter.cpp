@@ -65,22 +65,11 @@ void VolumePainter::setup() {
     mesh_voxelizer_ = std::shared_ptr<toxi::volume::MeshVoxelizer>(
         new toxi::volume::MeshVoxelizer(40));
 
-
-
-    //load_points_from_file("/data/points6.txt");
-
-    //brush_->drawAtAbsolutePos(ci::Vec3f::one() * -20.0f, default_weight_);
-
     ci::Rand rand;
     rand.randomize();
     float radius = 15.0f;
 
     for (int i = 0; i < 650; ++i) {
-        /*
-        ci::Quatf q(rand.nextFloat(M_PI * 2.0f),
-            rand.nextFloat(M_PI * 2.0f),
-            rand.nextFloat(M_PI * 2.0f));
-        */
         ci::Vec3f v(radius, 0.0f, 0.0f);
 
         v.rotateX(rand.randFloat(M_PI * 2.0f));
@@ -91,10 +80,6 @@ void VolumePainter::setup() {
         
         particles_.addParticle(v, brush_radius_ * 
             rand.randFloat(0.9f, 1.7f), ci::Color::white());
-        /*
-         brush_->drawAtAbsolutePos(v, default_weight_ * 
-             rand.randFloat(0.9f, 1.7f));
-             */
     }
 
     int gridSize = 64;
@@ -105,10 +90,6 @@ void VolumePainter::setup() {
     volume_mesh_ = std::shared_ptr<ci::TriMesh>(new ci::TriMesh());
 
     polygonizer_.polygonize(volume_mesh_.get());
-   
-    /*
-    convert_volume_to_mesh(volume_, volume_mesh_);
-    */
 
     if (volume_mesh_.get() == NULL)
         return;
@@ -122,17 +103,7 @@ void VolumePainter::setup() {
 
     soft_solid_->set_flip_normals(true);
 
-    Manager::instance().add_solid(soft_solid_);
-
-    /*
-    shaded_mesh_ = std::shared_ptr<ShadedMesh>(new ShadedMesh(soft_solid_->get_mesh()));
-    shaded_mesh_->set_shade(false);
-    shaded_mesh_->set_draw_wireframe(true);
-    shaded_mesh_->set_color(ci::ColorA(0.6f, 0.6f, 0.6f, 1.0f));
-
-    Manager::instance().add_graphic_item(shaded_mesh_);
-    */
-    
+    Manager::instance().add_solid(soft_solid_);    
 }
 
 void VolumePainter::convert_volume_to_mesh(std::shared_ptr<toxi::volume::VolumetricSpace>
